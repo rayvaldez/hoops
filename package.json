@@ -1,0 +1,13 @@
+{
+  "name": "hoops",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multi-game basketball arcade attraction",
+  "scripts": {
+    "start": "node tools/server.js",
+    "dev": "node tools/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
