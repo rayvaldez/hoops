@@ -10,6 +10,10 @@ body {
     color: white;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 #app {
     max-width: 1100px;
     margin: 0 auto;
@@ -70,4 +74,34 @@ header p {
     h1 {
         font-size: 52px;
     }
+}
+
+#game-area {
+    text-align: center;
+}
+
+#back-to-menu {
+    padding: 12px 20px;
+    margin-bottom: 30px;
+    border: 1px solid #555;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
+
+.test-board {
+    display: grid;
+    grid-template-columns: repeat(7, 60px);
+    gap: 8px;
+    justify-content: center;
+    margin: 30px auto;
+}
+
+.test-board div {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #333;
+    border: 2px solid #555;
 }
