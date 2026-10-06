@@ -16,12 +16,36 @@ export class Connect4Hoops {
 
                 <h2>CONNECT 4 HOOPS</h2>
 
+                <div class="hoop-row">
+                    ${this.createHoops()}
+                </div>
+
                 <div class="connect4-board">
                     ${this.createCells()}
                 </div>
 
             </div>
         `;
+    }
+
+    createHoops() {
+        let hoops = "";
+
+        for (let column = 0; column < this.columns; column++) {
+            hoops += `
+                <button
+                    class="virtual-hoop"
+                    data-column="${column}"
+                    aria-label="Hoop ${column + 1}">
+                    <span>${column + 1}</span>
+                    <div class="hoop-rim">
+                        <div class="hoop-net"></div>
+                    </div>
+                </button>
+            `;
+        }
+
+        return hoops;
     }
 
     createCells() {
