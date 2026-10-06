@@ -1,22 +1,44 @@
 export class Connect4Hoops {
 
-  constructor(container) {
-      this.container = container;
-  }
+    constructor(container) {
+        this.container = container;
+        this.rows = 6;
+        this.columns = 7;
+    }
 
-  start() {
-      this.container.innerHTML = `
-          <div class="connect4-screen">
-              <h2>CONNECT 4 HOOPS</h2>
+    start() {
+        this.render();
+    }
 
-              <p>
-                  Connect 4 Hoops is loading...
-              </p>
+    render() {
+        this.container.innerHTML = `
+            <div class="connect4-screen">
 
-              <div class="test-board">
-                  ${Array.from({ length: 42 }, () => "<div></div>").join("")}
-              </div>
-          </div>
-      `;
-  }
+                <h2>CONNECT 4 HOOPS</h2>
+
+                <div class="connect4-board">
+                    ${this.createCells()}
+                </div>
+
+            </div>
+        `;
+    }
+
+    createCells() {
+        let cells = "";
+
+        for (let row = 0; row < this.rows; row++) {
+            for (let column = 0; column < this.columns; column++) {
+                cells += `
+                    <div
+                        class="connect4-cell"
+                        data-row="${row}"
+                        data-column="${column}">
+                    </div>
+                `;
+            }
+        }
+
+        return cells;
+    }
 }

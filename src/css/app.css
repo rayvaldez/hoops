@@ -90,18 +90,37 @@ header p {
     cursor: pointer;
 }
 
-.test-board {
-    display: grid;
-    grid-template-columns: repeat(7, 60px);
-    gap: 8px;
-    justify-content: center;
-    margin: 30px auto;
+.connect4-screen {
+    text-align: center;
 }
 
-.test-board div {
-    width: 60px;
-    height: 60px;
+.connect4-screen h2 {
+    font-size: 42px;
+    margin-bottom: 30px;
+}
+
+.connect4-board {
+    display: grid;
+    grid-template-columns: repeat(7, 70px);
+    gap: 8px;
+
+    width: max-content;
+    margin: 0 auto 30px;
+
+    padding: 14px;
+    border-radius: 16px;
+    background: #174a8b;
+}
+
+.connect4-cell {
+    width: 70px;
+    height: 70px;
+
     border-radius: 50%;
-    background: #333;
-    border: 2px solid #555;
+
+    background: #111;
+    border: 3px solid #333;
+
+    box-shadow:
+        inset 0 4px 8px rgba(0, 0, 0, 0.5);
 }
