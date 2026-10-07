@@ -618,3 +618,211 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     background: #ffd740;
     border: 3px solid #fff176;
 }
+
+/* =========================================
+   30 SECOND SHOOTOUT
+   ========================================= */
+
+   .shootout-screen {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.shootout-screen h2 {
+    font-size: 42px;
+    margin-bottom: 30px;
+}
+
+.shootout-stats {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-bottom: 40px;
+}
+
+.shootout-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.shootout-stat-label {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+.shootout-stat-value {
+    font-size: 56px;
+    font-weight: bold;
+}
+
+.shootout-hoop-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    margin-bottom: 30px;
+}
+
+.shootout-hoop {
+    width: 140px;
+    height: 140px;
+
+    border: none;
+    padding: 0;
+
+    background: transparent;
+    cursor: pointer;
+
+    position: relative;
+}
+
+.shootout-hoop-rim {
+    width: 100px;
+    height: 38px;
+
+    margin: 0 auto;
+
+    border: 8px solid #e87523;
+    border-radius: 50%;
+
+    position: relative;
+}
+
+.shootout-hoop-net {
+    position: absolute;
+
+    left: 10px;
+    right: 10px;
+    top: 22px;
+
+    height: 65px;
+
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
+    border-right: 3px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+
+    border-radius: 0 0 25px 25px;
+}
+
+.shootout-hoop:hover .shootout-hoop-rim {
+    transform: scale(1.06);
+}
+
+.shootout-hoop:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 6px;
+}
+
+.shootout-instruction {
+    font-size: 22px;
+    color: #aaa;
+    margin-top: 20px;
+}
+
+.shootout-instruction strong {
+    color: white;
+    font-size: 28px;
+}
+
+.shootout-countdown {
+    font-size: 100px;
+    font-weight: bold;
+    margin: 40px 0;
+}
+
+.shootout-message {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 30px 0;
+}
+
+.shootout-score {
+    font-size: 72px;
+    font-weight: bold;
+    margin: 20px 0 35px;
+}
+
+.shootout-button {
+    padding: 15px 26px;
+
+    border: 2px solid #e87523;
+    border-radius: 12px;
+
+    background: #e87523;
+    color: white;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+}
+
+.shootout-button:hover {
+    transform: translateY(-2px);
+    background: #f58a36;
+    border-color: #f58a36;
+}
+
+.shootout-button:active {
+    transform: translateY(0);
+}
+
+.shootout-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+
+.shootout-ball {
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto;
+
+    border-radius: 50%;
+
+    background: #e87523;
+
+    border: 3px solid #ffb06d;
+
+    box-shadow:
+        inset 0 5px 10px rgba(0, 0, 0, 0.35),
+        0 5px 10px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 700px) {
+
+    .shootout-screen h2 {
+        font-size: 32px;
+    }
+
+    .shootout-stats {
+        gap: 50px;
+    }
+
+    .shootout-stat-value {
+        font-size: 46px;
+    }
+
+    .shootout-countdown {
+        font-size: 76px;
+    }
+
+    .shootout-message {
+        font-size: 38px;
+    }
+
+    .shootout-score {
+        font-size: 58px;
+    }
+
+}
