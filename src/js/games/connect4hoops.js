@@ -164,6 +164,15 @@ export class Connect4Hoops {
         
             return;
         }
+
+        if (this.checkDraw()) {
+
+            this.gameOver = true;
+        
+            this.showDraw();
+        
+            return;
+        }
         
         this.currentPlayer =
             this.currentPlayer === 1 ? 2 : 1;
@@ -258,6 +267,20 @@ export class Connect4Hoops {
     
         return false;
     }
+
+    showDraw() {
+
+        const message =
+            this.container.querySelector(".winner-message");
+    
+        if (!message) {
+            return;
+        }
+    
+        message.textContent = "DRAW!";
+    
+        message.hidden = false;
+    }
     
     countDirection(
         row,
@@ -302,6 +325,18 @@ export class Connect4Hoops {
             `PLAYER ${player} WINS!`;
     
         message.hidden = false;
+    }
+
+    checkDraw() {
+
+        for (let column = 0; column < this.columns; column++) {
+    
+            if (this.board[0][column] === 0) {
+                return false;
+            }
+        }
+    
+        return true;
     }
     
     destroy() {
