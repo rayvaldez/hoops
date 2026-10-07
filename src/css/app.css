@@ -219,3 +219,310 @@ header p {
     font-weight: bold;
     text-align: center;
 }
+
+/* =========================================
+CONNECT 4 HOOPS - PLAYER NAME SCREEN
+========================================= */
+
+.name-screen {
+    max-width: 600px;
+    margin: 0 auto;
+}
+    
+.player-name-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    
+    
+    max-width: 420px;
+    margin: 0 auto;
+    
+    padding: 35px;
+    
+    border: 2px solid #444;
+    border-radius: 20px;
+    
+    background: #222;
+    
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.4);
+    
+    
+}
+    
+.player-name-form label {
+    text-align: left;
+    
+    
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    
+    margin-bottom: 8px;
+    
+}
+    
+.player-name-form label:not(:first-child) {
+    margin-top: 22px;
+}
+    
+.player-name-input {
+    width: 100%;
+    
+    padding: 15px 16px;
+    
+    border: 2px solid #555;
+    border-radius: 10px;
+    
+    background: #111;
+    color: white;
+    
+    font-size: 20px;
+    
+    outline: none;
+    
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
+    
+}
+    
+.player-name-input::placeholder {
+    color: #777;
+}
+    
+.player-name-input:focus {
+    border-color: #e87523;
+    
+    box-shadow:
+        0 0 0 3px rgba(232, 117, 35, 0.2);
+    
+}
+    
+.start-game-button {
+    margin-top: 30px;
+    
+    padding: 16px 24px;
+    
+    border: 2px solid #e87523;
+    border-radius: 12px;
+    
+    background: #e87523;
+    color: white;
+    
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    
+    cursor: pointer;
+    
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+    
+}
+    
+.start-game-button:hover {
+    transform: translateY(-2px);
+    
+    background: #f58a36;
+    border-color: #f58a36;
+    
+}
+    
+.start-game-button:active {
+    transform: translateY(0);
+}
+    
+.start-game-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+    
+.name-error {
+    margin-top: 15px;
+    
+    color: #ff6b6b;
+    
+    font-size: 16px;
+    font-weight: bold;
+    
+}
+    
+    /* =========================================
+    CONNECT 4 HOOPS - GAME OVER
+    ========================================= */
+    
+.winner-message {
+    margin: 30px auto 0;
+    
+    max-width: 650px;
+    
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    
+}
+    
+.game-over-title {
+    margin-bottom: 25px;
+    
+    font-size: 48px;
+    font-weight: bold;
+    
+    letter-spacing: 2px;
+    
+}
+    
+.game-over-buttons {
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+    
+    gap: 15px;
+    
+    flex-wrap: wrap;
+    
+}
+    
+.play-again-button,
+    .change-players-button {
+    padding: 14px 22px;
+    
+    border-radius: 10px;
+    
+    color: white;
+    
+    font-size: 17px;
+    font-weight: bold;
+    
+    cursor: pointer;
+    
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+    
+}
+    
+.play-again-button {
+    border: 2px solid #e87523;
+    
+    background: #e87523;
+    
+}
+    
+.play-again-button:hover {
+    transform: translateY(-2px);
+    
+    background: #f58a36;
+    border-color: #f58a36;
+    
+}
+    
+    .change-players-button {
+    border: 2px solid #555;
+    
+    background: #222;
+    
+    }
+    
+    .change-players-button:hover {
+    transform: translateY(-2px);
+    
+    background: #333;
+    border-color: #777;
+    
+    }
+    
+    .play-again-button:active,
+    .change-players-button:active {
+    transform: translateY(0);
+    }
+    
+    .play-again-button:focus-visible,
+    .change-players-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+    }
+    
+    /* =========================================
+    DRAW SCREEN
+    ========================================= */
+    
+    .game-over-title {
+    animation: winnerPop 0.35s ease-out;
+    }
+    
+    @keyframes winnerPop {
+    
+    0% {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+    
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    
+    }
+    
+    /* =========================================
+    MOBILE
+    ========================================= */
+    
+@media (max-width: 700px) {
+    
+    .connect4-screen h2 {
+        font-size: 32px;
+    }
+    
+    .player-name-form {
+        padding: 25px 20px;
+    }
+    
+    .winner-message,
+    .game-over-title {
+        font-size: 34px;
+    }
+    
+    .game-over-buttons {
+        flex-direction: column;
+    }
+    
+    .play-again-button,
+    .change-players-button {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+}
+
+.connect4-cell.winning-cell {
+    animation: winningHoop 0.7s ease-in-out infinite alternate;
+    
+    box-shadow:
+        0 0 10px white,
+        0 0 20px white,
+        inset 0 4px 8px rgba(0, 0, 0, 0.5);
+    
+}
+    
+@keyframes winningHoop {
+    
+    from {
+        transform: scale(1);
+    }
+    
+    to {
+        transform: scale(1.12);
+    }
+
+    
+}
+    
+    
