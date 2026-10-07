@@ -212,3 +212,10 @@ header p {
     background: #ffd740;
     border-color: #fff176;
 }
+
+.winner-message {
+    margin-top: 30px;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+}

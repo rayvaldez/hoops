@@ -8,6 +8,7 @@ export class Connect4Hoops {
 
         this.board = [];
         this.currentPlayer = 1;
+        this.gameOver = false;
 
         this.resetBoard();
     }
@@ -24,6 +25,7 @@ export class Connect4Hoops {
         );
 
         this.currentPlayer = 1;
+        this.gameOver = false;
     }
 
     render() {
@@ -43,6 +45,8 @@ export class Connect4Hoops {
                 <div class="connect4-board">
                     ${this.createCells()}
                 </div>
+
+                <div class="winner-message" hidden></div>
 
             </div>
         `;
@@ -127,6 +131,10 @@ export class Connect4Hoops {
 
     shootHoop(column) {
 
+        if (this.gameOver) {
+            return;
+        }
+
         const row = this.findAvailableRow(column);
 
         if (row === -1) {
@@ -135,8 +143,6 @@ export class Connect4Hoops {
         }
 
         this.board[row][column] = this.currentPlayer;
-
-        console.log("SHOOT HOOP RUNNING");
 
         console.log(
             `Player ${this.currentPlayer} scored in hoop ${column + 1}`
@@ -150,18 +156,11 @@ export class Connect4Hoops {
             this.currentPlayer
         );
         
-        console.log("Win check:", {
-            player: this.currentPlayer,
-            row: row,
-            column: column,
-            winner: winner
-        });
+        if (this.checkWinner(row, column, this.currentPlayer)) {
+
+            this.gameOver = true;
         
-        if (winner) {
-        
-            console.log(
-                `PLAYER ${this.currentPlayer} WINS!`
-            );
+            this.showWinner(this.currentPlayer);
         
             return;
         }
@@ -290,6 +289,21 @@ export class Connect4Hoops {
         return count;
     }
 
+    showWinner(player) {
+
+        const message =
+            this.container.querySelector(".winner-message");
+    
+        if (!message) {
+            return;
+        }
+    
+        message.textContent =
+            `PLAYER ${player} WINS!`;
+    
+        message.hidden = false;
+    }
+    
     destroy() {
         if (this.keyHandler) {
             document.removeEventListener(
