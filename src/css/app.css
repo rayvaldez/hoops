@@ -196,3 +196,19 @@ header p {
     outline: 3px solid white;
     outline-offset: 4px;
 }
+
+.turn-display {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.connect4-cell.player-one {
+    background: #e53935;
+    border-color: #ff6b6b;
+}
+
+.connect4-cell.player-two {
+    background: #ffd740;
+    border-color: #fff176;
+}
