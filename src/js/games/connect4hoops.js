@@ -223,7 +223,8 @@ export class Connect4Hoops {
                 </div>
     
                 <div class="connect4-board">
-    
+                
+                <div class="connect4-animation-layer"></div>
                     ${this.createCells()}
     
                 </div>
@@ -378,58 +379,45 @@ export class Connect4Hoops {
         }
     
         this.board[row][column] = this.currentPlayer;
-    
-        console.log(
-    
-            `${this.players[this.currentPlayer]} scored in hoop ${column + 1}`
-    
-        );
-    
-        this.updateBoardDisplay();
-    
+
         const winner = this.checkWinner(
-            row,
-            column,
-            this.currentPlayer
-            );
-            
-            if (winner) {
-            
-            this.gameOver = true;
-            
-            this.highlightWinningCells(winner);
-            
-            this.showWinner(this.currentPlayer);
-            
-            return;
-              
-            }            
-    
+        row,
+        column,
+        this.currentPlayer
+        );
+
+        this.animateDrop(row, column, () => {
+
+        this.updateBoardDisplay();
+
         if (winner) {
-    
+
             this.gameOver = true;
-    
+
+            this.highlightWinningCells(winner);
+
             this.showWinner(this.currentPlayer);
-    
+
             return;
-    
+
         }
-    
+
         if (this.checkDraw()) {
-    
+
             this.gameOver = true;
-    
+
             this.showDraw();
-    
+
             return;
-    
+
         }
-    
+
         this.currentPlayer =
-    
             this.currentPlayer === 1 ? 2 : 1;
-    
+
         this.updateTurnDisplay();
+
+        });      
     
     }
     
@@ -486,6 +474,160 @@ export class Connect4Hoops {
         });
     
     }
+
+    animateDrop(row, column, onComplete) {
+
+        const cell =
+            this.container.querySelector(
+                `.connect4-cell[data-row="${row}"][data-column="${column}"]`
+            );
+    
+        const hoop =
+            this.container.querySelector(
+                `.virtual-hoop[data-column="${column}"]`
+            );
+    
+        const board =
+            this.container.querySelector(".connect4-board");
+    
+        const animationLayer =
+            this.container.querySelector(".connect4-animation-layer");
+    
+        if (!cell || !hoop || !board || !animationLayer) {
+            return;
+        }
+    
+        const hoopRect =
+            hoop.getBoundingClientRect();
+    
+        const cellRect =
+            cell.getBoundingClientRect();
+    
+        const boardRect =
+            board.getBoundingClientRect();
+    
+        /*
+         * -----------------------------------------
+         * PHASE 1
+         * Ball drops from hoop to board.
+         * -----------------------------------------
+         */
+    
+        const ball =
+            document.createElement("div");
+    
+        ball.classList.add("flying-ball");
+    
+        if (this.currentPlayer === 1) {
+            ball.classList.add("player-one-ball");
+        } else {
+            ball.classList.add("player-two-ball");
+        }
+    
+        const startX =
+            hoopRect.left + (hoopRect.width / 2);
+    
+        const startY =
+            hoopRect.bottom + 5;
+    
+        const boardTop =
+            boardRect.top;
+    
+        ball.style.left = `${startX}px`;
+        ball.style.top = `${startY}px`;
+    
+        document.body.appendChild(ball);
+    
+        void ball.offsetWidth;
+    
+        ball.style.transition =
+            "top 0.55s cubic-bezier(0.45, 0, 0.75, 1)";
+    
+        ball.style.top =
+            `${boardTop - 4}px`;
+    
+        /*
+         * -----------------------------------------
+         * PHASE 2
+         * Move the ball inside the board layer.
+         * The mask makes it visible only through
+         * the circular Connect 4 holes.
+         * -----------------------------------------
+         */
+    
+        setTimeout(() => {
+    
+            ball.remove();
+    
+            const boardBall =
+                document.createElement("div");
+    
+            boardBall.classList.add("flying-ball");
+    
+            if (this.currentPlayer === 1) {
+                boardBall.classList.add("player-one-ball");
+            } else {
+                boardBall.classList.add("player-two-ball");
+            }
+    
+            /*
+             * Board dimensions:
+             *
+             * Cell = 70px
+             * Gap = 8px
+             *
+             * Therefore each row/column starts
+             * 78px after the previous one.
+             */
+            const cellSize = 70;
+            const gap = 8;
+            const spacing = cellSize + gap;
+    
+            const x =
+                column * spacing + (cellSize / 2);
+    
+            const destinationY =
+                row * spacing + (cellSize / 2);
+    
+            /*
+             * Start above the first row.
+             */
+            boardBall.style.left = `${x}px`;
+            boardBall.style.top = `-30px`;
+    
+            animationLayer.appendChild(boardBall);
+    
+            void boardBall.offsetWidth;
+    
+            boardBall.style.position = "absolute";
+    
+            boardBall.style.transition =
+                "top 0.75s cubic-bezier(0.35, 0, 0.65, 1)";
+    
+            boardBall.style.top =
+                `${destinationY}px`;
+    
+            /*
+             * -----------------------------------------
+             * PHASE 3
+             * Reveal the actual Connect 4 token.
+             * -----------------------------------------
+             */
+    
+            setTimeout(() => {
+    
+                boardBall.remove();
+    
+                if (onComplete) {
+                    onComplete();
+                }
+    
+            }, 750);
+    
+        }, 550);
+    
+    }
+        
 
     highlightWinningCells(cells) {
 
