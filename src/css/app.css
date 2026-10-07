@@ -671,48 +671,147 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 .shootout-hoop {
-    width: 140px;
-    height: 140px;
+    width: 220px;
+    height: 190px;
 
     border: none;
     padding: 0;
 
     background: transparent;
+
     cursor: pointer;
 
     position: relative;
+
+    display: block;
 }
 
-.shootout-hoop-rim {
-    width: 100px;
-    height: 38px;
-
-    margin: 0 auto;
-
-    border: 8px solid #e87523;
-    border-radius: 50%;
-
-    position: relative;
-}
-
-.shootout-hoop-net {
+.shootout-backboard {
     position: absolute;
 
-    left: 10px;
-    right: 10px;
-    top: 22px;
+    top: 0;
+    left: 50%;
 
-    height: 65px;
+    width: 150px;
+    height: 95px;
 
-    border-left: 3px solid rgba(255, 255, 255, 0.5);
-    border-right: 3px solid rgba(255, 255, 255, 0.5);
-    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+    transform: translateX(-50%);
 
-    border-radius: 0 0 25px 25px;
+    border: 5px solid white;
+    border-radius: 4px;
+
+    background: rgba(255, 255, 255, 0.04);
 }
 
-.shootout-hoop:hover .shootout-hoop-rim {
-    transform: scale(1.06);
+.shootout-backboard::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: -2px;
+
+    width: 70px;
+    height: 45px;
+
+    transform: translateX(-50%);
+
+    border: 4px solid white;
+    border-bottom: none;
+}
+
+.shootout-rim {
+    position: absolute;
+
+    left: 50%;
+    top: 88px;
+
+    width: 105px;
+    height: 32px;
+
+    transform: translateX(-50%);
+
+    border: 7px solid #e87523;
+    border-radius: 50%;
+
+    background: transparent;
+
+    z-index: 2;
+}
+
+.shootout-net {
+    position: absolute;
+
+    left: 8px;
+    right: 8px;
+
+    top: 18px;
+    height: 78px;
+
+    z-index: 3;
+
+    overflow: hidden;
+
+    border-left: 2px solid rgba(255, 255, 255, 0.45);
+    border-right: 2px solid rgba(255, 255, 255, 0.45);
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 9px,
+            rgba(255, 255, 255, 0.55) 10px,
+            rgba(255, 255, 255, 0.55) 11px,
+            transparent 12px
+        );
+}
+
+.shootout-net::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        repeating-linear-gradient(
+            105deg,
+            transparent 0,
+            transparent 11px,
+            rgba(255, 255, 255, 0.42) 12px,
+            rgba(255, 255, 255, 0.42) 13px,
+            transparent 14px
+        );
+
+    transform:
+        perspective(80px)
+        rotateX(-12deg);
+
+    opacity: 0.9;
+}
+
+.shootout-net::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    width: 52px;
+    height: 12px;
+
+    transform: translateX(-50%);
+
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+
+    border-radius: 50%;
+}
+
+.shootout-hoop:hover .shootout-rim {
+    transform:
+        translateX(-50%)
+        scale(1.06);
 }
 
 .shootout-hoop:focus-visible {
@@ -787,7 +886,6 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 .shootout-ball {
     width: 60px;
     height: 60px;
-
     margin: 0 auto;
 
     border-radius: 50%;
@@ -799,6 +897,8 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     box-shadow:
         inset 0 5px 10px rgba(0, 0, 0, 0.35),
         0 5px 10px rgba(0, 0, 0, 0.35);
+
+    z-index: 4;
 }
 
 @media (max-width: 700px) {
@@ -827,4 +927,38 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
         font-size: 58px;
     }
 
+}
+
+.shootout-hoop.score-flash .shootout-rim {
+    animation: hoopFlash 0.4s ease-out;
+}
+
+@keyframes hoopFlash {
+    0% {
+        filter: brightness(1);
+        box-shadow: none;
+    }
+
+    20% {
+        filter: brightness(1.8);
+        box-shadow:
+            0 0 10px #e87523,
+            0 0 25px #e87523,
+            0 0 45px #ff9d52,
+            0 0 65px rgba(255, 157, 82, 0.8);
+    }
+
+    45% {
+        filter: brightness(2.5);
+        box-shadow:
+            0 0 12px #fff,
+            0 0 25px #ffb06d,
+            0 0 45px #e87523,
+            0 0 70px rgba(232, 117, 35, 0.9);
+    }
+
+    100% {
+        filter: brightness(1);
+        box-shadow: none;
+    }
 }

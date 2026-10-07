@@ -175,17 +175,19 @@ export class ThirtySecondShootout {
 
               <div class="shootout-hoop-area">
 
-                  <button
-                      class="shootout-hoop"
-                      data-shoot
-                      aria-label="Shoot"
-                  >
+                <button
+                    class="shootout-hoop"
+                    data-shoot
+                    aria-label="Shoot"
+                >
 
-                      <span class="shootout-hoop-rim">
-                          <span class="shootout-hoop-net"></span>
-                      </span>
+                    <span class="shootout-backboard"></span>
 
-                  </button>
+                    <span class="shootout-rim">
+                        <span class="shootout-net"></span>
+                    </span>
+
+                </button>
 
               </div>
 
@@ -268,28 +270,62 @@ export class ThirtySecondShootout {
     hoopArea.appendChild(ball);
 
     ball.style.position = "absolute";
+
     ball.style.left = "50%";
+
     ball.style.top = "100%";
 
     ball.style.transform =
         "translate(-50%, -50%)";
 
+    ball.style.zIndex = "4";
+
     void ball.offsetWidth;
 
-    ball.style.transition =
-        "top 0.35s ease-in, transform 0.35s ease-in";
+    // Ball travels upward in front of the hoop
 
-    ball.style.top = "35%";
+    ball.style.transition =
+        "top 0.55s ease-in, transform 0.55s ease-in";
+
+    ball.style.top = "48%";
 
     ball.style.transform =
-        "translate(-50%, -50%) scale(0.8)";
+        "translate(-50%, -50%) scale(0.9)";
+
+        setTimeout(() => {
+
+          // Ball has reached the rim.
+          // Flash the hoop as the shot goes in.
+      
+          hoop.classList.remove("score-flash");
+      
+          void hoop.offsetWidth;
+      
+          hoop.classList.add("score-flash");
+      
+          // Move the ball behind the net.
+      
+          ball.style.zIndex = "1";
+      
+          ball.style.transition =
+              "top 0.4s ease-in";
+      
+          ball.style.top = "70%";
+      
+          setTimeout(() => {
+      
+              hoop.classList.remove("score-flash");
+      
+          }, 350);
+      
+      }, 550);
 
     setTimeout(() => {
 
         ball.remove();
 
-    }, 400);
-  }
+    }, 1000);
+}
 
   updateDisplay() {
 
