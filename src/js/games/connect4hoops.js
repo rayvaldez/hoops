@@ -136,15 +136,39 @@ export class Connect4Hoops {
 
         this.board[row][column] = this.currentPlayer;
 
+        console.log("SHOOT HOOP RUNNING");
+
         console.log(
             `Player ${this.currentPlayer} scored in hoop ${column + 1}`
         );
-
+        
         this.updateBoardDisplay();
-
+        
+        const winner = this.checkWinner(
+            row,
+            column,
+            this.currentPlayer
+        );
+        
+        console.log("Win check:", {
+            player: this.currentPlayer,
+            row: row,
+            column: column,
+            winner: winner
+        });
+        
+        if (winner) {
+        
+            console.log(
+                `PLAYER ${this.currentPlayer} WINS!`
+            );
+        
+            return;
+        }
+        
         this.currentPlayer =
             this.currentPlayer === 1 ? 2 : 1;
-
+    
         this.updateTurnDisplay();
     }
 
@@ -196,6 +220,82 @@ export class Connect4Hoops {
         if (display) {
             display.textContent =
                 `PLAYER ${this.currentPlayer}`;
+        }
+    }
+
+    checkWinner(row, column, player) {
+
+        const directions = [
+            [0, 1],   // horizontal
+            [1, 0],   // vertical
+            [1, 1],   // diagonal down-right
+            [1, -1]   // diagonal down-left
+        ];
+    
+        for (const [rowDirection, columnDirection] of directions) {
+    
+            let count = 1;
+    
+            count += this.countDirection(
+                row,
+                column,
+                rowDirection,
+                columnDirection,
+                player
+            );
+    
+            count += this.countDirection(
+                row,
+                column,
+                -rowDirection,
+                -columnDirection,
+                player
+            );
+    
+            if (count >= 4) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+    
+    countDirection(
+        row,
+        column,
+        rowDirection,
+        columnDirection,
+        player
+    ) {
+    
+        let count = 0;
+    
+        let currentRow = row + rowDirection;
+        let currentColumn = column + columnDirection;
+    
+        while (
+            currentRow >= 0 &&
+            currentRow < this.rows &&
+            currentColumn >= 0 &&
+            currentColumn < this.columns &&
+            this.board[currentRow][currentColumn] === player
+        ) {
+    
+            count++;
+    
+            currentRow += rowDirection;
+            currentColumn += columnDirection;
+        }
+    
+        return count;
+    }
+
+    destroy() {
+        if (this.keyHandler) {
+            document.removeEventListener(
+                "keydown",
+                this.keyHandler
+            );
         }
     }
 }
