@@ -343,29 +343,49 @@ export class ThirtySecondShootout {
 
   startTimer() {
 
-      this.timer = setInterval(() => {
+    this.timer = setInterval(() => {
 
-          this.timeRemaining--;
+        this.timeRemaining--;
 
-          const timeDisplay =
-              this.container.querySelector(
-                  "[data-time]"
-              );
+        const timeDisplay =
+            this.container.querySelector(
+                "[data-time]"
+            );
 
-          if (timeDisplay) {
+        if (timeDisplay) {
 
-              timeDisplay.textContent =
-                  this.timeRemaining;
-          }
+            timeDisplay.textContent =
+                this.timeRemaining;
 
-          if (this.timeRemaining <= 0) {
+            timeDisplay.classList.remove(
+                "timer-warning",
+                "timer-danger"
+            );
 
-              this.endGame();
+            if (this.timeRemaining <= 5) {
 
-          }
+                timeDisplay.classList.add(
+                    "timer-danger"
+                );
 
-      }, 1000);
-  }
+            } else if (this.timeRemaining <= 10) {
+
+                timeDisplay.classList.add(
+                    "timer-warning"
+                );
+
+            }
+
+        }
+
+        if (this.timeRemaining <= 0) {
+
+            this.endGame();
+
+        }
+
+    }, 1000);
+}
 
   endGame() {
 

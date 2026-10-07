@@ -660,6 +660,53 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     font-weight: bold;
 }
 
+.shootout-stat-value[data-time] {
+    transition:
+        color 0.2s,
+        transform 0.2s,
+        text-shadow 0.2s;
+}
+
+.shootout-stat-value[data-time].timer-warning {
+    color: #e87523;
+    animation: timerWarning 0.8s ease-in-out infinite;
+}
+
+.shootout-stat-value[data-time].timer-danger {
+    color: #ff4d4d;
+    animation: timerDanger 0.5s ease-in-out infinite;
+}
+
+@keyframes timerWarning {
+    0%,
+    100% {
+        transform: scale(1);
+        text-shadow: none;
+    }
+
+    50% {
+        transform: scale(1.08);
+        text-shadow:
+            0 0 8px rgba(232, 117, 35, 0.6);
+    }
+}
+
+@keyframes timerDanger {
+    0%,
+    100% {
+        transform: scale(1);
+        text-shadow:
+            0 0 0 rgba(255, 77, 77, 0);
+    }
+
+    50% {
+        transform: scale(1.15);
+        text-shadow:
+            0 0 10px rgba(255, 77, 77, 0.8),
+            0 0 25px rgba(255, 77, 77, 0.5);
+    }
+}
+
 .shootout-hoop-area {
     display: flex;
     justify-content: center;
