@@ -666,6 +666,8 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     align-items: center;
     min-height: 180px;
     margin-bottom: 30px;
+
+    position: relative;
 }
 
 .shootout-hoop {

@@ -239,6 +239,56 @@ export class ThirtySecondShootout {
       this.score++;
 
       this.updateDisplay();
+
+      this.animateShot();
+  }
+
+  animateShot() {
+
+    const hoop =
+        this.container.querySelector(
+            ".shootout-hoop"
+        );
+
+    const hoopArea =
+        this.container.querySelector(
+            ".shootout-hoop-area"
+        );
+
+    if (!hoop || !hoopArea) {
+
+        return;
+    }
+
+    const ball =
+        document.createElement("div");
+
+    ball.classList.add("shootout-ball");
+
+    hoopArea.appendChild(ball);
+
+    ball.style.position = "absolute";
+    ball.style.left = "50%";
+    ball.style.top = "100%";
+
+    ball.style.transform =
+        "translate(-50%, -50%)";
+
+    void ball.offsetWidth;
+
+    ball.style.transition =
+        "top 0.35s ease-in, transform 0.35s ease-in";
+
+    ball.style.top = "35%";
+
+    ball.style.transform =
+        "translate(-50%, -50%) scale(0.8)";
+
+    setTimeout(() => {
+
+        ball.remove();
+
+    }, 400);
   }
 
   updateDisplay() {
