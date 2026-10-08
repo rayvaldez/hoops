@@ -955,7 +955,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     }
 
     .shootout-stats {
-        gap: 50px;
+        gap: 25px;
     }
 
     .shootout-stat-value {
@@ -1007,5 +1007,35 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     100% {
         filter: brightness(1);
         box-shadow: none;
+    }
+}
+
+.shootout-best {
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.shootout-new-record {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e87523;
+    margin-bottom: 30px;
+    animation: newRecordPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes newRecordPulse {
+    0%,
+    100% {
+        transform: scale(1);
+        text-shadow: none;
+    }
+
+    50% {
+        transform: scale(1.08);
+        text-shadow:
+            0 0 10px rgba(232, 117, 35, 0.8),
+            0 0 25px rgba(232, 117, 35, 0.5);
     }
 }

@@ -6,6 +6,11 @@ export class ThirtySecondShootout {
 
       this.score = 0;
 
+      this.bestScore =
+          Number(localStorage.getItem(
+              "shootoutBestScore"
+          )) || 0;
+
       this.timeRemaining = 30;
 
       this.gameStarted = false;
@@ -145,33 +150,46 @@ export class ThirtySecondShootout {
 
               <div class="shootout-stats">
 
-                  <div class="shootout-stat">
-                      <span class="shootout-stat-label">
-                          TIME
-                      </span>
+          <div class="shootout-stat">
+              <span class="shootout-stat-label">
+                  TIME
+              </span>
 
-                      <span
-                          class="shootout-stat-value"
-                          data-time
-                      >
-                          30
-                      </span>
-                  </div>
+              <span
+                  class="shootout-stat-value"
+                  data-time
+              >
+                  30
+              </span>
+          </div>
 
-                  <div class="shootout-stat">
-                      <span class="shootout-stat-label">
-                          SCORE
-                      </span>
+          <div class="shootout-stat">
+              <span class="shootout-stat-label">
+                  SCORE
+              </span>
 
-                      <span
-                          class="shootout-stat-value"
-                          data-score
-                      >
-                          0
-                      </span>
-                  </div>
+              <span
+                  class="shootout-stat-value"
+                  data-score
+              >
+                  0
+              </span>
+          </div>
 
-              </div>
+          <div class="shootout-stat">
+              <span class="shootout-stat-label">
+                  BEST
+              </span>
+
+              <span
+                  class="shootout-stat-value"
+                  data-best-score
+              >
+                  ${this.bestScore}
+              </span>
+          </div>
+
+        </div>
 
               <div class="shootout-hoop-area">
 
@@ -389,21 +407,35 @@ export class ThirtySecondShootout {
 
   endGame() {
 
-      this.gameOver = true;
+    this.gameOver = true;
 
-      this.gameStarted = false;
+    this.gameStarted = false;
 
-      clearInterval(this.timer);
+    clearInterval(this.timer);
 
-      this.timer = null;
+    this.timer = null;
 
-      this.removeEvents();
+    this.removeEvents();
 
-      this.renderGameOver();
+    const newHighScore =
+      this.score > this.bestScore;
+
+    if (newHighScore) {
+
+        this.bestScore = this.score;
+
+        localStorage.setItem(
+            "shootoutBestScore",
+            this.bestScore
+        );
+
+    }
+
+    this.renderGameOver(newHighScore);
 
   }
 
-  renderGameOver() {
+  renderGameOver(newHighScore = false) {
 
       this.container.innerHTML = `
           <div class="shootout-screen">
@@ -418,6 +450,16 @@ export class ThirtySecondShootout {
                   ${this.score}
               </div>
 
+              <div class="shootout-best">
+                  BEST: ${this.bestScore}
+              </div>
+
+              ${newHighScore ? `
+                  <div class="shootout-new-record">
+                      NEW HIGH SCORE!
+                  </div>
+              ` : ""}
+              
               <div class="game-over-buttons">
 
                   <button
