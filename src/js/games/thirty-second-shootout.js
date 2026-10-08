@@ -146,50 +146,61 @@ export class ThirtySecondShootout {
       this.container.innerHTML = `
           <div class="shootout-screen">
 
-              <h2>30 SECOND SHOOTOUT</h2>
+              <h4>30 SECOND SHOOTOUT</h4>
 
-              <div class="shootout-stats">
+              <div class="shootout-scoreboard">
 
-          <div class="shootout-stat">
-              <span class="shootout-stat-label">
-                  TIME
-              </span>
+                <div class="scoreboard-panel scoreboard-time">
 
-              <span
-                  class="shootout-stat-value"
-                  data-time
-              >
-                  30
-              </span>
-          </div>
+                    <span class="scoreboard-label">
+                        TIME
+                    </span>
 
-          <div class="shootout-stat">
-              <span class="shootout-stat-label">
-                  SCORE
-              </span>
+                    <span
+                        class="scoreboard-value"
+                        data-time
+                    >
+                        30
+                    </span>
 
-              <span
-                  class="shootout-stat-value"
-                  data-score
-              >
-                  0
-              </span>
-          </div>
+                </div>
 
-          <div class="shootout-stat">
-              <span class="shootout-stat-label">
-                  BEST
-              </span>
+              <div class="scoreboard-panel scoreboard-score">
 
-              <span
-                  class="shootout-stat-value"
-                  data-best-score
-              >
-                  ${this.bestScore}
-              </span>
-          </div>
+                  <span class="scoreboard-label">
+                      SCORE
+                  </span>
 
-        </div>
+                  <span
+                      class="scoreboard-value"
+                      data-score
+                  >
+                      0
+                  </span>
+
+              </div>
+
+              <div class="scoreboard-panel scoreboard-best">
+
+                  <span class="scoreboard-label">
+                      BEST
+                  </span>
+
+                  <span
+                      class="scoreboard-value"
+                      data-best-score
+                  >
+                      ${this.bestScore}
+                  </span>
+
+              </div>
+
+            </div>
+
+            <div class="scoreboard-instruction">
+                PRESS <strong>1</strong> TO SHOOT
+            </div>
+                      </div>
 
               <div class="shootout-hoop-area">
 

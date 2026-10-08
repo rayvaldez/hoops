@@ -660,19 +660,19 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     font-weight: bold;
 }
 
-.shootout-stat-value[data-time] {
+.scoreboard-value[data-time] {
     transition:
         color 0.2s,
         transform 0.2s,
         text-shadow 0.2s;
 }
 
-.shootout-stat-value[data-time].timer-warning {
+.scoreboard-value[data-time].timer-warning {
     color: #e87523;
     animation: timerWarning 0.8s ease-in-out infinite;
 }
 
-.shootout-stat-value[data-time].timer-danger {
+.scoreboard-value[data-time].timer-danger {
     color: #ff4d4d;
     animation: timerDanger 0.5s ease-in-out infinite;
 }
@@ -1038,4 +1038,185 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
             0 0 10px rgba(232, 117, 35, 0.8),
             0 0 25px rgba(232, 117, 35, 0.5);
     }
+}
+
+/* ========================================
+   SHOOTOUT SCOREBOARD
+   ======================================== */
+
+   .shootout-scoreboard {
+    width: min(900px, 95%);
+    margin: 0 auto 18px;
+
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1fr;
+
+    position: relative;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(8, 12, 20, 0.98),
+            rgba(16, 20, 30, 0.96)
+        );
+
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+
+    box-shadow:
+        0 0 0 2px rgba(0, 0, 0, 0.65),
+        0 8px 30px rgba(0, 0, 0, 0.65),
+        0 0 30px rgba(232, 117, 35, 0.18);
+
+    overflow: hidden;
+}
+
+/* Orange outer edge */
+
+.shootout-scoreboard::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border: 2px solid #e87523;
+    border-radius: 8px;
+
+    pointer-events: none;
+}
+
+/* Individual panels */
+
+.scoreboard-panel {
+    min-height: 125px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+/* Vertical separators */
+
+.scoreboard-panel + .scoreboard-panel {
+    border-left: 2px solid #e87523;
+}
+
+/* Centre panel */
+
+.scoreboard-score {
+    background:
+        linear-gradient(
+            rgba(255, 255, 255, 0.035),
+            rgba(0, 0, 0, 0.08)
+        );
+}
+
+/* Labels */
+
+.scoreboard-label {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #f2f2f2;
+
+    margin-bottom: 2px;
+}
+
+/* Numbers */
+
+.scoreboard-value {
+    font-size: 70px;
+    line-height: 0.95;
+
+    font-weight: 900;
+    letter-spacing: 2px;
+
+    color: white;
+
+    text-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.65),
+        0 0 12px rgba(255, 255, 255, 0.12);
+}
+
+/* Time starts orange */
+
+.scoreboard-time .scoreboard-value {
+    color: #ff9a3c;
+
+    text-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.7),
+        0 0 15px rgba(232, 117, 35, 0.35);
+}
+
+/* Best score */
+
+.scoreboard-best .scoreboard-value {
+    color: #e9e9e9;
+}
+
+/* Instruction plate */
+
+.scoreboard-instruction {
+    width: fit-content;
+    min-width: 260px;
+
+    margin: 0 auto 30px;
+    padding: 10px 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(8, 12, 20, 0.98),
+            rgba(18, 22, 32, 0.96)
+        );
+
+    border: 2px solid #e87523;
+    border-radius: 7px;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 2px;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(232, 117, 35, 0.2);
+}
+
+.scoreboard-instruction strong {
+    color: #ff9a3c;
+    font-size: 24px;
+
+    text-shadow:
+        0 0 8px rgba(232, 117, 35, 0.65);
+}
+
+/* ========================================
+   30 SECOND SHOOTOUT ARENA BACKGROUND
+   ======================================== */
+
+   .shootout-screen {
+    position: relative;
+    min-height: 700px;
+    max-width: none;
+    margin: 0;
+    padding: 35px 30px 40px;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.08),
+            rgba(0, 0, 0, 0.08)
+        ),
+        url("../assets/images/shootout-arena.png");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    border-radius: 12px;
+    overflow: hidden;
 }
