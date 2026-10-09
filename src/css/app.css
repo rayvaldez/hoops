@@ -1044,51 +1044,113 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
    SHOOTOUT SCOREBOARD
    ======================================== */
 
-   .shootout-scoreboard {
+   
+/* ========================================
+   ARCADE BASKETBALL SCOREBOARD
+   ======================================== */
+
+.shootout-scoreboard {
     width: min(900px, 95%);
     margin: 0 auto 18px;
+    padding: 8px;
 
     display: grid;
     grid-template-columns: 1fr 1.25fr 1fr;
 
     position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #30343b 0%,
+            #10141b 35%,
+            #05070b 75%,
+            #292d34 100%
+        );
+
+    clip-path: polygon(
+        18px 0,
+        calc(100% - 18px) 0,
+        100% 18px,
+        100% calc(100% - 18px),
+        calc(100% - 18px) 100%,
+        18px 100%,
+        0 calc(100% - 18px),
+        0 18px
+    );
+
+    border: none;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.8),
+        0 0 24px rgba(232, 117, 35, 0.2);
+}
+
+/* Orange illuminated frame */
+
+.shootout-scoreboard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 3px;
 
     background:
         linear-gradient(
             135deg,
-            rgba(8, 12, 20, 0.98),
-            rgba(16, 20, 30, 0.96)
+            #ffbd75,
+            #e87523 30%,
+            #74330f 65%,
+            #ff8b35
         );
 
-    border: 2px solid rgba(255, 255, 255, 0.7);
-    border-radius: 8px;
-
-    box-shadow:
-        0 0 0 2px rgba(0, 0, 0, 0.65),
-        0 8px 30px rgba(0, 0, 0, 0.65),
-        0 0 30px rgba(232, 117, 35, 0.18);
-
-    overflow: hidden;
+    clip-path: polygon(
+        18px 0,
+        calc(100% - 18px) 0,
+        100% 18px,
+        100% calc(100% - 18px),
+        calc(100% - 18px) 100%,
+        18px 100%,
+        0 calc(100% - 18px),
+        0 18px
+    );
 }
 
-/* Orange outer edge */
+/* Honeycomb metallic texture */
 
-.shootout-scoreboard::before {
+.shootout-scoreboard::after {
     content: "";
-
     position: absolute;
-    inset: 0;
-
-    border: 2px solid #e87523;
-    border-radius: 8px;
-
+    inset: 4px;
+    z-index: -1;
     pointer-events: none;
-}
 
-/* Individual panels */
+    background-color: #11151c;
+
+    background-image:
+        radial-gradient(
+            circle at 50% 50%,
+            transparent 55%,
+            rgba(255, 255, 255, 0.045) 57%,
+            transparent 65%
+        ),
+        linear-gradient(
+            30deg,
+            transparent 48%,
+            rgba(255, 255, 255, 0.035) 49%,
+            rgba(255, 255, 255, 0.035) 51%,
+            transparent 52%
+        );
+
+    background-size: 22px 38px, 22px 38px;
+    opacity: 0.9;
+}
 
 .scoreboard-panel {
-    min-height: 125px;
+    min-height: 118px;
+    padding: 12px 6px;
 
     display: flex;
     flex-direction: column;
@@ -1096,103 +1158,156 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     justify-content: center;
 
     position: relative;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(0, 0, 0, 0.16)
+        );
 }
 
-/* Vertical separators */
+/* Orange separators */
 
 .scoreboard-panel + .scoreboard-panel {
-    border-left: 2px solid #e87523;
+    border-left: 2px solid rgba(232, 117, 35, 0.85);
+    box-shadow: -1px 0 rgba(0, 0, 0, 0.8);
 }
 
-/* Centre panel */
+/* Centre score panel */
 
 .scoreboard-score {
     background:
         linear-gradient(
-            rgba(255, 255, 255, 0.035),
-            rgba(0, 0, 0, 0.08)
+            180deg,
+            rgba(232, 117, 35, 0.1),
+            rgba(0, 0, 0, 0.18)
         );
 }
 
-/* Labels */
-
 .scoreboard-label {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 3px;
-    color: #f2f2f2;
+    margin-bottom: 8px;
 
-    margin-bottom: 2px;
+    color: #d5d9df;
+
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+
+    text-shadow: 0 2px 3px #000;
 }
-
-/* Numbers */
 
 .scoreboard-value {
-    font-size: 70px;
-    line-height: 0.95;
+    color: #fff;
 
+    font-family: "Arial", sans-serif;
+    font-size: clamp(46px, 6vw, 72px);
     font-weight: 900;
+    line-height: 0.95;
+    font-variant-numeric: tabular-nums;
     letter-spacing: 2px;
 
-    color: white;
-
     text-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.65),
-        0 0 12px rgba(255, 255, 255, 0.12);
+        0 3px 0 #333,
+        0 0 10px rgba(255, 255, 255, 0.15);
 }
 
-/* Time starts orange */
+/* Orange timer */
 
 .scoreboard-time .scoreboard-value {
-    color: #ff9a3c;
+    color: #ff9a42;
 
     text-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.7),
-        0 0 15px rgba(232, 117, 35, 0.35);
+        0 2px 0 #6f310d,
+        0 0 12px rgba(255, 126, 35, 0.35);
 }
 
 /* Best score */
 
 .scoreboard-best .scoreboard-value {
-    color: #e9e9e9;
+    color: #f1f1f1;
 }
 
-/* Instruction plate */
+/* Timer urgency */
+
+.scoreboard-value[data-time] {
+    transition: color 0.2s, text-shadow 0.2s;
+}
+
+.scoreboard-value[data-time].timer-warning {
+    color: #ff8a24;
+    animation: timerWarning 0.8s ease-in-out infinite;
+}
+
+.scoreboard-value[data-time].timer-danger {
+    color: #ff4141;
+    animation: timerDanger 0.5s ease-in-out infinite;
+}
+
+/* Press 1 to shoot panel */
 
 .scoreboard-instruction {
     width: fit-content;
-    min-width: 260px;
+    min-width: 280px;
 
     margin: 0 auto 30px;
-    padding: 10px 28px;
+    padding: 12px 28px;
 
+    color: #f5f5f5;
     background:
         linear-gradient(
-            135deg,
-            rgba(8, 12, 20, 0.98),
-            rgba(18, 22, 32, 0.96)
+            110deg,
+            #171b22,
+            #080a0e 50%,
+            #20242b
         );
 
     border: 2px solid #e87523;
-    border-radius: 7px;
-
-    color: white;
+    border-radius: 4px;
 
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 900;
     letter-spacing: 2px;
+    text-align: center;
 
     box-shadow:
-        0 5px 18px rgba(0, 0, 0, 0.5),
-        0 0 15px rgba(232, 117, 35, 0.2);
+        0 5px 18px rgba(0, 0, 0, 0.55),
+        0 0 14px rgba(232, 117, 35, 0.22);
 }
 
 .scoreboard-instruction strong {
-    color: #ff9a3c;
-    font-size: 24px;
+    color: #ff9a42;
+    font-size: 26px;
+    text-shadow: 0 0 12px rgba(232, 117, 35, 0.6);
+}
 
-    text-shadow:
-        0 0 8px rgba(232, 117, 35, 0.65);
+/* Smaller screens */
+
+@media (max-width: 700px) {
+    .shootout-scoreboard {
+        width: 100%;
+        padding: 5px;
+    }
+
+    .scoreboard-panel {
+        min-height: 90px;
+    }
+
+    .scoreboard-label {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    .scoreboard-value {
+        font-size: clamp(36px, 8vw, 50px);
+    }
+
+    .scoreboard-instruction {
+        min-width: 0;
+        font-size: 15px;
+        padding: 10px 18px;
+    }
 }
 
 /* ========================================
@@ -1219,4 +1334,317 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 
     border-radius: 12px;
     overflow: hidden;
+}
+
+
+/* Revised arcade scoreboard proportions */
+
+.shootout-scoreboard {
+    width: min(1000px, 96%);
+    grid-template-columns: 1fr 1.35fr 1fr;
+    align-items: stretch;
+    padding: 8px;
+}
+
+/* Outer panels */
+.scoreboard-panel {
+    min-height: 118px;
+    align-self: center;
+}
+
+/* Make the centre TIME panel larger */
+.scoreboard-time {
+    min-height: 145px;
+    margin: -5px 0;
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(232, 117, 35, 0.18),
+            rgba(10, 12, 17, 0.96) 45%,
+            rgba(232, 117, 35, 0.08)
+        );
+
+    border-top: 2px solid #ff9a42;
+    border-bottom: 2px solid #ff9a42;
+
+    box-shadow:
+        0 0 18px rgba(232, 117, 35, 0.22),
+        inset 0 0 16px rgba(232, 117, 35, 0.08);
+}
+
+/* Larger timer digits */
+.scoreboard-time .scoreboard-value {
+    font-size: clamp(64px, 7.5vw, 88px);
+    color: #ff9a42;
+}
+
+/* Score and best remain slightly smaller */
+.scoreboard-score .scoreboard-value,
+.scoreboard-best .scoreboard-value {
+    font-size: clamp(44px, 5.5vw, 64px);
+}
+
+/* Emphasise the centre TIME label */
+.scoreboard-time .scoreboard-label {
+    font-size: 21px;
+    letter-spacing: 5px;
+}
+
+/* Keep the centre section proportional on small screens */
+@media (max-width: 700px) {
+    .shootout-scoreboard {
+        grid-template-columns: 1fr 1.2fr 1fr;
+        padding: 5px;
+    }
+
+    .scoreboard-panel {
+        min-height: 88px;
+    }
+
+    .scoreboard-time {
+        min-height: 108px;
+    }
+
+    .scoreboard-time .scoreboard-value {
+        font-size: clamp(48px, 9vw, 62px);
+    }
+
+    .scoreboard-score .scoreboard-value,
+    .scoreboard-best .scoreboard-value {
+        font-size: clamp(34px, 6.5vw, 46px);
+    }
+
+    .scoreboard-time .scoreboard-label {
+        font-size: 15px;
+        letter-spacing: 3px;
+    }
+}
+
+
+/* Arena background */
+.shootout-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-image: url("../assets/images/shootout-arena.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-color: #050b18;
+}
+
+/* Live numbers positioned over the scoreboard image */
+.arena-scoreboard-values {
+    position: absolute;
+    z-index: 5;
+    top: 10.5%;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    pointer-events: none;
+    color: #fff;
+    font-family: "Arial Narrow", Impact, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.35),
+        0 3px 5px rgba(0, 0, 0, 0.9);
+}
+
+.arena-value {
+    min-width: 0;
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.arena-time {
+    font-size: clamp(3rem, 6vw, 6rem);
+    transform: translateY(2px);
+}
+
+.arena-time [data-time] {
+    display: inline-block;
+}
+
+.arena-time.timer-warning {
+    color: #ffd166;
+}
+
+.arena-time.timer-danger {
+    color: #ff4545;
+    animation: timer-pulse 0.5s infinite alternate;
+}
+
+@keyframes timer-pulse {
+    from { opacity: 1; }
+    to { opacity: 0.65; }
+}
+
+/* Keep the hoop and ball animation above the background */
+.shootout-hoop,
+.shootout-ball {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 700px) {
+    .arena-scoreboard-values {
+        top: 14%;
+    }
+
+    .arena-value {
+        font-size: clamp(1.2rem, 4vw, 2.5rem);
+    }
+
+    .arena-time {
+        font-size: clamp(1.8rem, 6vw, 3.5rem);
+    }
+}
+
+
+/* Arena background */
+.shootout-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-image: url("../assets/images/shootout-arena.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-color: #050b18;
+}
+
+/* Live numbers positioned over the scoreboard image */
+.arena-scoreboard-values {
+    position: absolute;
+    z-index: 5;
+    top: 10.5%;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    pointer-events: none;
+    color: #fff;
+    font-family: "Arial Narrow", Impact, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.35),
+        0 3px 5px rgba(0, 0, 0, 0.9);
+}
+
+.arena-value {
+    min-width: 0;
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.arena-time {
+    font-size: clamp(3rem, 6vw, 6rem);
+    transform: translateY(2px);
+}
+
+.arena-time [data-time] {
+    display: inline-block;
+}
+
+.arena-time.timer-warning {
+    color: #ffd166;
+}
+
+.arena-time.timer-danger {
+    color: #ff4545;
+    animation: timer-pulse 0.5s infinite alternate;
+}
+
+@keyframes timer-pulse {
+    from { opacity: 1; }
+    to { opacity: 0.65; }
+}
+
+/* Keep the hoop and ball animation above the background */
+.shootout-hoop,
+.shootout-ball {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 700px) {
+    .arena-scoreboard-values {
+        top: 14%;
+    }
+
+    .arena-value {
+        font-size: clamp(1.2rem, 4vw, 2.5rem);
+    }
+
+    .arena-time {
+        font-size: clamp(1.8rem, 6vw, 3.5rem);
+    }
+}
+
+/* Bring SCORE inward, toward the center */
+.arena-score {
+    transform: translate(100px, -4px);
+}
+
+/* Keep TIME centered and slightly higher */
+.arena-time {
+    font-size: clamp(3rem, 6vw, 6rem);
+    transform: translateY(-4px);
+}
+
+/* Bring BEST inward, toward the center */
+.arena-best {
+    transform: translate(-100px, -4px);
+}
+
+
+/* Center the temporary hoop animation on the arena */
+.shootout-hoop {
+    position: absolute;
+    left: 50%;
+    top: -265%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* Keep the shot animation centered relative to the hoop */
+.shootout-ball {
+    z-index: 3;
+}
+
+
+/* Score flash */
+.arena-score {
+    transform: translate(100px, -4px);
+}
+.arena-score.score-flash {
+    animation: scoreboard-score-flash 0.35s ease-out;
+}
+
+@keyframes scoreboard-score-flash {
+    0% {
+        color: #ff8c00;
+        transform: translate(100px, -4px) scale(1.3);
+        text-shadow: 0 0 24px #ff8c00;
+    }
+
+    60% {
+        color: #fff2bf;
+        text-shadow: 0 0 16px #ff8c00;
+    }
+
+    100% {
+        color: #fff;
+        transform: translate(100px, -4px) scale(1);
+        text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
+    }
 }

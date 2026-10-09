@@ -35,10 +35,6 @@ export class ThirtySecondShootout {
 
               <h2>30 SECOND SHOOTOUT</h2>
 
-              <div class="shootout-message">
-                  Ready?
-              </div>
-
               <button class="shootout-button" data-action="start">
                   START SHOOTOUT
               </button>
@@ -145,62 +141,25 @@ export class ThirtySecondShootout {
 
       this.container.innerHTML = `
           <div class="shootout-screen">
-
-              <h4>30 SECOND SHOOTOUT</h4>
-
-              <div class="shootout-scoreboard">
-
-                <div class="scoreboard-panel scoreboard-time">
-
-                    <span class="scoreboard-label">
-                        TIME
-                    </span>
-
-                    <span
-                        class="scoreboard-value"
-                        data-time
-                    >
-                        30
-                    </span>
-
-                </div>
-
-              <div class="scoreboard-panel scoreboard-score">
-
-                  <span class="scoreboard-label">
-                      SCORE
-                  </span>
-
-                  <span
-                      class="scoreboard-value"
-                      data-score
-                  >
-                      0
-                  </span>
-
+                       
+            <div class="arena-scoreboard-values" aria-label="Live scoreboard">
+              <div class="arena-value arena-score">
+                  <span data-score>0</span>
               </div>
 
-              <div class="scoreboard-panel scoreboard-best">
-
-                  <span class="scoreboard-label">
-                      BEST
-                  </span>
-
-                  <span
-                      class="scoreboard-value"
-                      data-best-score
-                  >
-                      ${this.bestScore}
-                  </span>
-
+              <div class="arena-value arena-time">
+                  <span data-time>30</span>
               </div>
 
+              <div class="arena-value arena-best">
+                  <span data-best-score>${this.bestScore}</span>
+              </div>
             </div>
+          </div>
 
-            <div class="scoreboard-instruction">
-                PRESS <strong>1</strong> TO SHOOT
-            </div>
-                      </div>
+          <div class="scoreboard-instruction">
+              PRESS <strong>1</strong> TO SHOOT
+          </div>
 
               <div class="shootout-hoop-area">
 
@@ -270,91 +229,67 @@ export class ThirtySecondShootout {
       this.score++;
 
       this.updateDisplay();
-
+      this.flashScore();
       this.animateShot();
   }
 
+  
   animateShot() {
+    const hoop = this.container.querySelector(".shootout-hoop");
+    const hoopArea = this.container.querySelector(".shootout-hoop-area");
 
-    const hoop =
-        this.container.querySelector(
-            ".shootout-hoop"
-        );
+    if (!hoop || !hoopArea) return;
 
-    const hoopArea =
-        this.container.querySelector(
-            ".shootout-hoop-area"
-        );
-
-    if (!hoop || !hoopArea) {
-
-        return;
-    }
-
-    const ball =
-        document.createElement("div");
-
+    const ball = document.createElement("div");
     ball.classList.add("shootout-ball");
-
     hoopArea.appendChild(ball);
 
+    // Measure the hoop relative to its animation area.
+    const areaRect = hoopArea.getBoundingClientRect();
+    const hoopRect = hoop.getBoundingClientRect();
+
+    const hoopCenterX =
+        hoopRect.left + hoopRect.width / 2 - areaRect.left;
+    const hoopCenterY =
+        hoopRect.top + hoopRect.height / 2 - areaRect.top;
+
+    // Start below the hoop and travel toward the rim.
+    const startY = areaRect.height * 0.95;
+    const rimY = hoopCenterY;
+
     ball.style.position = "absolute";
-
-    ball.style.left = "50%";
-
-    ball.style.top = "100%";
-
-    ball.style.transform =
-        "translate(-50%, -50%)";
-
+    ball.style.left = `${hoopCenterX}px`;
+    ball.style.top = `${startY}px`;
+    ball.style.transform = "translate(-50%, -50%)";
     ball.style.zIndex = "4";
 
     void ball.offsetWidth;
 
-    // Ball travels upward in front of the hoop
-
     ball.style.transition =
         "top 0.55s ease-in, transform 0.55s ease-in";
-
-    ball.style.top = "48%";
-
-    ball.style.transform =
-        "translate(-50%, -50%) scale(0.9)";
-
-        setTimeout(() => {
-
-          // Ball has reached the rim.
-          // Flash the hoop as the shot goes in.
-      
-          hoop.classList.remove("score-flash");
-      
-          void hoop.offsetWidth;
-      
-          hoop.classList.add("score-flash");
-      
-          // Move the ball behind the net.
-      
-          ball.style.zIndex = "1";
-      
-          ball.style.transition =
-              "top 0.4s ease-in";
-      
-          ball.style.top = "70%";
-      
-          setTimeout(() => {
-      
-              hoop.classList.remove("score-flash");
-      
-          }, 350);
-      
-      }, 550);
+    ball.style.top = `${rimY}px`;
+    ball.style.transform = "translate(-50%, -50%) scale(0.9)";
 
     setTimeout(() => {
+        // Flash the hoop as the shot reaches the rim.
+        hoop.classList.remove("score-flash");
+        void hoop.offsetWidth;
+        hoop.classList.add("score-flash");
 
+        // Ball drops behind the net.
+        ball.style.zIndex = "1";
+        ball.style.transition = "top 0.4s ease-in";
+        ball.style.top = `${rimY + 50}px`;
+
+        setTimeout(() => {
+            hoop.classList.remove("score-flash");
+        }, 350);
+    }, 550);
+
+    setTimeout(() => {
         ball.remove();
-
     }, 1000);
-}
+  }
 
   updateDisplay() {
 
@@ -370,51 +305,62 @@ export class ThirtySecondShootout {
       }
   }
 
+
   startTimer() {
+    clearInterval(this.timer);
 
     this.timer = setInterval(() => {
-
         this.timeRemaining--;
 
-        const timeDisplay =
-            this.container.querySelector(
-                "[data-time]"
-            );
+        const timeDisplay = this.container.querySelector("[data-time]");
 
         if (timeDisplay) {
+            timeDisplay.textContent = this.timeRemaining;
+        }
 
-            timeDisplay.textContent =
-                this.timeRemaining;
+        const timePanel = this.container.querySelector(".arena-time");
 
-            timeDisplay.classList.remove(
+        if (timePanel) {
+            timePanel.classList.toggle(
                 "timer-warning",
-                "timer-danger"
+                this.timeRemaining <= 10 && this.timeRemaining > 5
             );
 
-            if (this.timeRemaining <= 5) {
-
-                timeDisplay.classList.add(
-                    "timer-danger"
-                );
-
-            } else if (this.timeRemaining <= 10) {
-
-                timeDisplay.classList.add(
-                    "timer-warning"
-                );
-
-            }
-
+            timePanel.classList.toggle(
+                "timer-danger",
+                this.timeRemaining <= 5
+            );
         }
 
         if (this.timeRemaining <= 0) {
+            this.timeRemaining = 0;
 
+            if (timeDisplay) {
+                timeDisplay.textContent = "0";
+            }
+
+            clearInterval(this.timer);
             this.endGame();
-
         }
-
     }, 1000);
 }
+
+
+  flashScore() {
+    const scorePanel = this.container.querySelector(".arena-score");
+    if (!scorePanel) return;
+
+    scorePanel.classList.remove("score-flash");
+
+    // Force the animation to restart for rapid consecutive shots
+    void scorePanel.offsetWidth;
+
+    scorePanel.classList.add("score-flash");
+
+    setTimeout(() => {
+        scorePanel.classList.remove("score-flash");
+    }, 350);
+  }
 
   endGame() {
 
@@ -450,8 +396,6 @@ export class ThirtySecondShootout {
 
       this.container.innerHTML = `
           <div class="shootout-screen">
-
-              <h2>TIME!</h2>
 
               <div class="shootout-message">
                   FINAL SCORE
