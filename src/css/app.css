@@ -623,10 +623,24 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
    30 SECOND SHOOTOUT
    ========================================= */
 
-   .shootout-screen {
+/* Main screen and arena background */
+.shootout-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 700px;
+    max-width: none;
+    margin: 0;
+    padding: 35px 30px 40px;
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto;
+    background-color: #050b18;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+        url("../assets/images/shootout-arena.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
 }
 
 .shootout-screen h2 {
@@ -634,6 +648,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     margin-bottom: 30px;
 }
 
+/* Legacy stats styles, retained for any start/end screens that use them */
 .shootout-stats {
     display: flex;
     justify-content: center;
@@ -651,7 +666,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     font-size: 16px;
     font-weight: bold;
     letter-spacing: 2px;
-    color: #aaa;
+    color: rgb(241, 102, 9);
     margin-bottom: 8px;
 }
 
@@ -660,320 +675,203 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     font-weight: bold;
 }
 
-.scoreboard-value[data-time] {
-    transition:
-        color 0.2s,
-        transform 0.2s,
-        text-shadow 0.2s;
+/* Arena image scoreboard: live values overlay the blank panels */
+.arena-scoreboard-values {
+    position: absolute;
+    z-index: 5;
+    top: 10.5%;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    pointer-events: none;
+    color: #fff;
+    font-family: "Arial Narrow", Impact, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.35),
+        0 3px 5px rgba(0, 0, 0, 0.9);
 }
 
-.scoreboard-value[data-time].timer-warning {
-    color: #e87523;
-    animation: timerWarning 0.8s ease-in-out infinite;
+.arena-value {
+    min-width: 0;
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
 }
 
-.scoreboard-value[data-time].timer-danger {
-    color: #ff4d4d;
-    animation: timerDanger 0.5s ease-in-out infinite;
+.arena-score {
+    transform: translate(100px, -4px);
 }
 
-@keyframes timerWarning {
-    0%,
+.arena-time {
+    font-size: clamp(3rem, 6vw, 6rem);
+    transform: translateY(-4px);
+}
+
+.arena-best {
+    transform: translate(-100px, -4px);
+}
+
+/* Timer urgency classes are applied to the TIME panel by JavaScript */
+.arena-time.timer-warning {
+    color: #ffd166;
+}
+
+.arena-time.timer-danger {
+    color: #ff4545;
+    animation: timer-pulse 0.5s infinite alternate;
+}
+
+@keyframes timer-pulse {
+    from { opacity: 1; }
+    to { opacity: 0.65; }
+}
+
+/* Score flash retains the score's normal offset throughout the animation */
+.arena-score.score-flash {
+    animation: scoreboard-score-flash 0.35s ease-out;
+}
+
+@keyframes scoreboard-score-flash {
+    0% {
+        color: #ff8c00;
+        transform: translate(100px, -4px) scale(1.3);
+        text-shadow: 0 0 24px #ff8c00;
+    }
+
+    60% {
+        color: #fff2bf;
+        transform: translate(100px, -4px) scale(1.1);
+        text-shadow: 0 0 16px #ff8c00;
+    }
+
     100% {
-        transform: scale(1);
-        text-shadow: none;
-    }
-
-    50% {
-        transform: scale(1.08);
-        text-shadow:
-            0 0 8px rgba(232, 117, 35, 0.6);
+        color: #fff;
+        transform: translate(100px, -4px) scale(1);
+        text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
     }
 }
 
-@keyframes timerDanger {
-    0%,
-    100% {
-        transform: scale(1);
-        text-shadow:
-            0 0 0 rgba(255, 77, 77, 0);
-    }
-
-    50% {
-        transform: scale(1.15);
-        text-shadow:
-            0 0 10px rgba(255, 77, 77, 0.8),
-            0 0 25px rgba(255, 77, 77, 0.5);
-    }
-}
-
+/* Temporary digital hoop area and hoop */
 .shootout-hoop-area {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 180px;
     margin-bottom: 30px;
-
-    position: relative;
 }
 
 .shootout-hoop {
+    position: absolute;
+    left: 50%;
+    top: 145%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: block;
     width: 220px;
     height: 190px;
-
     border: none;
     padding: 0;
-
     background: transparent;
-
     cursor: pointer;
-
-    position: relative;
-
-    display: block;
 }
 
 .shootout-backboard {
     position: absolute;
-
     top: 0;
     left: 50%;
-
     width: 150px;
     height: 95px;
-
     transform: translateX(-50%);
-
     border: 5px solid white;
     border-radius: 4px;
-
     background: rgba(255, 255, 255, 0.04);
 }
 
 .shootout-backboard::after {
     content: "";
-
     position: absolute;
-
     left: 50%;
     bottom: -2px;
-
     width: 70px;
     height: 45px;
-
     transform: translateX(-50%);
-
     border: 4px solid white;
     border-bottom: none;
 }
 
 .shootout-rim {
     position: absolute;
-
     left: 50%;
     top: 88px;
-
     width: 105px;
     height: 32px;
-
     transform: translateX(-50%);
-
     border: 7px solid #e87523;
     border-radius: 50%;
-
     background: transparent;
-
     z-index: 2;
 }
 
 .shootout-net {
     position: absolute;
-
     left: 8px;
     right: 8px;
-
     top: 18px;
     height: 78px;
-
     z-index: 3;
-
     overflow: hidden;
-
     border-left: 2px solid rgba(255, 255, 255, 0.45);
     border-right: 2px solid rgba(255, 255, 255, 0.45);
-
-    background:
-        repeating-linear-gradient(
-            90deg,
-            transparent 0,
-            transparent 9px,
-            rgba(255, 255, 255, 0.55) 10px,
-            rgba(255, 255, 255, 0.55) 11px,
-            transparent 12px
-        );
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 9px,
+        rgba(255, 255, 255, 0.55) 10px,
+        rgba(255, 255, 255, 0.55) 11px,
+        transparent 12px
+    );
 }
 
 .shootout-net::before {
     content: "";
-
     position: absolute;
-
     inset: 0;
-
-    background:
-        repeating-linear-gradient(
-            105deg,
-            transparent 0,
-            transparent 11px,
-            rgba(255, 255, 255, 0.42) 12px,
-            rgba(255, 255, 255, 0.42) 13px,
-            transparent 14px
-        );
-
-    transform:
-        perspective(80px)
-        rotateX(-12deg);
-
+    background: repeating-linear-gradient(
+        105deg,
+        transparent 0,
+        transparent 11px,
+        rgba(255, 255, 255, 0.42) 12px,
+        rgba(255, 255, 255, 0.42) 13px,
+        transparent 14px
+    );
+    transform: perspective(80px) rotateX(-12deg);
     opacity: 0.9;
 }
 
 .shootout-net::after {
     content: "";
-
     position: absolute;
-
     left: 50%;
     bottom: 0;
-
     width: 52px;
     height: 12px;
-
     transform: translateX(-50%);
-
     border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-
     border-radius: 50%;
 }
 
 .shootout-hoop:hover .shootout-rim {
-    transform:
-        translateX(-50%)
-        scale(1.06);
+    transform: translateX(-50%) scale(1.06);
 }
 
 .shootout-hoop:focus-visible {
     outline: 3px solid white;
     outline-offset: 6px;
-}
-
-.shootout-instruction {
-    font-size: 22px;
-    color: #aaa;
-    margin-top: 20px;
-}
-
-.shootout-instruction strong {
-    color: white;
-    font-size: 28px;
-}
-
-.shootout-countdown {
-    font-size: 100px;
-    font-weight: bold;
-    margin: 40px 0;
-}
-
-.shootout-message {
-    font-size: 48px;
-    font-weight: bold;
-    margin: 30px 0;
-}
-
-.shootout-score {
-    font-size: 72px;
-    font-weight: bold;
-    margin: 20px 0 35px;
-}
-
-.shootout-button {
-    padding: 15px 26px;
-
-    border: 2px solid #e87523;
-    border-radius: 12px;
-
-    background: #e87523;
-    color: white;
-
-    font-size: 20px;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.15s,
-        background 0.15s,
-        border-color 0.15s;
-}
-
-.shootout-button:hover {
-    transform: translateY(-2px);
-    background: #f58a36;
-    border-color: #f58a36;
-}
-
-.shootout-button:active {
-    transform: translateY(0);
-}
-
-.shootout-button:focus-visible {
-    outline: 3px solid white;
-    outline-offset: 4px;
-}
-
-.shootout-ball {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-
-    border-radius: 50%;
-
-    background: #e87523;
-
-    border: 3px solid #ffb06d;
-
-    box-shadow:
-        inset 0 5px 10px rgba(0, 0, 0, 0.35),
-        0 5px 10px rgba(0, 0, 0, 0.35);
-
-    z-index: 4;
-}
-
-@media (max-width: 700px) {
-
-    .shootout-screen h2 {
-        font-size: 32px;
-    }
-
-    .shootout-stats {
-        gap: 25px;
-    }
-
-    .shootout-stat-value {
-        font-size: 46px;
-    }
-
-    .shootout-countdown {
-        font-size: 76px;
-    }
-
-    .shootout-message {
-        font-size: 38px;
-    }
-
-    .shootout-score {
-        font-size: 58px;
-    }
-
 }
 
 .shootout-hoop.score-flash .shootout-rim {
@@ -1010,6 +908,82 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     }
 }
 
+/* Ball appearance. Its flight coordinates are set by animateShot() in JS. */
+.shootout-ball {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    margin: 0;
+    border-radius: 50%;
+    background: #e87523;
+    border: 3px solid #ffb06d;
+    box-shadow:
+        inset 0 5px 10px rgba(0, 0, 0, 0.35),
+        0 5px 10px rgba(0, 0, 0, 0.35);
+    z-index: 4;
+    pointer-events: none;
+}
+
+/* Instructions and start/end screen typography */
+.shootout-instruction {
+    font-size: 22px;
+    color: #aaa;
+    margin-top: 20px;
+}
+
+.shootout-instruction strong {
+    color: white;
+    font-size: 28px;
+}
+
+.shootout-countdown {
+    font-size: 100px;
+    font-weight: bold;
+    margin: 40px 0;
+}
+
+.shootout-message {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 30px 0;
+}
+
+.shootout-score {
+    font-size: 72px;
+    font-weight: bold;
+    margin: 20px 0 35px;
+}
+
+.shootout-button {
+    padding: 15px 26px;
+    border: 2px solid #e87523;
+    border-radius: 12px;
+    background: #e87523;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+}
+
+.shootout-button:hover {
+    transform: translateY(-2px);
+    background: #f58a36;
+    border-color: #f58a36;
+}
+
+.shootout-button:active {
+    transform: translateY(0);
+}
+
+.shootout-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+
 .shootout-best {
     font-size: 24px;
     font-weight: bold;
@@ -1026,8 +1000,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 @keyframes newRecordPulse {
-    0%,
-    100% {
+    0%, 100% {
         transform: scale(1);
         text-shadow: none;
     }
@@ -1040,459 +1013,26 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     }
 }
 
-/* ========================================
-   SHOOTOUT SCOREBOARD
-   ======================================== */
-
-   
-/* ========================================
-   ARCADE BASKETBALL SCOREBOARD
-   ======================================== */
-
-.shootout-scoreboard {
-    width: min(900px, 95%);
-    margin: 0 auto 18px;
-    padding: 8px;
-
-    display: grid;
-    grid-template-columns: 1fr 1.25fr 1fr;
-
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            145deg,
-            #30343b 0%,
-            #10141b 35%,
-            #05070b 75%,
-            #292d34 100%
-        );
-
-    clip-path: polygon(
-        18px 0,
-        calc(100% - 18px) 0,
-        100% 18px,
-        100% calc(100% - 18px),
-        calc(100% - 18px) 100%,
-        18px 100%,
-        0 calc(100% - 18px),
-        0 18px
-    );
-
-    border: none;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.8),
-        0 0 24px rgba(232, 117, 35, 0.2);
-}
-
-/* Orange illuminated frame */
-
-.shootout-scoreboard::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    padding: 3px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ffbd75,
-            #e87523 30%,
-            #74330f 65%,
-            #ff8b35
-        );
-
-    clip-path: polygon(
-        18px 0,
-        calc(100% - 18px) 0,
-        100% 18px,
-        100% calc(100% - 18px),
-        calc(100% - 18px) 100%,
-        18px 100%,
-        0 calc(100% - 18px),
-        0 18px
-    );
-}
-
-/* Honeycomb metallic texture */
-
-.shootout-scoreboard::after {
-    content: "";
-    position: absolute;
-    inset: 4px;
-    z-index: -1;
-    pointer-events: none;
-
-    background-color: #11151c;
-
-    background-image:
-        radial-gradient(
-            circle at 50% 50%,
-            transparent 55%,
-            rgba(255, 255, 255, 0.045) 57%,
-            transparent 65%
-        ),
-        linear-gradient(
-            30deg,
-            transparent 48%,
-            rgba(255, 255, 255, 0.035) 49%,
-            rgba(255, 255, 255, 0.035) 51%,
-            transparent 52%
-        );
-
-    background-size: 22px 38px, 22px 38px;
-    opacity: 0.9;
-}
-
-.scoreboard-panel {
-    min-height: 118px;
-    padding: 12px 6px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    position: relative;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.045),
-            rgba(0, 0, 0, 0.16)
-        );
-}
-
-/* Orange separators */
-
-.scoreboard-panel + .scoreboard-panel {
-    border-left: 2px solid rgba(232, 117, 35, 0.85);
-    box-shadow: -1px 0 rgba(0, 0, 0, 0.8);
-}
-
-/* Centre score panel */
-
-.scoreboard-score {
-    background:
-        linear-gradient(
-            180deg,
-            rgba(232, 117, 35, 0.1),
-            rgba(0, 0, 0, 0.18)
-        );
-}
-
-.scoreboard-label {
-    margin-bottom: 8px;
-
-    color: #d5d9df;
-
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-
-    text-shadow: 0 2px 3px #000;
-}
-
-.scoreboard-value {
-    color: #fff;
-
-    font-family: "Arial", sans-serif;
-    font-size: clamp(46px, 6vw, 72px);
-    font-weight: 900;
-    line-height: 0.95;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 2px;
-
-    text-shadow:
-        0 3px 0 #333,
-        0 0 10px rgba(255, 255, 255, 0.15);
-}
-
-/* Orange timer */
-
-.scoreboard-time .scoreboard-value {
-    color: #ff9a42;
-
-    text-shadow:
-        0 2px 0 #6f310d,
-        0 0 12px rgba(255, 126, 35, 0.35);
-}
-
-/* Best score */
-
-.scoreboard-best .scoreboard-value {
-    color: #f1f1f1;
-}
-
-/* Timer urgency */
-
-.scoreboard-value[data-time] {
-    transition: color 0.2s, text-shadow 0.2s;
-}
-
-.scoreboard-value[data-time].timer-warning {
-    color: #ff8a24;
-    animation: timerWarning 0.8s ease-in-out infinite;
-}
-
-.scoreboard-value[data-time].timer-danger {
-    color: #ff4141;
-    animation: timerDanger 0.5s ease-in-out infinite;
-}
-
-/* Press 1 to shoot panel */
-
-.scoreboard-instruction {
-    width: fit-content;
-    min-width: 280px;
-
-    margin: 0 auto 30px;
-    padding: 12px 28px;
-
-    color: #f5f5f5;
-    background:
-        linear-gradient(
-            110deg,
-            #171b22,
-            #080a0e 50%,
-            #20242b
-        );
-
-    border: 2px solid #e87523;
-    border-radius: 4px;
-
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-align: center;
-
-    box-shadow:
-        0 5px 18px rgba(0, 0, 0, 0.55),
-        0 0 14px rgba(232, 117, 35, 0.22);
-}
-
-.scoreboard-instruction strong {
-    color: #ff9a42;
-    font-size: 26px;
-    text-shadow: 0 0 12px rgba(232, 117, 35, 0.6);
-}
-
-/* Smaller screens */
-
+/* Responsive shootout layout */
 @media (max-width: 700px) {
-    .shootout-scoreboard {
-        width: 100%;
-        padding: 5px;
+    .shootout-screen {
+        min-height: 620px;
+        padding: 25px 12px 30px;
+        background-size: auto 100%;
     }
 
-    .scoreboard-panel {
-        min-height: 90px;
+    .shootout-screen h2 {
+        font-size: 32px;
     }
 
-    .scoreboard-label {
-        font-size: 13px;
-        letter-spacing: 2px;
+    .shootout-stats {
+        gap: 25px;
     }
 
-    .scoreboard-value {
-        font-size: clamp(36px, 8vw, 50px);
+    .shootout-stat-value {
+        font-size: 46px;
     }
 
-    .scoreboard-instruction {
-        min-width: 0;
-        font-size: 15px;
-        padding: 10px 18px;
-    }
-}
-
-/* ========================================
-   30 SECOND SHOOTOUT ARENA BACKGROUND
-   ======================================== */
-
-   .shootout-screen {
-    position: relative;
-    min-height: 700px;
-    max-width: none;
-    margin: 0;
-    padding: 35px 30px 40px;
-
-    background-image:
-        linear-gradient(
-            rgba(0, 0, 0, 0.08),
-            rgba(0, 0, 0, 0.08)
-        ),
-        url("../assets/images/shootout-arena.png");
-
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-
-/* Revised arcade scoreboard proportions */
-
-.shootout-scoreboard {
-    width: min(1000px, 96%);
-    grid-template-columns: 1fr 1.35fr 1fr;
-    align-items: stretch;
-    padding: 8px;
-}
-
-/* Outer panels */
-.scoreboard-panel {
-    min-height: 118px;
-    align-self: center;
-}
-
-/* Make the centre TIME panel larger */
-.scoreboard-time {
-    min-height: 145px;
-    margin: -5px 0;
-    z-index: 1;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(232, 117, 35, 0.18),
-            rgba(10, 12, 17, 0.96) 45%,
-            rgba(232, 117, 35, 0.08)
-        );
-
-    border-top: 2px solid #ff9a42;
-    border-bottom: 2px solid #ff9a42;
-
-    box-shadow:
-        0 0 18px rgba(232, 117, 35, 0.22),
-        inset 0 0 16px rgba(232, 117, 35, 0.08);
-}
-
-/* Larger timer digits */
-.scoreboard-time .scoreboard-value {
-    font-size: clamp(64px, 7.5vw, 88px);
-    color: #ff9a42;
-}
-
-/* Score and best remain slightly smaller */
-.scoreboard-score .scoreboard-value,
-.scoreboard-best .scoreboard-value {
-    font-size: clamp(44px, 5.5vw, 64px);
-}
-
-/* Emphasise the centre TIME label */
-.scoreboard-time .scoreboard-label {
-    font-size: 21px;
-    letter-spacing: 5px;
-}
-
-/* Keep the centre section proportional on small screens */
-@media (max-width: 700px) {
-    .shootout-scoreboard {
-        grid-template-columns: 1fr 1.2fr 1fr;
-        padding: 5px;
-    }
-
-    .scoreboard-panel {
-        min-height: 88px;
-    }
-
-    .scoreboard-time {
-        min-height: 108px;
-    }
-
-    .scoreboard-time .scoreboard-value {
-        font-size: clamp(48px, 9vw, 62px);
-    }
-
-    .scoreboard-score .scoreboard-value,
-    .scoreboard-best .scoreboard-value {
-        font-size: clamp(34px, 6.5vw, 46px);
-    }
-
-    .scoreboard-time .scoreboard-label {
-        font-size: 15px;
-        letter-spacing: 3px;
-    }
-}
-
-
-/* Arena background */
-.shootout-screen {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    background-image: url("../assets/images/shootout-arena.png");
-    background-size: 100% auto;
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-color: #050b18;
-}
-
-/* Live numbers positioned over the scoreboard image */
-.arena-scoreboard-values {
-    position: absolute;
-    z-index: 5;
-    top: 10.5%;
-    left: 0;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    align-items: center;
-    pointer-events: none;
-    color: #fff;
-    font-family: "Arial Narrow", Impact, sans-serif;
-    font-weight: 900;
-    text-align: center;
-    text-shadow:
-        0 0 8px rgba(255, 255, 255, 0.35),
-        0 3px 5px rgba(0, 0, 0, 0.9);
-}
-
-.arena-value {
-    min-width: 0;
-    font-size: clamp(2rem, 4vw, 4.5rem);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-}
-
-.arena-time {
-    font-size: clamp(3rem, 6vw, 6rem);
-    transform: translateY(2px);
-}
-
-.arena-time [data-time] {
-    display: inline-block;
-}
-
-.arena-time.timer-warning {
-    color: #ffd166;
-}
-
-.arena-time.timer-danger {
-    color: #ff4545;
-    animation: timer-pulse 0.5s infinite alternate;
-}
-
-@keyframes timer-pulse {
-    from { opacity: 1; }
-    to { opacity: 0.65; }
-}
-
-/* Keep the hoop and ball animation above the background */
-.shootout-hoop,
-.shootout-ball {
-    position: relative;
-    z-index: 2;
-}
-
-@media (max-width: 700px) {
     .arena-scoreboard-values {
         top: 14%;
     }
@@ -1501,150 +1041,51 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
         font-size: clamp(1.2rem, 4vw, 2.5rem);
     }
 
-    .arena-time {
-        font-size: clamp(1.8rem, 6vw, 3.5rem);
-    }
-}
-
-
-/* Arena background */
-.shootout-screen {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    background-image: url("../assets/images/shootout-arena.png");
-    background-size: 100% auto;
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-color: #050b18;
-}
-
-/* Live numbers positioned over the scoreboard image */
-.arena-scoreboard-values {
-    position: absolute;
-    z-index: 5;
-    top: 10.5%;
-    left: 0;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    align-items: center;
-    pointer-events: none;
-    color: #fff;
-    font-family: "Arial Narrow", Impact, sans-serif;
-    font-weight: 900;
-    text-align: center;
-    text-shadow:
-        0 0 8px rgba(255, 255, 255, 0.35),
-        0 3px 5px rgba(0, 0, 0, 0.9);
-}
-
-.arena-value {
-    min-width: 0;
-    font-size: clamp(2rem, 4vw, 4.5rem);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-}
-
-.arena-time {
-    font-size: clamp(3rem, 6vw, 6rem);
-    transform: translateY(2px);
-}
-
-.arena-time [data-time] {
-    display: inline-block;
-}
-
-.arena-time.timer-warning {
-    color: #ffd166;
-}
-
-.arena-time.timer-danger {
-    color: #ff4545;
-    animation: timer-pulse 0.5s infinite alternate;
-}
-
-@keyframes timer-pulse {
-    from { opacity: 1; }
-    to { opacity: 0.65; }
-}
-
-/* Keep the hoop and ball animation above the background */
-.shootout-hoop,
-.shootout-ball {
-    position: relative;
-    z-index: 2;
-}
-
-@media (max-width: 700px) {
-    .arena-scoreboard-values {
-        top: 14%;
-    }
-
-    .arena-value {
-        font-size: clamp(1.2rem, 4vw, 2.5rem);
+    .arena-score {
+        transform: translate(35px, -4px);
     }
 
     .arena-time {
         font-size: clamp(1.8rem, 6vw, 3.5rem);
     }
-}
 
-/* Bring SCORE inward, toward the center */
-.arena-score {
-    transform: translate(100px, -4px);
-}
-
-/* Keep TIME centered and slightly higher */
-.arena-time {
-    font-size: clamp(3rem, 6vw, 6rem);
-    transform: translateY(-4px);
-}
-
-/* Bring BEST inward, toward the center */
-.arena-best {
-    transform: translate(-100px, -4px);
-}
-
-
-/* Center the temporary hoop animation on the arena */
-.shootout-hoop {
-    position: absolute;
-    left: 50%;
-    top: -265%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-}
-
-/* Keep the shot animation centered relative to the hoop */
-.shootout-ball {
-    z-index: 3;
-}
-
-
-/* Score flash */
-.arena-score {
-    transform: translate(100px, -4px);
-}
-.arena-score.score-flash {
-    animation: scoreboard-score-flash 0.35s ease-out;
-}
-
-@keyframes scoreboard-score-flash {
-    0% {
-        color: #ff8c00;
-        transform: translate(100px, -4px) scale(1.3);
-        text-shadow: 0 0 24px #ff8c00;
+    .arena-best {
+        transform: translate(-35px, -4px);
     }
 
-    60% {
-        color: #fff2bf;
-        text-shadow: 0 0 16px #ff8c00;
+    .arena-score.score-flash {
+        animation-name: scoreboard-score-flash-mobile;
     }
 
-    100% {
-        color: #fff;
-        transform: translate(100px, -4px) scale(1);
-        text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
+    @keyframes scoreboard-score-flash-mobile {
+        0% {
+            color: #ff8c00;
+            transform: translate(35px, -4px) scale(1.3);
+            text-shadow: 0 0 24px #ff8c00;
+        }
+
+        60% {
+            color: #fff2bf;
+            transform: translate(35px, -4px) scale(1.1);
+            text-shadow: 0 0 16px #ff8c00;
+        }
+
+        100% {
+            color: #fff;
+            transform: translate(35px, -4px) scale(1);
+            text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
+        }
+    }
+
+    .shootout-countdown {
+        font-size: 76px;
+    }
+
+    .shootout-message {
+        font-size: 38px;
+    }
+
+    .shootout-score {
+        font-size: 58px;
     }
 }

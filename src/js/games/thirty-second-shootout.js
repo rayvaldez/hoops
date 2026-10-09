@@ -155,11 +155,6 @@ export class ThirtySecondShootout {
                   <span data-best-score>${this.bestScore}</span>
               </div>
             </div>
-          </div>
-
-          <div class="scoreboard-instruction">
-              PRESS <strong>1</strong> TO SHOOT
-          </div>
 
               <div class="shootout-hoop-area">
 
@@ -179,13 +174,7 @@ export class ThirtySecondShootout {
 
               </div>
 
-              <div class="shootout-instruction">
-
-                  Press
-                  <strong>1</strong>
-                  to shoot
-
-              </div>
+            </div>
 
           </div>
       `;
