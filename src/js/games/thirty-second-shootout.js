@@ -351,6 +351,19 @@ export class ThirtySecondShootout {
     }, 350);
   }
 
+
+  flashTimer() {
+    const timer = this.container.querySelector(".arena-time");
+    if (!timer) return;
+
+    timer.classList.remove("timer-flash");
+
+    // Restart the flash animation
+    void timer.offsetWidth;
+
+    timer.classList.add("timer-flash");
+  }
+
   endGame() {
 
     this.gameOver = true;
@@ -384,7 +397,7 @@ export class ThirtySecondShootout {
   renderGameOver(newHighScore = false) {
 
       this.container.innerHTML = `
-          <div class="shootout-screen">
+          <div class="shootout-screen shootout-game-over">
 
               <div class="shootout-message">
                   FINAL SCORE

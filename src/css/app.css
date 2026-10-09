@@ -8,6 +8,13 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #111;
     color: white;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+        url("../assets/images/shootout-arena.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
 }
 
 [hidden] {
@@ -646,6 +653,11 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 .shootout-screen h2 {
     font-size: 42px;
     margin-bottom: 30px;
+    padding-top: 220px;
+}
+
+.shootout-game-over {
+    padding-top: 180px;
 }
 
 /* Legacy stats styles, retained for any start/end screens that use them */
@@ -715,19 +727,60 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     transform: translate(-100px, -4px);
 }
 
-/* Timer urgency classes are applied to the TIME panel by JavaScript */
+
+/* Timer flash when the countdown changes */
+.arena-time.timer-flash {
+    animation: timer-number-flash 0.35s ease-out;
+    transform-origin: center;
+}
+
+/* Warning: timer gradually grows */
 .arena-time.timer-warning {
-    color: #ffd166;
+    color: #ffd54a;
+    animation: timer-warning-pulse 1s ease-in-out infinite;
+    transform-origin: center;
 }
 
+/* Danger: larger, faster, more urgent */
 .arena-time.timer-danger {
-    color: #ff4545;
-    animation: timer-pulse 0.5s infinite alternate;
+    color: #ff3b30;
+    animation: timer-danger-pulse 0.45s ease-in-out infinite;
+    transform-origin: center;
 }
 
-@keyframes timer-pulse {
-    from { opacity: 1; }
-    to { opacity: 0.65; }
+@keyframes timer-number-flash {
+    0% {
+        transform: translateY(-4px) scale(1);
+        filter: brightness(1);
+    }
+    45% {
+        transform: translateY(-4px) scale(1.22);
+        filter: brightness(1.8);
+    }
+    100% {
+        transform: translateY(-4px) scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes timer-warning-pulse {
+    0%, 100% {
+        transform: translateY(-4px) scale(1.04);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.12);
+    }
+}
+
+@keyframes timer-danger-pulse {
+    0%, 100% {
+        transform: translateY(-4px) scale(1.12);
+        filter: brightness(1);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.25);
+        filter: brightness(1.5);
+    }
 }
 
 /* Score flash retains the score's normal offset throughout the animation */
