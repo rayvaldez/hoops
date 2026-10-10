@@ -8,13 +8,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #111;
     color: white;
-    background-image:
-        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
-        url("../assets/images/shootout-arena.png");
-    background-size: 100% auto;
-    background-position: top center;
-    background-repeat: no-repeat;
-    border-radius: 12px;
 }
 
 [hidden] {
@@ -1140,5 +1133,218 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 
     .shootout-score {
         font-size: 58px;
+    }
+}
+
+
+/* CONNECT 3 HOOPS */
+.connect3-screen {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    text-align: center;
+    color: #fff;
+}
+
+.connect3-title {
+    margin: 0 0 20px;
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: 900;
+}
+
+.connect3-status {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.connect3-player {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: #202b3a;
+    font-weight: 800;
+}
+
+.connect3-player small {
+    display: block;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+.connect3-player.player-one.active {
+    border-color: #3986ff;
+}
+
+.connect3-player.player-two.active {
+    border-color: #ff7a35;
+}
+
+.connect3-instruction {
+    min-height: 24px;
+    font-weight: 800;
+}
+
+.connect3-board {
+    width: min(100%, 430px);
+    margin: 0 auto 20px;
+    padding: 8px;
+    border-radius: 14px;
+    background: #164d83;
+}
+
+.connect3-column-markers,
+.connect3-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.connect3-column-markers {
+    margin-bottom: 6px;
+}
+
+.connect3-marker {
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.connect3-marker.selected {
+    color: #ffdf4d;
+    transform: scale(1.2);
+}
+
+.connect3-cell {
+    aspect-ratio: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #e8eef5;
+}
+
+.connect3-token {
+    width: 86%;
+    height: 86%;
+    border-radius: 50%;
+    box-shadow: inset 0 -4px 0 rgb(0 0 0 / 18%);
+}
+
+.connect3-token.player-1 {
+    background: #3986ff;
+}
+
+.connect3-token.player-2 {
+    background: #ff7a35;
+}
+
+.connect3-token.falling {
+    animation: connect3-token-drop 0.45s ease-in;
+}
+
+@keyframes connect3-token-drop {
+    0% {
+        transform: translateY(-260px);
+    }
+    70% {
+        transform: translateY(8px);
+    }
+    85% {
+        transform: translateY(-4px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.connect3-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.connect3-button,
+.connect3-test-button {
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: #26364b;
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.connect3-shoot {
+    background: #f3a51b;
+    color: #171717;
+}
+
+.connect3-button:disabled,
+.connect3-test-button:disabled,
+.connect3-marker:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.connect3-test-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+    font-size: 0.8rem;
+}
+
+.connect3-test-button {
+    padding: 8px 10px;
+    background: #46556a;
+}
+
+.connect3-result {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+.connect3-result:empty {
+    display: none;
+}
+
+.connect3-result h2 {
+    margin-bottom: 14px;
+}
+
+@media (max-width: 480px) {
+    .connect3-screen {
+        padding: 16px 8px;
+    }
+
+    .connect3-board {
+        padding: 6px;
+    }
+
+    .connect3-column-markers,
+    .connect3-grid {
+        gap: 4px;
+    }
+
+    .connect3-controls {
+        gap: 6px;
+    }
+
+    .connect3-button {
+        padding: 10px;
+        font-size: 0.85rem;
     }
 }

@@ -1,3 +1,4 @@
+import { Connect3Hoops } from "./games/connect3hoops.js";
 import { Connect4Hoops } from "./games/connect4hoops.js";
 import { ThirtySecondShootout } from "./games/thirty-second-shootout.js";
 
@@ -11,8 +12,8 @@ const backToMenu = document.querySelector("#back-to-menu");
 
 const games = {
 
+    connect3hoops: Connect3Hoops,
     connect4hoops: Connect4Hoops,
-
     "thirty-second-shootout": ThirtySecondShootout
 
 };
