@@ -1348,3 +1348,43 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
         font-size: 0.85rem;
     }
 }
+
+
+.connect3-board {
+    position: relative;
+}
+
+.connect3-shot-ball {
+    position: absolute;
+    z-index: 10;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, transparent 46%, #382013 47%, #382013 53%, transparent 54%),
+        linear-gradient(0deg, transparent 46%, #382013 47%, #382013 53%, transparent 54%),
+        radial-gradient(circle at 30% 25%, #ffb45e, #f07818 65%, #b94b08);
+    border: 2px solid #71330d;
+    box-sizing: border-box;
+    box-shadow: 0 3px 7px rgb(0 0 0 / 35%);
+}
+
+.connect3-shot-miss {
+    animation: connect3-miss-shot 500ms ease-in forwards;
+}
+
+@keyframes connect3-miss-shot {
+    0% {
+        transform: translate(-50%, -100%) scale(.7);
+        opacity: 1;
+    }
+    60% {
+        transform: translate(-50%, 100px) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, 180px) scale(.8);
+        opacity: 0;
+    }
+}

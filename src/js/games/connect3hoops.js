@@ -129,6 +129,10 @@ export class Connect3Hoops {
   }
 
   bindEvents() {
+      if (this.handleKeyDown) {
+        document.removeEventListener("keydown", this.handleKeyDown);
+      }
+
       this.container.querySelectorAll("[data-column]").forEach(button => {
           button.addEventListener("click", () => {
               if (this.busy || this.gameOver) return;
@@ -152,19 +156,24 @@ export class Connect3Hoops {
       this.container.querySelector('[data-action="miss"]')
           .addEventListener("click", () => this.resolveShot(false));
 
-      this.keyHandler = event => {
-          if (this.busy || this.gameOver) return;
-
+      this.handleKeyDown = (event) => {
+        if (this.gameOver || this.busy) return;
+      
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          event.preventDefault();
+      
+          // Ignore held-key auto-repeat
+          if (event.repeat) return;
+      
           if (event.key === "ArrowLeft") {
-              event.preventDefault();
-              this.move(-1);
-          } else if (event.key === "ArrowRight") {
-              event.preventDefault();
-              this.move(1);
+            this.move(-1);
+          } else {
+            this.move(1);
           }
+        }
       };
 
-      document.addEventListener("keydown", this.keyHandler);
+      document.addEventListener("keydown", this.handleKeyDown);
   }
 
   move(direction) {
@@ -188,92 +197,165 @@ export class Connect3Hoops {
       this.container.querySelector('[data-action="make"]').focus();
   }
 
-  async resolveShot(made) {
-      if (this.busy || this.gameOver) return;
+  
+async resolveShot(made) {
+  if (this.busy || this.gameOver) return;
 
-      this.busy = true;
+  this.busy = true;
 
-      if (!made) {
-          this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
-          this.busy = false;
-          this.render();
+  const status = this.container.querySelector("[data-status]");
 
-          this.container.querySelector("[data-status]").textContent =
-              "MISS! TURN ENDED.";
-
-          return;
-      }
-
-      const row = this.findOpenRow(this.selectedColumn);
-
-      if (row === -1) {
-          this.busy = false;
-          this.render();
-
-          this.container.querySelector("[data-status]").textContent =
-              "COLUMN FULL — SELECT ANOTHER.";
-
-          return;
-      }
-
-      const player = this.currentPlayer;
-
-      this.board[row][this.selectedColumn] = player;
-      this.render();
-
-      const cell = this.container.querySelector(
-          `[data-row="${row}"][data-col="${this.selectedColumn}"]`
+  if (!made) {
+      const board = this.container.querySelector(".connect3-board");
+      const marker = this.container.querySelector(
+          `[data-column="${this.selectedColumn}"]`
       );
 
-      const token = cell?.querySelector(".connect3-token");
+      if (board && marker) {
+          const ball = document.createElement("div");
+          ball.className = "connect3-shot-ball connect3-shot-miss";
+          board.appendChild(ball);
 
-      if (token) {
-          token.classList.add("falling");
-          await new Promise(resolve => setTimeout(resolve, 450));
-          token.classList.remove("falling");
-      }
+          const boardRect = board.getBoundingClientRect();
+          const markerRect = marker.getBoundingClientRect();
 
-      if (this.hasWon(row, this.selectedColumn, player)) {
-          this.gameOver = true;
+          ball.style.left =
+              `${markerRect.left + markerRect.width / 2 - boardRect.left}px`;
 
-          const result = this.container.querySelector("[data-result]");
-          result.innerHTML = `
-              <h2>PLAYER ${player} WINS!</h2>
-              <button class="connect3-button" data-action="restart">
-                  PLAY AGAIN
-              </button>
-          `;
+          ball.style.top = "0px";
 
-          result.querySelector('[data-action="restart"]')
-              .addEventListener("click", () => this.start());
-
-          this.busy = false;
-          this.renderBoardOnly();
-          return;
-      }
-
-      if (this.board.every(row => row.every(cell => cell !== 0))) {
-          this.gameOver = true;
-          this.busy = false;
-          this.render();
-
-          this.container.querySelector("[data-result]").innerHTML = `
-              <h2>IT'S A DRAW!</h2>
-              <button class="connect3-button" data-action="restart">
-                  PLAY AGAIN
-              </button>
-          `;
-
-          this.container.querySelector('[data-action="restart"]')
-              .addEventListener("click", () => this.start());
-
-          return;
+          await new Promise(resolve => setTimeout(resolve, 500));
+          ball.remove();
       }
 
       this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
       this.busy = false;
       this.render();
+
+      this.container.querySelector("[data-status]").textContent =
+          "MISS! TURN ENDED.";
+
+      return;
   }
+
+  const row = this.findOpenRow(this.selectedColumn);
+
+  if (row === -1) {
+      this.busy = false;
+      this.render();
+
+      this.container.querySelector("[data-status]").textContent =
+          "COLUMN FULL — SELECT ANOTHER.";
+
+      return;
+  }
+
+  const board = this.container.querySelector(".connect3-board");
+  const marker = this.container.querySelector(
+      `[data-column="${this.selectedColumn}"]`
+  );
+  const targetCell = this.container.querySelector(
+      `[data-row="${row}"][data-col="${this.selectedColumn}"]`
+  );
+
+  if (!board || !marker || !targetCell) {
+      this.busy = false;
+      return;
+  }
+
+  const boardRect = board.getBoundingClientRect();
+  const markerRect = marker.getBoundingClientRect();
+  const cellRect = targetCell.getBoundingClientRect();
+
+  const ball = document.createElement("div");
+  ball.className = "connect3-shot-ball";
+  ball.style.left =
+      `${markerRect.left + markerRect.width / 2 - boardRect.left}px`;
+  ball.style.top = "0px";
+
+  board.appendChild(ball);
+
+  // Animate the ball from the top of the board to the landing cell.
+  const landingX =
+      cellRect.left + cellRect.width / 2 - boardRect.left;
+  const landingY =
+      cellRect.top + cellRect.height / 2 - boardRect.top;
+
+  const animation = ball.animate(
+      [
+          {
+              left: ball.style.left,
+              top: "0px",
+              transform: "translate(-50%, -100%) scale(0.7)"
+          },
+          {
+              left: `${landingX}px`,
+              top: `${landingY}px`,
+              transform: "translate(-50%, -50%) scale(1)",
+              offset: 0.8
+          },
+          {
+              left: `${landingX}px`,
+              top: `${landingY}px`,
+              transform: "translate(-50%, -50%) scale(0.9)"
+          }
+      ],
+      {
+          duration: 550,
+          easing: "cubic-bezier(0.35, 0, 0.65, 1)",
+          fill: "forwards"
+      }
+  );
+
+  await animation.finished.catch(() => {});
+
+  ball.remove();
+
+  const player = this.currentPlayer;
+  this.board[row][this.selectedColumn] = player;
+  this.render();
+
+  if (this.hasWon(row, this.selectedColumn, player)) {
+      this.gameOver = true;
+
+      const result = this.container.querySelector("[data-result]");
+      result.innerHTML = `
+          <h2>PLAYER ${player} WINS!</h2>
+          <button class="connect3-button" data-action="restart">
+              PLAY AGAIN
+          </button>
+      `;
+
+      result.querySelector('[data-action="restart"]')
+          .addEventListener("click", () => this.start());
+
+      this.busy = false;
+      this.renderBoardOnly();
+      return;
+  }
+
+  if (this.board.every(row => row.every(cell => cell !== 0))) {
+      this.gameOver = true;
+      this.busy = false;
+      this.render();
+
+      this.container.querySelector("[data-result]").innerHTML = `
+          <h2>IT'S A DRAW!</h2>
+          <button class="connect3-button" data-action="restart">
+              PLAY AGAIN
+          </button>
+      `;
+
+      this.container.querySelector('[data-action="restart"]')
+          .addEventListener("click", () => this.start());
+
+      return;
+  }
+
+  this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+  this.busy = false;
+  this.render();
+}
 
   findOpenRow(column) {
       for (let r = this.rows - 1; r >= 0; r--) {
@@ -325,8 +407,8 @@ export class Connect3Hoops {
   }
 
   destroy() {
-      if (this.keyHandler) {
-          document.removeEventListener("keydown", this.keyHandler);
+      if (this.handleKeyDown) {
+          document.removeEventListener("keydown", this.han);
       }
   }
 }
