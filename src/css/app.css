@@ -1137,254 +1137,512 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 
-/* CONNECT 3 HOOPS */
+/* ========================================
+   CONNECT 3 HOOPS
+======================================== */
+
 .connect3-screen {
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 24px 16px;
-    text-align: center;
-    color: #fff;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  color: #fff;
+  text-align: center;
 }
 
 .connect3-title {
-    margin: 0 0 20px;
-    font-size: clamp(1.6rem, 4vw, 2.5rem);
-    font-weight: 900;
+  margin: 0 0 20px;
+  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 3px 0 #14233b, 0 6px 12px #0008;
 }
 
 .connect3-status {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 16px;
 }
 
 .connect3-player {
-    flex: 1;
-    padding: 12px;
-    border: 2px solid transparent;
-    border-radius: 10px;
-    background: #202b3a;
-    font-weight: 800;
+  min-width: 120px;
+  padding: 10px 16px;
+  border: 2px solid #ffffff25;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #253b5a, #111d31);
+  box-shadow: 0 5px 0 #09111e, 0 8px 14px #0005;
+  font-weight: 900;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
 }
 
 .connect3-player small {
-    display: block;
-    margin-top: 5px;
-    opacity: 0.8;
+  display: block;
+  margin-top: 4px;
+  color: #c6d5e8;
+  font-size: .7rem;
+  letter-spacing: 1px;
+}
+
+.connect3-player.active {
+  transform: translateY(-2px);
 }
 
 .connect3-player.player-one.active {
-    border-color: #3986ff;
+  border-color: #ff5147;
+  box-shadow: 0 5px 0 #09111e, 0 0 16px #ff302d55;
 }
 
 .connect3-player.player-two.active {
-    border-color: #ff7a35;
+  border-color: #ffce35;
+  box-shadow: 0 5px 0 #09111e, 0 0 16px #ffca3555;
 }
 
 .connect3-instruction {
-    min-height: 24px;
-    font-weight: 800;
+  min-height: 24px;
+  margin: 12px 0 34px;
+  color: #e1eaf8;
+  font-size: .9rem;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
+
+/* =========================
+   BOARD
+========================= */
 
 .connect3-board {
-    width: min(100%, 430px);
-    margin: 0 auto 20px;
-    padding: 8px;
-    border-radius: 14px;
-    background: #164d83;
+  --connect3-cell-size: clamp(42px, 11vw, 76px);
+  --connect3-gap: clamp(5px, 1.4vw, 10px);
+
+  position: relative;
+  isolation: isolate;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 26px;
+  padding: 10px 18px 18px;
+  border: 3px solid #7195bb;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg, #7399c2 0%, #315982 18%,
+    #1c3b60 60%, #102541 100%
+  );
+  box-shadow:
+    inset 0 3px 3px #ffffff55,
+    inset 0 -8px 12px #07172c99,
+    0 8px 0 #09182b,
+    0 16px 28px #0006;
 }
 
-.connect3-column-markers,
+/* =========================
+   HOOPS AND NETS
+========================= */
+
+.connect3-hoops { 
+    position: absolute; 
+    left: 18px; 
+    right: 18px; 
+    top: -95px;
+    display: grid; 
+    grid-template-columns: repeat(5, var(--connect3-cell-size)); 
+    gap: var(--connect3-gap); 
+    z-index: 4; 
+    pointer-events: none; 
+}
+
+.connect3-hoop {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  overflow: visible;
+  perspective: 220px;
+  isolation: isolate;
+}
+
+.connect3-hoop:disabled {
+  cursor: default;
+}
+
+.connect3-hoop-rim {
+  position: absolute;
+  inset: 14% 5% 24%;
+  z-index: 2;
+  box-sizing: border-box;
+  border: clamp(4px, 1vw, 7px) solid #f47721;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg, #ffb15b 0%, #f47721 35%,
+    #c94e0b 72%, #8f3108 100%
+  );
+  transform: rotateX(58deg) scaleY(.9);
+  transform-origin: center center;
+  box-shadow:
+    inset 0 2px 2px #fff9,
+    inset 0 -4px 5px #7c310d,
+    0 3px 0 #87370f,
+    0 5px 7px #0009;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.connect3-hoop-rim::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -3px;
+  height: 20%;
+  border-bottom: 2px solid #ffbf79;
+  border-radius: 0 0 50% 50%;
+  pointer-events: none;
+}
+
+.connect3-hoop-net {
+  position: absolute;
+  inset: 36% 23% -8%;
+  z-index: 1;
+  border-radius: 0 0 45% 45%;
+  background:
+    repeating-linear-gradient(
+      60deg, transparent 0 7px,
+      #ffffffd9 7px 9px, transparent 9px 14px
+    ),
+    repeating-linear-gradient(
+      -60deg, transparent 0 7px,
+      #ffffffc9 7px 9px, transparent 9px 14px
+    );
+  clip-path: polygon(0 0, 100% 0, 76% 100%, 24% 100%);
+  filter: drop-shadow(0 1px 1px #0009);
+  opacity: .9;
+  pointer-events: none;
+  transform-origin: top center;
+}
+
+.connect3-hoop.selected .connect3-hoop-rim {
+  border-color: #ffb13b;
+  box-shadow:
+    inset 0 2px 2px #ffffffb0,
+    inset 0 -3px 4px #7c310d,
+    0 3px 0 #87370f,
+    0 0 10px #ff9d24,
+    0 0 22px #ffb52d99;
+  animation: connect3-target-pulse 900ms ease-in-out infinite;
+}
+
+.connect3-hoop.selected .connect3-hoop-net {
+  animation: connect3-net-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes connect3-target-pulse {
+  0%, 100% {
+    filter: brightness(1);
+    transform: rotateX(58deg) scaleY(.9);
+  }
+  50% {
+    filter: brightness(1.5);
+    transform: rotateX(58deg) scaleY(.9) scale(1.06);
+  }
+}
+
+@keyframes connect3-net-pulse {
+  0%, 100% { opacity: .65; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.08); }
+}
+
+/* =========================
+   GRID AND EMPTY HOLES
+========================= */
+
 .connect3-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 6px;
-}
-
-.connect3-column-markers {
-    margin-bottom: 6px;
-}
-
-.connect3-marker {
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    color: #fff;
-    font-size: 1.4rem;
-    font-weight: 900;
-    cursor: pointer;
-}
-
-.connect3-marker.selected {
-    color: #ffdf4d;
-    transform: scale(1.2);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, var(--connect3-cell-size));
+  gap: var(--connect3-gap);
+  z-index: 3;
 }
 
 .connect3-cell {
-    aspect-ratio: 1;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 50%;
-    background: #e8eef5;
+  position: relative;
+  width: var(--connect3-cell-size);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow:
+    inset 0 4px 7px #07172b99,
+    inset 0 -2px 3px #ffffff35,
+    0 1px 0 #ffffff20;
 }
 
+.connect3-board:has(.connect3-hoop[data-column="0"].selected)
+.connect3-cell[data-col="0"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="1"].selected)
+.connect3-cell[data-col="1"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="2"].selected)
+.connect3-cell[data-col="2"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="3"].selected)
+.connect3-cell[data-col="3"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="4"].selected)
+.connect3-cell[data-col="4"]:not(:has(.connect3-token)) {
+  animation: connect3-hole-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes connect3-hole-pulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 4px 7px #07172b99,
+      inset 0 -2px 3px #ffffff35,
+      0 1px 0 #ffffff20;
+  }
+  50% {
+    box-shadow:
+      inset 0 4px 7px #07172b99,
+      inset 0 -2px 3px #ffffff35,
+      0 0 0 2px #ffb13b,
+      0 0 12px #ffb13b99;
+  }
+}
+
+/* =========================
+   PLAYER TOKENS
+========================= */
+
 .connect3-token {
-    width: 86%;
-    height: 86%;
-    border-radius: 50%;
-    box-shadow: inset 0 -4px 0 rgb(0 0 0 / 18%);
+  position: absolute;
+  inset: 3px;
+  border: 2px solid #ffffff55;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 4px 6px #ffffff65,
+    inset 0 -6px 8px #0005,
+    0 3px 5px #0008;
+  animation: connect3-token-drop 220ms ease-out;
 }
 
 .connect3-token.player-1 {
-    background: #3986ff;
+  border-color: #ffaaa0;
+  background: radial-gradient(
+    circle at 30% 23%,
+    #ffb1a8 0%, #ff5147 18%,
+    #e01922 52%, #850c18 100%
+  );
+  box-shadow:
+    inset 0 4px 6px #ffffff70,
+    inset 0 -6px 8px #53000a88,
+    0 3px 5px #0008;
 }
 
 .connect3-token.player-2 {
-    background: #ff7a35;
-}
-
-.connect3-token.falling {
-    animation: connect3-token-drop 0.45s ease-in;
+  border-color: #fff0a0;
+  background: radial-gradient(
+    circle at 30% 23%,
+    #fff9bd 0%, #ffe45c 18%,
+    #ffbd13 52%, #bd7000 100%
+  );
+  box-shadow:
+    inset 0 4px 6px #ffffff80,
+    inset 0 -6px 8px #71400077,
+    0 3px 5px #0008;
 }
 
 @keyframes connect3-token-drop {
-    0% {
-        transform: translateY(-260px);
-    }
-    70% {
-        transform: translateY(8px);
-    }
-    85% {
-        transform: translateY(-4px);
-    }
-    100% {
-        transform: translateY(0);
-    }
+  from { opacity: .4; transform: scale(.65); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.connect3-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
+/* =========================
+   SHOOTING BALL
+========================= */
+
+.connect3-shot-ball {
+  position: absolute;
+  z-index: 2;
+  width: calc(var(--connect3-cell-size) - 6px);
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  border: 1px solid #ffffff8a;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: left, top, transform, opacity;
+  background:
+    linear-gradient(
+      90deg, transparent 46%,
+      #71300a 47% 51%, transparent 52%
+    ),
+    linear-gradient(
+      0deg, transparent 46%,
+      #71300a 47% 51%, transparent 52%
+    ),
+    radial-gradient(
+      circle at 30% 24%,
+      #ffe8b0 0%, #ffb340 35%,
+      #ed7818 68%, #9b3909 100%
+    );
+  box-shadow:
+    inset 0 2px 3px #ffffff80,
+    inset 0 -3px 4px #71300a,
+    0 4px 8px #0009;
+}
+
+.connect3-shot-ball.connect3-shot-miss {
+  animation: connect3-miss-fall 500ms ease-in forwards;
+}
+
+@keyframes connect3-miss-fall {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(.8);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% + 45px)) scale(.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 100px)) scale(.7);
+  }
+}
+
+/* =========================
+   BUTTONS AND CONTROLS
+========================= */
+
+.connect3-controls,
+.connect3-test-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto;
 }
 
 .connect3-button,
 .connect3-test-button {
-    padding: 12px 16px;
-    border: 0;
-    border-radius: 8px;
-    background: #26364b;
-    color: #fff;
-    font-weight: 800;
-    cursor: pointer;
+  padding: 12px 16px;
+  border: 1px solid #ffffff35;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  background: linear-gradient(180deg, #365577, #1b304a);
+  box-shadow:
+    inset 0 1px 0 #ffffff30,
+    0 4px 0 #0a1727,
+    0 6px 10px #0004;
+  transition: transform .12s, filter .12s;
 }
 
-.connect3-shoot {
-    background: #f3a51b;
-    color: #171717;
+.connect3-button:hover:not(:disabled),
+.connect3-test-button:hover:not(:disabled) {
+  filter: brightness(1.2);
+}
+
+.connect3-button:active:not(:disabled),
+.connect3-test-button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: inset 0 1px 0 #ffffff30, 0 1px 0 #0a1727;
 }
 
 .connect3-button:disabled,
-.connect3-test-button:disabled,
-.connect3-marker:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.connect3-test-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.connect3-shoot {
+  color: #18202a;
+  border-color: #ffe09a;
+  background: linear-gradient(180deg, #ffe18a, #f5a623);
+  box-shadow:
+    inset 0 1px 0 #ffffffa8,
+    0 4px 0 #98520a,
+    0 6px 10px #0004;
 }
 
 .connect3-test-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 18px;
-    font-size: 0.8rem;
+  gap: 8px;
+  margin-top: 18px;
+  color: #c8d6e8;
+  font-size: .8rem;
 }
 
 .connect3-test-button {
-    padding: 8px 10px;
-    background: #46556a;
+  padding: 8px 12px;
+  font-size: .75rem;
 }
 
 .connect3-result {
-    margin-top: 20px;
-    font-size: 1.2rem;
-    font-weight: 900;
-}
-
-.connect3-result:empty {
-    display: none;
+  margin: 20px auto 0;
+  font-size: 1.2rem;
+  font-weight: 900;
 }
 
 .connect3-result h2 {
-    margin-bottom: 14px;
+  color: #ffce63;
+  text-shadow: 0 2px 8px #0008;
 }
+
+/* =========================
+   SMALL SCREENS
+========================= */
 
 @media (max-width: 480px) {
-    .connect3-screen {
-        padding: 16px 8px;
-    }
+  .connect3-screen {
+    padding: 18px 8px;
+  }
 
-    .connect3-board {
-        padding: 6px;
-    }
-
-    .connect3-column-markers,
-    .connect3-grid {
-        gap: 4px;
-    }
-
-    .connect3-controls {
-        gap: 6px;
-    }
-
-    .connect3-button {
-        padding: 10px;
-        font-size: 0.85rem;
-    }
+  .connect3-board { 
+    --connect3-cell-size: clamp(42px, 11vw, 76px); 
+    --connect3-gap: clamp(5px, 1.4vw, 10px); 
+    position: relative; 
+    isolation: isolate; 
+    overflow: visible; 
+    width: fit-content; 
+    padding: 28px; 
 }
 
-
-.connect3-board {
-    position: relative;
+.connect3-hoops { 
+    top: -85px; 
+    transform: translateY(-10px);  
 }
 
-.connect3-shot-ball {
-    position: absolute;
-    z-index: 10;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    pointer-events: none;
-    background:
-        linear-gradient(90deg, transparent 46%, #382013 47%, #382013 53%, transparent 54%),
-        linear-gradient(0deg, transparent 46%, #382013 47%, #382013 53%, transparent 54%),
-        radial-gradient(circle at 30% 25%, #ffb45e, #f07818 65%, #b94b08);
-    border: 2px solid #71330d;
-    box-sizing: border-box;
-    box-shadow: 0 3px 7px rgb(0 0 0 / 35%);
+    .connect3-grid { 
+        position: relative; 
+        display: grid; 
+        grid-template-columns: repeat(5, var(--connect3-cell-size)); 
+        gap: var(--connect3-gap); 
+        z-index: 2; 
+    }
+
+  .connect3-player {
+    min-width: 0;
+    padding: 9px 12px;
+    font-size: .85rem;
+  }
+
+  .connect3-button {
+    padding: 10px 12px;
+    font-size: .8rem;
+  }
 }
 
-.connect3-shot-miss {
-    animation: connect3-miss-shot 500ms ease-in forwards;
-}
+/* =========================
+   REDUCED MOTION
+========================= */
 
-@keyframes connect3-miss-shot {
-    0% {
-        transform: translate(-50%, -100%) scale(.7);
-        opacity: 1;
-    }
-    60% {
-        transform: translate(-50%, 100px) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, 180px) scale(.8);
-        opacity: 0;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .connect3-hoop.selected .connect3-hoop-rim,
+  .connect3-hoop.selected .connect3-hoop-net,
+  .connect3-cell,
+  .connect3-token {
+    animation: none !important;
+  }
 }
