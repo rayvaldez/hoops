@@ -51,6 +51,9 @@ export class Connect3Hoops {
         </p>
 
         <div class="connect3-board">
+      
+          <div class="connect3-animation-layer"></div>
+
           <div class="connect3-hoops">
             ${Array.from({ length: this.columns }, (_, c) => `
               <button
@@ -269,80 +272,12 @@ async resolveShot(made) {
     return;
   }
 
-  // Measure the positions relative to the board
-  const boardRect = board.getBoundingClientRect();
-  const markerRect = marker.getBoundingClientRect();
-  const cellRect = targetCell.getBoundingClientRect();
-
-  // Start the shot above the selected column
-  const topCell = this.container.querySelector(
-    `[data-row="0"][data-col="${this.selectedColumn}"]`
+  await this.animateShotThroughBoard(
+    board,
+    marker,
+    targetCell,
+    this.selectedColumn,
   );
-
-  const columnRect = (
-    topCell || targetCell
-  ).getBoundingClientRect();
-
-  const startX =
-    columnRect.left + columnRect.width / 2 - boardRect.left;
-
-  const startY =
-    markerRect.top + markerRect.height / 2 - boardRect.top;
-
-  // Calculate the landing position
-  const landingX =
-    cellRect.left + cellRect.width / 2 - boardRect.left;
-
-  const landingY =
-    cellRect.top + cellRect.height / 2 - boardRect.top;
-
-  // Create the basketball
-  const ball = document.createElement("div");
-  ball.className = "connect3-shot-ball";
-
-  ball.style.left = `${startX}px`;
-  ball.style.top = `${startY}px`;
-  ball.style.transform = "translate(-50%, -50%)";
-
-  board.appendChild(ball);
-
-  // Animate the ball into the selected cell
-  try {
-    const animation = ball.animate(
-      [
-        {
-          left: `${startX}px`,
-          top: `${startY}px`,
-          transform: "translate(-50%, -50%)",
-          offset: 0
-        },
-        {
-          left: `${landingX}px`,
-          top: `${landingY}px`,
-          transform: "translate(-50%, -50%)",
-          offset: 0.85
-        },
-        {
-          left: `${landingX}px`,
-          top: `${landingY}px`,
-          transform: "translate(-50%, -50%)",
-          offset: 1
-        }
-      ],
-      {
-        duration: 2300,
-        easing: "cubic-bezier(0.35, 0, 0.65, 1)",
-        fill: "forwards"
-      }
-    );
-
-    await animation.finished;
-  } catch (error) {
-    // Continue safely if the animation is cancelled
-  } finally {
-    ball.remove();
-  }
-
   // Place the token after the animation completes
   const player = this.currentPlayer;
   this.board[row][this.selectedColumn] = player;
@@ -402,6 +337,119 @@ async resolveShot(made) {
 
   this.busy = false;
   this.render();
+}
+
+
+async animateShotThroughBoard(board, marker, targetCell, column) {
+  const grid = board.querySelector(".connect3-grid");
+  const layer = board.querySelector(".connect3-animation-layer");
+
+  if (!grid || !layer || !marker || !targetCell) return;
+
+  const gridRect = grid.getBoundingClientRect();
+  const boardRect = board.getBoundingClientRect();
+  const markerRect = marker.getBoundingClientRect();
+  const cellRect = targetCell.getBoundingClientRect();
+
+  const cellStyle = getComputedStyle(targetCell);
+  const cellSize = cellRect.width;
+  const gridStyle = getComputedStyle(grid);
+  const gap = parseFloat(gridStyle.columnGap) || 0;
+  const ballSize = cellSize + 1.2;
+
+  // Align the animation layer exactly over the grid.
+  layer.style.left =
+    `${gridRect.left - boardRect.left - board.clientLeft}px`;
+  layer.style.top =
+    `${gridRect.top - boardRect.top - board.clientTop}px`;
+  layer.style.width = `${gridRect.width}px`;
+  layer.style.height = `${gridRect.height}px`;
+
+  // Each mask tile spans one cell plus its gap.
+  const spacing = cellSize + gap;
+  layer.style.webkitMaskSize = `${spacing}px ${spacing}px`;
+  layer.style.maskSize = `${spacing}px ${spacing}px`;
+
+  // Shift the repeating mask so each circle centres on a cell.
+  layer.style.webkitMaskPosition =
+    `${-gap / 2}px ${-gap / 2}px`;
+  layer.style.maskPosition =
+    `${-gap / 2}px ${-gap / 2}px`;
+
+  const playerClass = this.currentPlayer === 1
+    ? "player-1"
+    : "player-2";
+
+  const makeBall = () => {
+    const ball = document.createElement("div");
+    ball.className = `connect3-shot-ball ${playerClass}`;
+    ball.style.width = `${ballSize}px`;
+    ball.style.height = `${ballSize}px`;
+    ball.style.transform = "translate(-50%, -50%)";
+    return ball;
+  };
+
+  // Phase 1: travel from the hoop to the board face.
+  const firstBall = makeBall();
+  firstBall.style.position = "fixed";
+  firstBall.style.zIndex = "9999";
+
+  const startX = markerRect.left + markerRect.width / 2;
+  const startY = markerRect.bottom + ballSize / 2;
+  const boardEntryY = gridRect.top - ballSize / 2;
+
+  firstBall.style.left = `${startX}px`;
+  firstBall.style.top = `${startY}px`;
+  document.body.appendChild(firstBall);
+
+  try {
+    await firstBall.animate(
+      [
+        { top: `${startY}px` },
+        { top: `${boardEntryY}px` }
+      ],
+      {
+        duration: 500,
+        easing: "cubic-bezier(0.35, 0, 0.65, 1)",
+        fill: "forwards"
+      }
+    ).finished;
+  } catch (_) {
+    firstBall.remove();
+    return;
+  }
+
+  firstBall.remove();
+
+  // Phase 2: travel behind the board face.
+  // The mask reveals the ball only through the holes.
+  const ball = makeBall();
+  const layerRect = layer.getBoundingClientRect();
+
+  const x = cellRect.left + cellRect.width / 2 - layerRect.left;
+  const y = cellRect.top + cellRect.height / 2 - layerRect.top;
+
+  ball.style.left = `${x}px`;
+  ball.style.top = `${-ballSize / 2}px`;
+  layer.appendChild(ball);
+
+  try {
+    await ball.animate(
+      [
+        { top: `${-ballSize / 2}px` },
+        { top: `${y}px` }
+      ],
+      {
+        duration: 750,
+        easing: "cubic-bezier(0.35, 0, 0.65, 1)",
+        fill: "forwards"
+      }
+    ).finished;
+  } catch (_) {
+    // Clean up if the animation is interrupted.
+  } finally {
+    ball.remove();
+  }
 }
 
   findOpenRow(column) {
