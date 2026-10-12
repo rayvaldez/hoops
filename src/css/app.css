@@ -1206,6 +1206,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
   font-size: .9rem;
   font-weight: 800;
   letter-spacing: 1px;
+  padding-bottom: 45px;
 }
 
 /* =========================
@@ -1463,13 +1464,13 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 .connect3-shot-ball {
   position: absolute;
   z-index: 2;
-  width: calc(var(--connect3-cell-size) - 6px);
+  width: calc(var(--connect3-cell-size) + 1.2px);
   aspect-ratio: 1;
   box-sizing: border-box;
   border: 1px solid #ffffff8a;
   border-radius: 50%;
   pointer-events: none;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -45%);
   will-change: left, top, transform, opacity;
   background:
     linear-gradient(
@@ -1645,4 +1646,23 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
   .connect3-token {
     animation: none !important;
   }
+}
+
+.connect3-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 700px;
+    max-width: none;
+    margin: 0;
+    padding: 35px 30px 40px;
+    text-align: center;
+    background-color: #050b18;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+        url("../assets/images/shootout-arena-blank.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
 }
