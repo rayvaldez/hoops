@@ -20,6 +20,16 @@ export class ThirtySecondShootout {
       this.timer = null;
 
       this.keyHandler = null;
+
+      this.arduinoPort = null;
+        this.arduinoReader = null;
+        this.arduinoConnected = false;
+        this.serialBuffer = "";
+        this.connectButton = null;
+        this.arduinoStatus = null;
+      
+      this.lastSensorShotTime = 0;
+      this.sensorShotCooldown = 700; // milliseconds  
   }
 
   start() {
@@ -176,37 +186,188 @@ export class ThirtySecondShootout {
 
             </div>
 
+            <div class="arduino-controls">
+                <button
+                    class="shootout-button"
+                    data-action="connect-arduino"
+                    type="button"
+                >
+                    CONNECT ARDUINO
+                </button>
+
+                <span data-arduino-status role="status">
+                    Arduino not connected
+                </span>
+            </div>
+
           </div>
       `;
   }
 
-  attachEvents() {
+  
+    attachEvents() {
 
-      this.keyHandler = (event) => {
+        this.keyHandler = (event) => {
+            if (event.key === "1") {
+                this.registerShot();
+            }
+        };
 
-          if (event.key === "1") {
+        document.addEventListener("keydown", this.keyHandler);
 
-              this.registerShot();
+        const hoop = this.container.querySelector("[data-shoot]");
 
-          }
+        if (hoop) {
+            hoop.addEventListener("click", () => this.registerShot());
+        }
 
-      };
+        this.connectButton = this.container.querySelector(
+            '[data-action="connect-arduino"]'
+        );
 
-      document.addEventListener(
-          "keydown",
-          this.keyHandler
-      );
+        this.arduinoStatus = this.container.querySelector(
+            "[data-arduino-status]"
+        );
 
-      const hoop =
-          this.container.querySelector(
-              "[data-shoot]"
-          );
+        if (this.connectButton) {
+            this.connectButton.addEventListener(
+                "click",
+                () => this.connectArduino()
+            );
 
-      hoop.addEventListener(
-          "click",
-          () => this.registerShot()
-      );
-  }
+            // Preserve the connection across games.
+            if (this.arduinoConnected) {
+                this.setArduinoStatus("Arduino connected");
+                this.connectButton.textContent = "ARDUINO CONNECTED";
+                this.connectButton.disabled = true;
+            }
+        }
+    }
+
+  
+    setArduinoStatus(message) {
+        if (this.arduinoStatus) {
+            this.arduinoStatus.textContent = message;
+        }
+    }
+
+    async connectArduino() {
+        if (!("serial" in navigator)) {
+            this.setArduinoStatus(
+                "Web Serial unavailable. Use desktop Chrome on localhost."
+            );
+            return;
+        }
+
+        if (this.arduinoConnected) {
+            return;
+        }
+
+        try {
+            this.setArduinoStatus("Select your Arduino port...");
+
+            // Must be called from the button click.
+            const port = await navigator.serial.requestPort();
+
+            await port.open({ baudRate: 115200 });
+
+            this.arduinoPort = port;
+            this.arduinoConnected = true;
+            this.serialBuffer = "";
+
+            if (this.connectButton) {
+                this.connectButton.textContent = "ARDUINO CONNECTED";
+                this.connectButton.disabled = true;
+            }
+
+            this.setArduinoStatus("Arduino connected — ready to shoot");
+
+            // Start listening without blocking the game.
+            void this.readArduinoSerial();
+
+        } catch (error) {
+            console.error("Arduino connection error:", error);
+
+            this.setArduinoStatus(
+                "Connection failed: " + error.message
+            );
+
+            this.arduinoConnected = false;
+            this.arduinoPort = null;
+        }
+    }
+
+    async readArduinoSerial() {
+        const decoder = new TextDecoder();
+
+        try {
+            while (
+                this.arduinoConnected &&
+                this.arduinoPort?.readable
+            ) {
+                this.arduinoReader =
+                    this.arduinoPort.readable.getReader();
+
+                try {
+                    while (this.arduinoConnected) {
+                        const { value, done } =
+                            await this.arduinoReader.read();
+
+                        if (done) break;
+
+                        this.serialBuffer += decoder.decode(value, {
+                            stream: true
+                        });
+
+                        const lines = this.serialBuffer.split(/\r?\n/);
+
+                        this.serialBuffer = lines.pop() ?? "";
+
+                        for (const line of lines) {
+                            this.handleArduinoMessage(line.trim());
+                        }
+                    }
+                } finally {
+                    this.arduinoReader.releaseLock();
+                    this.arduinoReader = null;
+                }
+            }
+        } catch (error) {
+            console.error("Arduino serial error:", error);
+
+            this.setArduinoStatus("Arduino disconnected");
+        } finally {
+            this.arduinoConnected = false;
+            this.arduinoReader = null;
+
+            if (this.connectButton) {
+                this.connectButton.disabled = false;
+                this.connectButton.textContent = "CONNECT ARDUINO";
+            }
+
+            // Keep the port reference if it is still open, so that
+            // destroy() can attempt to close it.
+            if (this.arduinoPort) {
+                this.setArduinoStatus("Arduino disconnected");
+            }
+        }
+    }
+
+    handleArduinoMessage(message) {
+        if (message === "SHOT") {
+            const now = Date.now();
+
+            // Ignore extra sensor triggers during cooldown
+            if (now - this.lastSensorShotTime < this.sensorShotCooldown) {
+                return;
+            }
+
+            this.lastSensorShotTime = now;
+            this.registerShot();
+        }
+    }
+  
+
 
   registerShot() {
 
@@ -455,12 +616,29 @@ export class ThirtySecondShootout {
       }
   }
 
-  destroy() {
+  
+    async destroy() {
+        clearInterval(this.timer);
+        this.timer = null;
 
-      clearInterval(this.timer);
+        this.removeEvents();
 
-      this.timer = null;
+        this.arduinoConnected = false;
 
-      this.removeEvents();
-  }
+        try {
+            if (this.arduinoReader) {
+                await this.arduinoReader.cancel();
+            }
+
+            if (this.arduinoPort) {
+                await this.arduinoPort.close();
+            }
+        } catch (error) {
+            console.warn("Arduino cleanup:", error);
+        } finally {
+            this.arduinoReader = null;
+            this.arduinoPort = null;
+        }
+    }
+
 }
