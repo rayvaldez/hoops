@@ -1,3 +1,5 @@
+import { ArduinoSensor } from "../arduino-sensor.js";
+
 export class ThirtySecondShootout {
 
   constructor(container) {
@@ -21,15 +23,30 @@ export class ThirtySecondShootout {
 
       this.keyHandler = null;
 
-      this.arduinoPort = null;
-        this.arduinoReader = null;
-        this.arduinoConnected = false;
-        this.serialBuffer = "";
-        this.connectButton = null;
-        this.arduinoStatus = null;
-      
-      this.lastSensorShotTime = 0;
-      this.sensorShotCooldown = 700; // milliseconds  
+      this.sensor = new ArduinoSensor({
+        onShot: () => this.registerShot(),
+
+        onStatusChange: (message) => {
+            const status = this.container.querySelector(
+                "[data-arduino-status]"
+            );
+
+            const button = this.container.querySelector(
+                '[data-action="connect-arduino"]'
+            );
+
+            if (status) {
+                status.textContent = message;
+            }
+
+        if (button) {
+            button.disabled = this.sensor.connected;
+            button.textContent = this.sensor.connected
+                ? "ARDUINO CONNECTED"
+                : "CONNECT ARDUINO";
+            }
+        }
+    });   
   }
 
   start() {
@@ -230,144 +247,11 @@ export class ThirtySecondShootout {
         );
 
         if (this.connectButton) {
-            this.connectButton.addEventListener(
-                "click",
-                () => this.connectArduino()
-            );
-
-            // Preserve the connection across games.
-            if (this.arduinoConnected) {
-                this.setArduinoStatus("Arduino connected");
-                this.connectButton.textContent = "ARDUINO CONNECTED";
-                this.connectButton.disabled = true;
-            }
+            this.connectButton.addEventListener("click", () => {
+                void this.sensor.connect();
+            });
         }
     }
-
-  
-    setArduinoStatus(message) {
-        if (this.arduinoStatus) {
-            this.arduinoStatus.textContent = message;
-        }
-    }
-
-    async connectArduino() {
-        if (!("serial" in navigator)) {
-            this.setArduinoStatus(
-                "Web Serial unavailable. Use desktop Chrome on localhost."
-            );
-            return;
-        }
-
-        if (this.arduinoConnected) {
-            return;
-        }
-
-        try {
-            this.setArduinoStatus("Select your Arduino port...");
-
-            // Must be called from the button click.
-            const port = await navigator.serial.requestPort();
-
-            await port.open({ baudRate: 115200 });
-
-            this.arduinoPort = port;
-            this.arduinoConnected = true;
-            this.serialBuffer = "";
-
-            if (this.connectButton) {
-                this.connectButton.textContent = "ARDUINO CONNECTED";
-                this.connectButton.disabled = true;
-            }
-
-            this.setArduinoStatus("Arduino connected — ready to shoot");
-
-            // Start listening without blocking the game.
-            void this.readArduinoSerial();
-
-        } catch (error) {
-            console.error("Arduino connection error:", error);
-
-            this.setArduinoStatus(
-                "Connection failed: " + error.message
-            );
-
-            this.arduinoConnected = false;
-            this.arduinoPort = null;
-        }
-    }
-
-    async readArduinoSerial() {
-        const decoder = new TextDecoder();
-
-        try {
-            while (
-                this.arduinoConnected &&
-                this.arduinoPort?.readable
-            ) {
-                this.arduinoReader =
-                    this.arduinoPort.readable.getReader();
-
-                try {
-                    while (this.arduinoConnected) {
-                        const { value, done } =
-                            await this.arduinoReader.read();
-
-                        if (done) break;
-
-                        this.serialBuffer += decoder.decode(value, {
-                            stream: true
-                        });
-
-                        const lines = this.serialBuffer.split(/\r?\n/);
-
-                        this.serialBuffer = lines.pop() ?? "";
-
-                        for (const line of lines) {
-                            this.handleArduinoMessage(line.trim());
-                        }
-                    }
-                } finally {
-                    this.arduinoReader.releaseLock();
-                    this.arduinoReader = null;
-                }
-            }
-        } catch (error) {
-            console.error("Arduino serial error:", error);
-
-            this.setArduinoStatus("Arduino disconnected");
-        } finally {
-            this.arduinoConnected = false;
-            this.arduinoReader = null;
-
-            if (this.connectButton) {
-                this.connectButton.disabled = false;
-                this.connectButton.textContent = "CONNECT ARDUINO";
-            }
-
-            // Keep the port reference if it is still open, so that
-            // destroy() can attempt to close it.
-            if (this.arduinoPort) {
-                this.setArduinoStatus("Arduino disconnected");
-            }
-        }
-    }
-
-    handleArduinoMessage(message) {
-        if (message === "SHOT") {
-            const now = Date.now();
-
-            // Ignore extra sensor triggers during cooldown
-            if (now - this.lastSensorShotTime < this.sensorShotCooldown) {
-                return;
-            }
-
-            this.lastSensorShotTime = now;
-            this.registerShot();
-        }
-    }
-  
-
 
   registerShot() {
 
@@ -616,29 +500,13 @@ export class ThirtySecondShootout {
       }
   }
 
-  
     async destroy() {
         clearInterval(this.timer);
         this.timer = null;
 
         this.removeEvents();
 
-        this.arduinoConnected = false;
-
-        try {
-            if (this.arduinoReader) {
-                await this.arduinoReader.cancel();
-            }
-
-            if (this.arduinoPort) {
-                await this.arduinoPort.close();
-            }
-        } catch (error) {
-            console.warn("Arduino cleanup:", error);
-        } finally {
-            this.arduinoReader = null;
-            this.arduinoPort = null;
-        }
+        await this.sensor.disconnect();
     }
 
 }
