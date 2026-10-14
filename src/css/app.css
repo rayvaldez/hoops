@@ -637,7 +637,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
     background-image:
         linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
         url("../assets/images/shootout-arena.png");
-    background-size: 100% auto;
+    background-size: 100% 100%;
     background-position: top center;
     background-repeat: no-repeat;
     border-radius: 12px;
@@ -684,7 +684,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 .arena-scoreboard-values {
     position: absolute;
     z-index: 5;
-    top: 10.5%;
+    top: 15.5%;
     left: 0;
     width: 100%;
     display: grid;
@@ -708,7 +708,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 .arena-score {
-    transform: translate(100px, -4px);
+    transform: translate(80px, -4px);
 }
 
 .arena-time {
@@ -717,7 +717,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 .arena-best {
-    transform: translate(-100px, -4px);
+    transform: translate(-80px, -4px);
 }
 
 
