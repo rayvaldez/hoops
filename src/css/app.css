@@ -15,9 +15,9 @@ body {
 }
 
 #app {
-    max-width: 1100px;
+    /* max-width: 1100px; */
     margin: 0 auto;
-    padding: 60px 30px;
+    /* padding: 20px 30px; */
     text-align: center;
 }
 
@@ -684,7 +684,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 .arena-scoreboard-values {
     position: absolute;
     z-index: 5;
-    top: 14%;
+    top: 6%;
     left: 0;
     width: 100%;
     display: grid;
@@ -708,7 +708,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 .arena-score {
-    transform: translate(100px, -4px);
+    transform: translate(135px, -4px);
 }
 
 .arena-time {
@@ -717,7 +717,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 .arena-best {
-    transform: translate(-100px, -4px);
+    transform: translate(-135px, -4px);
 }
 
 
@@ -784,19 +784,19 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 @keyframes scoreboard-score-flash {
     0% {
         color: #ff8c00;
-        transform: translate(100px, -4px) scale(1.3);
+        transform: translate(135px, -4px) scale(1.3);
         text-shadow: 0 0 24px #ff8c00;
     }
 
     60% {
         color: #fff2bf;
-        transform: translate(100px, -4px) scale(1.1);
+        transform: translate(135px, -4px) scale(1.1);
         text-shadow: 0 0 16px #ff8c00;
     }
 
     100% {
         color: #fff;
-        transform: translate(100px, -4px) scale(1);
+        transform: translate(135px, -4px) scale(1);
         text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
     }
 }
