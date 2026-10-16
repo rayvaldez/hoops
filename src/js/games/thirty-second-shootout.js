@@ -49,14 +49,25 @@ export class ThirtySecondShootout {
       this.sensor = new ArduinoSensor({
           onShot: () => this.registerShot(),
           onStatusChange: message => {
-              const status = this.container.querySelector("[data-arduino-status]");
-              const button = this.container.querySelector('[data-action="connect-arduino"]');
-              if (status) status.textContent = message;
-              if (button) {
-                  button.disabled = this.sensor.connected;
-                  button.textContent = this.sensor.connected ? "ARDUINO CONNECTED" : "CONNECT ARDUINO";
-              }
-          }
+            const status = document.querySelector(
+                ".app-arduino-footer [data-arduino-status]"
+            );
+
+            const button = document.querySelector(
+                '.app-arduino-footer [data-action="connect-arduino"]'
+            );
+
+            if (status) {
+                status.textContent = message;
+            }
+
+            if (button) {
+                button.disabled = this.sensor.connected;
+                button.textContent = this.sensor.connected
+                    ? "ARDUINO CONNECTED"
+                    : "CONNECT ARDUINO";
+            }
+        }
       });
   }
 
@@ -72,7 +83,9 @@ export class ThirtySecondShootout {
 
   }
 
-
+  connectArduino() {
+    return this.sensor.connect();
+}
 
   renderStartScreen() {
 
@@ -358,45 +371,9 @@ export class ThirtySecondShootout {
 
                 </button>
 
-
-
               </div>
 
-
-
             </div>
-
-
-
-            <div class="arduino-controls">
-
-                <button
-
-                    class="shootout-button"
-
-                    data-action="connect-arduino"
-
-                    type="button"
-
-                >
-
-                    CONNECT ARDUINO
-
-                </button>
-
-
-
-                <span data-arduino-status role="status">
-
-                    Arduino not connected
-
-                </span>
-
-            </div>
-
-
-
-          </div>
 
       `;
 
@@ -433,16 +410,6 @@ export class ThirtySecondShootout {
             hoop.addEventListener("click", () => this.registerShot());
 
         }
-
-
-
-        this.connectButton = this.container.querySelector(
-
-            '[data-action="connect-arduino"]'
-
-        );
-
-
 
         if (this.connectButton) {
 
