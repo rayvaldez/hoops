@@ -18,46 +18,60 @@ const games = {
 
 };
 
+const arduinoFooter = document.createElement("div");
+arduinoFooter.className = "app-arduino-footer";
+arduinoFooter.hidden = true;
+
+arduinoFooter.innerHTML = `
+    <button
+        class="shootout-button"
+        data-action="connect-arduino"
+        type="button"
+    >
+        CONNECT ARDUINO
+    </button>
+
+    <span data-arduino-status role="status">
+        Arduino not connected
+    </span>
+`;
+
+gameArea.appendChild(arduinoFooter);
+
+const arduinoButton = arduinoFooter.querySelector(
+    '[data-action="connect-arduino"]'
+);
+
+arduinoButton.addEventListener("click", () => {
+    if (currentGame?.connectArduino) {
+        void currentGame.connectArduino();
+    } else {
+        console.warn("The current game cannot connect to the Arduino.");
+    }
+});
+
 let currentGame = null;
 
 function launchGame(gameId) {
-
     const Game = games[gameId];
 
     if (!Game) {
-
         console.error(`Game not found: ${gameId}`);
-
         return;
-
     }
-
-    // Hide the main menu
 
     gameMenu.hidden = true;
-
-    // Show the game
-
     gameArea.hidden = false;
 
-    // Clear previous game
-
-    gameContainer.innerHTML = "";
-
-    // Remove previous game listeners/timers
-
     if (currentGame) {
-
         currentGame.destroy?.();
-
     }
 
-    // Start selected game
+    gameContainer.innerHTML = "";
+    arduinoFooter.hidden = gameId !== "thirty-second-shootout";
 
     currentGame = new Game(gameContainer);
-
     currentGame.start();
-
 }
 
 function showMenu() {
@@ -84,6 +98,8 @@ function showMenu() {
 
     gameContainer.innerHTML = "";
 
+    arduinoFooter.hidden = true;
+
 }
 
 document.querySelectorAll(".game-card").forEach((button) => {
@@ -97,3 +113,4 @@ document.querySelectorAll(".game-card").forEach((button) => {
 });
 
 backToMenu.addEventListener("click", showMenu);
+
