@@ -78,10 +78,6 @@ export class Connect3Hoops {
 
       <section class="connect3-screen">
 
-        <h2 class="connect3-title">CONNECT 3 HOOPS</h2>
-
-
-
         <div class="connect3-status">
 
           <div class="connect3-player player-one ${
