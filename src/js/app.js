@@ -7,7 +7,7 @@ import { ThirtySecondShootout } from "./games/thirty-second-shootout.js";
 const gameMenu = document.querySelector(".game-menu");
 const gameArea = document.querySelector("#game-area");
 const gameContainer = document.querySelector("#game-container");
-const backToMenu = document.querySelector("#back-to-menu");
+// const backToMenu = document.querySelector("#back-to-menu");
 
 const games = {
     "thirty-second-shootout": ThirtySecondShootout,
@@ -89,7 +89,7 @@ function updateArduinoUI(message) {
         ? "DISCONNECT ARDUINO"
         : connecting
             ? "CONNECTING…"
-            : "Connect Hoop";
+            : "Connect";
 
     arduinoButton.disabled = connecting;
 }
@@ -133,7 +133,7 @@ function launchGame(gameId) {
     gameContainer.innerHTML = "";
 
     // Pass the shared sensor into the game.
-    currentGame = new Game(gameContainer, arduinoSensor);
+    currentGame = new Game(gameContainer, arduinoSensor, showMenu);
     currentGame.start();
 }
 
@@ -155,7 +155,3 @@ document.querySelectorAll(".game-card").forEach((button) => {
         launchGame(button.dataset.game);
     });
 });
-
-if (backToMenu) {
-    backToMenu.addEventListener("click", showMenu);
-}
