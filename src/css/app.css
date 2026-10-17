@@ -418,11 +418,11 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
     
 .game-over-buttons {
-    display: flex;
-    
+    display: block;
+    width: fit-content;
     justify-content: center;
     align-items: center;
-    
+    margin: 10px auto;
     gap: 15px;
     
     flex-wrap: wrap;
@@ -684,7 +684,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 .arena-scoreboard-values {
     position: absolute;
     z-index: 5;
-    top: 6%;
+    top: 14%;
     left: 0;
     width: 100%;
     display: grid;
@@ -989,9 +989,10 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
 }
 
 .shootout-message {
+
     font-size: 48px;
     font-weight: bold;
-    margin: 30px 0;
+    margin: 80px 0;
 }
 
 .shootout-score {
@@ -1853,4 +1854,15 @@ box-shadow: none;
 
 .app-arduino-footer [data-arduino-status] {
     font-size: 0.9rem;
+}
+
+.game-over-buttons .shootout-screen .shootout-button,
+.shootout-screen #back-to-menu {
+    display: block;
+    width: fit-content;
+    margin: 10px auto;
+}
+
+.shootout-screen #back-to-menu {
+    clear: both;
 }
