@@ -4,17 +4,13 @@ export class ThirtySecondShootout {
 
 
 
-  constructor(container, sharedSensor = null) {
-
-
+  constructor(container, sharedSensor = null, onBackToMenu) {
 
       this.container = container;
 
-
+      this.onBackToMenu = onBackToMenu;
 
       this.score = 0;
-
-
 
       this.bestScore =
 
@@ -73,9 +69,19 @@ export class ThirtySecondShootout {
 
               </button>
 
+              <button id="back-to-menu">Back to Menu</button>
+
           </div>
 
       `;
+
+      const backButton = this.container.querySelector("#back-to-menu");
+
+        if (backButton) {
+            backButton.addEventListener("click", () => {
+                this.onBackToMenu?.();
+            });
+        }
 
       const startButton =
 
@@ -699,6 +705,8 @@ export class ThirtySecondShootout {
         PLAY AGAIN
         
         </button>
+
+        <button id="back-to-menu">Back to Menu</button>
         
         </div>
         
@@ -721,6 +729,15 @@ export class ThirtySecondShootout {
             () => this.startGame()
             
         );
+
+         const backButton = this.container.querySelector("#back-to-menu");
+
+            if (backButton) {
+                backButton.addEventListener("click", () => {
+                    this.onBackToMenu?.();
+                });
+            }
+        
         
         this.buzzerAudio();
         this.cheerEndAudio();
