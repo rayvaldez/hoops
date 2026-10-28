@@ -3,6 +3,7 @@ import { ArduinoSensor } from "./arduino-sensor.js";
 import { Connect3Hoops } from "./games/connect3hoops.js";
 import { Connect4Hoops } from "./games/connect4hoops.js";
 import { ThirtySecondShootout } from "./games/thirty-second-shootout.js";
+import { HoopsOfWar } from "./games/hoops-of-war.js";
 
 const gameMenu = document.querySelector(".game-menu");
 const gameArea = document.querySelector("#game-area");
@@ -11,8 +12,9 @@ const gameContainer = document.querySelector("#game-container");
 
 const games = {
     "thirty-second-shootout": ThirtySecondShootout,
-    connect3hoops: Connect3Hoops,
-    connect4hoops: Connect4Hoops
+    "hoops-of-war": HoopsOfWar,
+    "connect3hoops": Connect3Hoops,
+    "connect4hoops": Connect4Hoops
 };
 
 let currentGame = null;
