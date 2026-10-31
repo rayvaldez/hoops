@@ -855,11 +855,8 @@ input {
         margin-right: 0;
     }
 
-    .connect4-screen {
-        overflow-x: auto;
-    }
-
-    #game-container {
+    .connect4-screen,
+    #game-container:has(.connect4-screen) {
         overflow-x: auto;
     }
 }
@@ -919,4 +916,1559 @@ input {
     /* background-position: top center; */
     background-repeat: no-repeat;
     /* border-radius: 12px; */
+}
+
+
+/* Game-specific layout corrections: keep Shootout full-width without stretching Connect 3/4 */
+#game-area {
+    width: 100%;
+    padding: 22px clamp(12px, 3vw, 36px) 36px;
+    overflow: visible;
+    text-align: initial;
+    background: none;
+    isolation: auto;
+}
+
+#game-container {
+    width: min(1120px, 100%);
+    max-width: 1120px;
+    min-width: 0;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+/* Apply the edge-to-edge arena only while 30 Second Shootout is active. */
+#game-area:has(.shootout-screen) {
+    padding: 0;
+    isolation: isolate;
+    overflow: hidden;
+    text-align: center;
+    background-color: #050b18;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+        url("../assets/images/shootout-arena.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+#game-container:has(.shootout-screen) {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+/* Keep Connect 3 in a centred panel with a compact, aligned board. */
+.connect3-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(900px, 100%);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.connect3-screen > * {
+    max-width: 100%;
+}
+
+.connect3-screen .connect3-title,
+.connect3-screen .connect3-instruction,
+.connect3-screen .connect3-turn-clock,
+.connect3-screen .connect3-result {
+    width: 100%;
+    text-align: center;
+}
+
+.connect3-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+}
+
+.connect3-board {
+    width: min(100%, 510px);
+    max-width: 100%;
+    flex: 0 1 510px;
+}
+
+.connect3-hoops,
+.connect3-grid {
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.connect3-hoop,
+.connect3-cell {
+    min-width: 0;
+}
+
+.connect3-controls,
+.connect3-test-controls,
+.connect3-screen .arduino-controls,
+.connect3-screen .game-over-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.connect3-screen .arduino-controls {
+    margin-top: 12px;
+    color: var(--arena-muted);
+    text-align: center;
+}
+
+.connect3-animation-layer {
+    position: absolute;
+    pointer-events: none;
+    overflow: visible;
+}
+
+@media (max-width: 620px) {
+    #game-area:has(.connect3-screen) {
+        padding: 12px;
+    }
+
+    .connect3-screen {
+        padding: 16px 12px;
+        border-radius: 16px;
+    }
+
+    .connect3-board {
+        gap: 5px;
+    }
+
+    .connect3-hoops,
+    .connect3-grid {
+        gap: 5px;
+    }
+
+    .connect3-grid {
+        padding: 8px;
+    }
+
+    .connect3-hoop {
+        height: 46px;
+    }
+
+    .connect3-hoop-rim {
+        top: 11px;
+        border-width: 3px;
+    }
+
+    .connect3-hoop-net {
+        top: 24px;
+        height: 12px;
+    }
+}
+
+
+/* Connect 3 board sizing: roomy columns, aligned hoops, no horizontal scrolling */
+#game-area:has(.connect3-screen),
+#game-container:has(.connect3-screen),
+.connect3-screen {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+.connect3-screen {
+    width: 100%;
+    padding: clamp(12px, 2vw, 24px);
+}
+
+.connect3-board {
+    box-sizing: border-box;
+    width: min(100%, 680px);
+    max-width: 100%;
+    margin: 18px auto;
+    flex: 0 1 680px;
+}
+
+.connect3-hoops,
+.connect3-grid {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: clamp(5px, 1.1vw, 12px);
+    row-gap: clamp(5px, 1.1vw, 12px);
+}
+
+.connect3-hoops {
+    margin: 0 0 clamp(8px, 1.2vw, 12px);
+}
+
+.connect3-hoop {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: clamp(46px, 6vw, 64px);
+    padding: 0;
+    overflow: hidden;
+}
+
+.connect3-hoop-rim {
+    left: 17%;
+    right: 17%;
+    top: 25%;
+    height: 30%;
+    border-width: clamp(3px, 0.45vw, 5px);
+}
+
+.connect3-hoop-net {
+    top: 53%;
+    left: 29%;
+    width: 42%;
+    height: 27%;
+}
+
+.connect3-grid {
+    padding: clamp(7px, 1.4vw, 14px);
+    gap: clamp(5px, 1.1vw, 12px);
+}
+
+.connect3-cell {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+
+.connect3-token {
+    box-sizing: border-box;
+    max-width: 78%;
+}
+
+@media (max-width: 620px) {
+    #game-area:has(.connect3-screen) {
+        padding: 8px;
+    }
+
+    .connect3-screen {
+        padding: 12px 8px;
+    }
+
+    .connect3-board {
+        width: 100%;
+        margin: 12px auto;
+    }
+
+    .connect3-hoops,
+    .connect3-grid {
+        column-gap: 5px;
+        row-gap: 5px;
+    }
+
+    .connect3-grid {
+        padding: 7px;
+    }
+
+    .connect3-hoop {
+        height: clamp(40px, 12vw, 50px);
+    }
+
+    .connect3-hoop-rim {
+        top: 24%;
+        height: 31%;
+    }
+
+    .connect3-hoop-net {
+        top: 53%;
+        height: 25%;
+    }
+}
+
+
+/* Connect 3: fit the complete game into the viewport, with side information panels */
+#game-area:has(.connect3-screen) {
+    box-sizing: border-box;
+    height: calc(100dvh - var(--app-header-height, 76px));
+    min-height: 0;
+    padding: 8px clamp(8px, 1.5vw, 22px);
+    overflow: hidden;
+}
+
+#game-container:has(.connect3-screen) {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.connect3-screen {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns:
+        minmax(130px, 1fr)
+        minmax(0, min(48vw, 620px, calc(100dvh - 270px)))
+        minmax(130px, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    justify-items: stretch;
+    gap: clamp(6px, 1.1vh, 12px) clamp(10px, 1.8vw, 28px);
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    min-width: 0;
+    max-height: 100%;
+    margin: 0 auto;
+    padding: clamp(6px, 1vh, 12px);
+    overflow: hidden;
+}
+
+.connect3-title { display: none !important; }
+.connect3-status { display: contents; }
+
+.connect3-player {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(10px, 1.6vh, 18px) 10px;
+    font-size: clamp(13px, 1.2vw, 17px);
+}
+.connect3-player.player-one {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+}
+.connect3-player.player-two {
+    grid-column: 3;
+    grid-row: 2;
+    align-self: start;
+}
+
+.connect3-instruction {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    width: 100%;
+    margin: 0;
+    padding: 4px 0;
+    font-size: clamp(13px, 1.25vw, 17px);
+    text-align: center;
+}
+
+.connect3-board {
+    box-sizing: border-box;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    justify-self: center;
+    width: min(100%, 620px, calc(100dvh - 270px));
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.connect3-hoops,
+.connect3-grid {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(4px, 0.65vw, 9px);
+}
+.connect3-hoops { margin: 0 0 clamp(5px, 0.8vh, 9px); }
+.connect3-hoop {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: clamp(36px, 6.2vh, 56px);
+    padding: 0;
+    overflow: hidden;
+}
+.connect3-hoop-rim {
+    top: 24%;
+    left: 17%;
+    right: 17%;
+    height: 30%;
+    border-width: clamp(2px, 0.4vw, 4px);
+}
+.connect3-hoop-net { top: 53%; left: 29%; width: 42%; height: 25%; }
+.connect3-grid { padding: clamp(6px, 1vw, 12px); }
+.connect3-cell {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+.connect3-token { max-width: 78%; max-height: 78%; }
+
+.connect3-controls {
+    grid-column: 2;
+    grid-row: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+}
+.connect3-turn-clock {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: center;
+    justify-self: stretch;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid var(--arena-border);
+    border-radius: 12px;
+    background: var(--arena-panel);
+    color: var(--arena-text);
+    text-align: center;
+    font-size: clamp(13px, 1.1vw, 16px);
+}
+.connect3-screen .arduino-controls {
+    grid-column: 3;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 12px;
+}
+.connect3-screen .arduino-controls .connect3-button { width: 100%; white-space: normal; }
+.connect3-result {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    min-height: 0;
+    margin: 0;
+    font-size: clamp(14px, 1.5vw, 20px);
+    line-height: 1.2;
+}
+.connect3-result:empty { display: none; }
+
+@media (max-height: 720px) and (min-width: 761px) {
+    #game-area:has(.connect3-screen) { padding-top: 4px; padding-bottom: 4px; }
+    .connect3-screen {
+        gap: 5px 12px;
+        padding: 4px;
+        grid-template-columns:
+            minmax(115px, 1fr)
+            minmax(0, min(45vw, 560px, calc(100dvh - 235px)))
+            minmax(115px, 1fr);
+    }
+    .connect3-board { width: min(100%, 560px, calc(100dvh - 235px)); }
+    .connect3-hoop { height: clamp(30px, 5.2vh, 42px); }
+    .connect3-player { padding: 8px 6px; }
+}
+
+@media (max-width: 760px) {
+    #game-area:has(.connect3-screen) {
+        height: calc(100dvh - var(--app-header-height, 76px));
+        padding: 4px;
+    }
+    .connect3-screen {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+        gap: 5px;
+        padding: 4px;
+    }
+    .connect3-player.player-one { grid-column: 1; grid-row: 1; }
+    .connect3-player.player-two { grid-column: 2; grid-row: 1; }
+    .connect3-player { padding: 6px 4px; font-size: 12px; }
+    .connect3-player small { margin-top: 2px; }
+    .connect3-instruction {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        align-self: center;
+        font-size: 12px;
+    }
+    .connect3-board {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        width: min(100%, calc(100dvh - 300px));
+        max-width: 100%;
+    }
+    .connect3-hoop { height: clamp(28px, 5vh, 40px); }
+    .connect3-grid { padding: 5px; gap: 4px; }
+    .connect3-hoops { gap: 4px; margin-bottom: 4px; }
+    .connect3-controls { grid-column: 1; grid-row: 4; gap: 4px; }
+    .connect3-turn-clock {
+        grid-column: 2;
+        grid-row: 4;
+        padding: 6px 4px;
+        font-size: 12px;
+    }
+    .connect3-screen .arduino-controls {
+        grid-column: 1 / -1;
+        grid-row: 5;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 4px 8px;
+        font-size: 10px;
+    }
+    .connect3-screen .arduino-controls .connect3-button { width: auto; }
+    .connect3-result { grid-column: 1 / -1; grid-row: 6; font-size: 14px; }
+}
+
+/* Connect 3 turn HUD: keep the board centered and put all turn controls beneath the active player */
+@media (min-width: 761px) {
+  .connect3-screen {
+    grid-template-columns: minmax(150px, 1fr) minmax(0, min(48vw, 620px, calc(100dvh - 250px))) minmax(150px, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto auto auto auto auto;
+    column-gap: clamp(12px, 2vw, 30px);
+    row-gap: clamp(6px, 1vh, 10px);
+  }
+
+  .connect3-player.player-one,
+  .connect3-player.player-two {
+    grid-row: 1;
+    align-self: start;
+  }
+  .connect3-player.player-one { grid-column: 1; }
+  .connect3-player.player-two { grid-column: 3; }
+
+  .connect3-board {
+    grid-column: 2;
+    grid-row: 1 / 5;
+    width: min(100%, 620px, calc(100dvh - 250px));
+    align-self: center;
+  }
+
+  .connect3-instruction,
+  .connect3-turn-clock,
+  .connect3-controls {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    align-self: start;
+    justify-self: stretch;
+    margin: 0;
+  }
+
+  .connect3-instruction { grid-row: 2; }
+  .connect3-turn-clock { grid-row: 3; }
+  .connect3-controls { grid-row: 4; }
+
+  .connect3-screen:has(.player-one.active) .connect3-instruction,
+  .connect3-screen:has(.player-one.active) .connect3-turn-clock,
+  .connect3-screen:has(.player-one.active) .connect3-controls {
+    grid-column: 1;
+  }
+  .connect3-screen:has(.player-two.active) .connect3-instruction,
+  .connect3-screen:has(.player-two.active) .connect3-turn-clock,
+  .connect3-screen:has(.player-two.active) .connect3-controls {
+    grid-column: 3;
+  }
+
+  .connect3-screen .arduino-controls {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 14px;
+    padding-top: 2px;
+  }
+  .connect3-screen .arduino-controls .connect3-button { width: auto; }
+  .connect3-result { grid-column: 1 / -1; grid-row: 6; }
+}
+
+@media (max-width: 760px) {
+  /* Small screens keep both player labels at the top and put the active turn panel below the board. */
+  .connect3-screen {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
+    align-content: stretch;
+    gap: 4px;
+  }
+  .connect3-player.player-one { grid-column: 1; grid-row: 1; }
+  .connect3-player.player-two { grid-column: 2; grid-row: 1; }
+  .connect3-board {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: min(100%, calc(100dvh - 265px));
+    max-height: 100%;
+  }
+  .connect3-instruction {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    align-self: center;
+  }
+  .connect3-turn-clock {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .connect3-controls {
+    grid-column: 2;
+    grid-row: 4;
+  }
+  .connect3-screen:has(.player-one.active) .connect3-instruction,
+  .connect3-screen:has(.player-one.active) .connect3-turn-clock,
+  .connect3-screen:has(.player-one.active) .connect3-controls,
+  .connect3-screen:has(.player-two.active) .connect3-instruction,
+  .connect3-screen:has(.player-two.active) .connect3-turn-clock,
+  .connect3-screen:has(.player-two.active) .connect3-controls {
+    grid-column: 1 / -1;
+  }
+  .connect3-screen .arduino-controls {
+    grid-column: 1 / -1;
+    grid-row: 5;
+  }
+  .connect3-result { grid-row: 6; }
+}
+
+/* Final Connect 3 full-screen layout: indicators first, centered turn HUD, wide board below */
+#game-area:has(.connect3-screen) {
+    height: calc(100dvh - var(--app-header-height, 76px));
+    min-height: 0;
+    padding: 4px clamp(8px, 1.2vw, 18px);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+#game-container:has(.connect3-screen) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+.connect3-screen {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 4px;
+    overflow: hidden;
+    grid-template-columns: minmax(90px, 1fr) minmax(0, min(62vw, 680px, calc(100dvh - 250px))) minmax(90px, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    align-content: stretch;
+    align-items: center;
+    column-gap: clamp(8px, 1.5vw, 22px);
+    row-gap: clamp(4px, 0.7vh, 8px);
+}
+.connect3-screen > .connect3-title { display: none !important; }
+.connect3-status { display: contents; }
+.connect3-player {
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(5px, 0.8vh, 9px) 8px;
+    text-align: center;
+    font-size: clamp(12px, 1.1vw, 16px);
+    line-height: 1.15;
+}
+.connect3-player.player-one { grid-column: 1; grid-row: 1; }
+.connect3-player.player-two { grid-column: 3; grid-row: 1; }
+.connect3-player small { display: block; margin-top: 2px; font-size: 0.78em; }
+
+/* Keep the active-turn prompt, timer and movement buttons together in the centre. */
+.connect3-instruction {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 3px 4px;
+    text-align: center;
+    font-size: clamp(12px, 1.05vw, 15px);
+    line-height: 1.15;
+}
+.connect3-turn-clock {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    width: auto;
+    margin: 0;
+    padding: 3px 7px;
+    border: 0;
+    background: transparent;
+    font-size: clamp(11px, 0.95vw, 14px);
+    white-space: nowrap;
+}
+.connect3-controls {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
+    align-self: end;
+    width: auto;
+    margin: 0;
+    padding-top: 22px;
+    gap: 6px;
+}
+.connect3-controls .connect3-button {
+    min-height: 30px;
+    padding: 5px 12px;
+    font-size: clamp(11px, 0.95vw, 14px);
+}
+
+.connect3-board {
+    grid-column: 2;
+    grid-row: 3;
+    box-sizing: border-box;
+    width: min(100%, 680px, calc(100dvh - 250px));
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+    align-self: center;
+}
+.connect3-hoops,
+.connect3-grid {
+    display: grid;
+    width: 100%;
+    box-sizing: border-box;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(4px, 0.65vw, 9px);
+}
+.connect3-hoops { margin: 0 0 clamp(4px, 0.7vh, 8px); }
+.connect3-hoop {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: clamp(30px, 4.7vh, 48px);
+    padding: 0;
+    overflow: hidden;
+}
+.connect3-hoop-rim {
+    top: 22%;
+    left: 16%;
+    right: 16%;
+    height: 32%;
+    border-width: clamp(2px, 0.35vw, 4px);
+}
+.connect3-hoop-net { top: 52%; left: 28%; width: 44%; height: 26%; }
+.connect3-grid { padding: clamp(5px, 0.8vw, 10px); }
+.connect3-cell { min-width: 0; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; }
+.connect3-token { max-width: 78%; max-height: 78%; }
+
+/* Compact side areas carry connection status, not the main turn controls. */
+.connect3-screen .arduino-controls {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 10px;
+    width: 100%;
+    margin: 0;
+    padding: 2px 0;
+    font-size: 11px;
+    line-height: 1.1;
+}
+.connect3-screen .arduino-controls .connect3-button {
+    width: auto;
+    min-height: 26px;
+    padding: 4px 9px;
+    font-size: 10px;
+}
+.connect3-result {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    justify-self: center;
+    align-self: end;
+    margin: 0;
+    padding-bottom: 2px;
+    font-size: 13px;
+    line-height: 1.1;
+    pointer-events: none;
+}
+.connect3-result:empty { display: none; }
+
+@media (max-height: 760px) and (min-width: 761px) {
+    .connect3-screen {
+        grid-template-columns: minmax(80px, 1fr) minmax(0, min(60vw, 620px, calc(100dvh - 220px))) minmax(80px, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+        row-gap: 3px;
+        padding: 2px;
+    }
+    .connect3-board { width: min(100%, 620px, calc(100dvh - 220px)); }
+    .connect3-hoop { height: clamp(26px, 4vh, 38px); }
+    .connect3-player { padding: 4px; }
+    .connect3-screen .arduino-controls { font-size: 10px; }
+}
+@media (max-width: 760px) {
+    #game-area:has(.connect3-screen) {
+        height: calc(100dvh - var(--app-header-height, 76px));
+        padding: 3px;
+    }
+    .connect3-screen {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+        gap: 4px;
+        padding: 2px;
+    }
+    .connect3-player.player-one { grid-column: 1; grid-row: 1; }
+    .connect3-player.player-two { grid-column: 2; grid-row: 1; }
+    .connect3-instruction {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        text-align: center;
+        padding: 2px 70px 2px 2px;
+    }
+    .connect3-turn-clock { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
+    .connect3-controls {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        justify-self: center;
+        align-self: center;
+        padding: 0;
+    }
+    .connect3-board {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        width: min(100%, calc(100dvh - 235px));
+        max-height: 100%;
+    }
+    .connect3-hoop { height: clamp(24px, 4.5vh, 36px); }
+    .connect3-hoops, .connect3-grid { gap: 4px; }
+    .connect3-grid { padding: 4px; }
+    .connect3-screen .arduino-controls {
+        grid-column: 1 / -1;
+        grid-row: 5;
+        gap: 3px 6px;
+        font-size: 9px;
+    }
+    .connect3-screen .arduino-controls .connect3-button { min-height: 23px; padding: 3px 6px; }
+    .connect3-result { grid-row: 5; font-size: 11px; }
+}
+
+/* Final row placement override: no overlapping HUD elements; keep every control visible. */
+.connect3-screen {
+    grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+}
+.connect3-instruction {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: stretch;
+    align-self: center;
+    padding: 2px 4px;
+    text-align: center;
+}
+.connect3-turn-clock {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: center;
+    align-self: center;
+    padding: 1px 4px;
+}
+.connect3-controls {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: center;
+    align-self: center;
+    padding: 0;
+}
+.connect3-board {
+    grid-column: 2;
+    grid-row: 5;
+    width: min(680px, 68vw, calc(83dvh - 237px));
+    max-width: 100%;
+    max-height: 100%;
+}
+.connect3-screen .arduino-controls {
+    grid-column: 1 / -1;
+    grid-row: 6;
+}
+.connect3-result {
+    grid-column: 1 / -1;
+    grid-row: 6;
+}
+@media (max-height: 760px) and (min-width: 761px) {
+    .connect3-screen { grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; }
+    .connect3-board { width: min(620px, 66vw, calc(83dvh - 220px)); }
+}
+@media (max-width: 760px) {
+    .connect3-screen {
+        grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+    }
+    .connect3-instruction { grid-column: 1 / -1; grid-row: 2; padding-right: 4px; }
+    .connect3-turn-clock { grid-column: 1 / -1; grid-row: 3; justify-self: center; }
+    .connect3-controls { grid-column: 1 / -1; grid-row: 4; }
+    .connect3-board {
+        grid-column: 1 / -1;
+        grid-row: 5;
+        width: min(100%, calc(83dvh - 220px));
+    }
+    .connect3-screen .arduino-controls { grid-row: 6; }
+    .connect3-result { grid-row: 6; }
+}
+
+
+/* Final Connect 3 layout: player indicators centred beside the board, controls centred below it. */
+#game-area:has(.connect3-screen) {
+    height: calc(100dvh - var(--app-header-height, 76px));
+    min-height: 0;
+    padding: 4px clamp(4px, 1vw, 14px);
+    overflow: hidden;
+}
+#game-container:has(.connect3-screen) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+.connect3-screen {
+    display: grid;
+    box-sizing: border-box;
+    grid-template-columns: minmax(76px, .7fr) minmax(0, min(72vw, 760px, calc((100dvh - 245px) * .82))) minmax(76px, .7fr);
+    grid-template-rows: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    justify-items: stretch;
+    gap: clamp(3px, .6vh, 7px) clamp(6px, 1vw, 16px);
+    width: 100%;
+    height: 100%;
+    max-width: 1440px;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 2px;
+    overflow: hidden;
+}
+.connect3-screen > .connect3-title { display: none !important; }
+.connect3-status { display: contents; }
+.connect3-player {
+    grid-row: 1;
+    align-self: center;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(5px, 1vh, 10px) 3px;
+    text-align: center;
+    font-size: clamp(10px, 1vw, 14px);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+.connect3-player.player-one { grid-column: 1; }
+.connect3-player.player-two { grid-column: 3; }
+.connect3-player small { display: block; margin-top: 3px; font-size: .78em; }
+.connect3-player.active {
+    outline: 2px solid var(--arena-orange, #ff9b42);
+    outline-offset: -2px;
+    border-radius: 9px;
+    background: rgba(255, 155, 66, .09);
+}
+.connect3-board {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    box-sizing: border-box;
+    width: min(100%, 760px, calc((100dvh - 245px) * .82));
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+}
+/* Matching horizontal inset and identical column gaps keep each hoop directly over its hole column. */
+.connect3-hoops,
+.connect3-grid {
+    display: grid;
+    box-sizing: border-box;
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: clamp(4px, .65vw, 9px);
+}
+.connect3-hoops {
+    padding: 0 clamp(5px, .8vw, 10px);
+    margin: 0 0 clamp(3px, .5vh, 6px);
+}
+.connect3-hoop {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: clamp(28px, 5vh, 48px);
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent !important;
+    box-shadow: none;
+    overflow: visible;
+}
+.connect3-hoop.selected {
+    border-color: transparent;
+    background: transparent !important;
+    animation: connect3-hoop-flash .7s ease-in-out infinite alternate;
+}
+.connect3-hoop-rim {
+    top: 18%;
+    left: 17%;
+    right: 17%;
+    height: 35%;
+    border-width: clamp(2px, .35vw, 4px);
+}
+.connect3-hoop-net {
+    top: 51%;
+    left: 29%;
+    width: 42%;
+    height: 28%;
+}
+.connect3-grid {
+    padding: clamp(5px, .8vw, 10px);
+    gap: clamp(4px, .65vw, 9px);
+}
+.connect3-cell {
+    display: grid;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    place-items: center;
+    overflow: hidden;
+}
+.connect3-cell.selected-column {
+    animation: connect3-column-flash .7s ease-in-out infinite alternate;
+}
+.connect3-cell.selected-column::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(255, 173, 75, .72);
+    border-radius: 50%;
+    pointer-events: none;
+}
+@keyframes connect3-hoop-flash {
+    from { filter: drop-shadow(0 0 1px rgba(255, 158, 62, .3)); }
+    to { filter: drop-shadow(0 0 9px rgba(255, 158, 62, .95)); }
+}
+@keyframes connect3-column-flash {
+    from { box-shadow: inset 0 0 0 2px rgba(255, 158, 62, .15); }
+    to { box-shadow: inset 0 0 0 3px rgba(255, 158, 62, .65), inset 0 0 16px rgba(255, 158, 62, .24); }
+}
+.connect3-instruction {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 2px 4px;
+    text-align: center;
+    font-size: clamp(11px, 1vw, 14px);
+    line-height: 1.15;
+}
+.connect3-turn-clock {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: center;
+    width: auto;
+    margin: 0;
+    padding: 1px 4px;
+    text-align: center;
+    font-size: clamp(11px, .95vw, 13px);
+    line-height: 1.1;
+}
+.connect3-controls {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    margin: 0;
+    padding: 0 0 2px;
+}
+.connect3-controls .connect3-button {
+    min-height: 28px;
+    padding: 4px 12px;
+    font-size: clamp(10px, .9vw, 13px);
+}
+.connect3-screen .arduino-controls {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3px 8px;
+    width: 100%;
+    margin: 0;
+    padding: 2px 0 0;
+    font-size: 10px;
+    line-height: 1.1;
+}
+.connect3-screen .arduino-controls .connect3-button {
+    width: auto;
+    min-height: 23px;
+    padding: 3px 7px;
+    font-size: 10px;
+}
+.connect3-result {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    justify-self: center;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1.1;
+    pointer-events: none;
+}
+.connect3-result:empty { display: none; }
+@media (max-height: 700px) and (min-width: 761px) {
+    .connect3-screen {
+        grid-template-columns: minmax(66px, .65fr) minmax(0, min(70vw, 700px, calc((100dvh - 220px) * .82))) minmax(66px, .65fr);
+        gap: 2px clamp(5px, .7vw, 10px);
+    }
+    .connect3-board { width: min(100%, 700px, calc((100dvh - 220px) * .82)); }
+    .connect3-hoop { height: clamp(24px, 4vh, 34px); }
+    .connect3-player { padding: 3px 2px; font-size: 10px; }
+}
+@media (max-width: 760px) {
+    #game-area:has(.connect3-screen) { padding: 2px; }
+    .connect3-screen {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+        gap: 3px;
+        padding: 1px;
+    }
+    .connect3-player { grid-row: 1; padding: 3px 2px; font-size: 11px; }
+    .connect3-player.player-one { grid-column: 1; }
+    .connect3-player.player-two { grid-column: 2; }
+    .connect3-board {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: min(100%, calc((100dvh - 215px) * .82));
+        max-width: 100%;
+    }
+    .connect3-hoops { padding: 0 5px; }
+    .connect3-hoops, .connect3-grid { gap: 4px; }
+    .connect3-hoop { height: clamp(23px, 4vh, 32px); }
+    .connect3-grid { padding: 5px; }
+    .connect3-instruction { grid-column: 1 / -1; grid-row: 3; }
+    .connect3-turn-clock { grid-column: 1 / -1; grid-row: 4; }
+    .connect3-controls { grid-column: 1 / -1; grid-row: 5; }
+    .connect3-screen .arduino-controls { grid-row: 6; font-size: 9px; }
+    .connect3-screen .arduino-controls .connect3-button { min-height: 21px; font-size: 9px; }
+    .connect3-result { grid-row: 6; font-size: 10px; }
+}
+
+
+/* Connect 3 corrective overrides: keep hoops visible, centre player panels, and flash the selected column. */
+#game-area:has(.connect3-screen) {
+    height: calc(100dvh - var(--app-header-height, 76px));
+    min-height: 0;
+    padding: 2px clamp(3px, .7vw, 10px);
+    overflow: hidden;
+}
+#game-container:has(.connect3-screen) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+.connect3-screen {
+    display: grid;
+    grid-template-columns: minmax(76px, .7fr) minmax(0, min(760px, 72vw, calc((100dvh - 190px) * .70))) minmax(76px, .7fr);
+    grid-template-rows: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    justify-items: stretch;
+    gap: clamp(3px, .55vh, 7px) clamp(6px, 1vw, 16px);
+    width: 100%;
+    height: 100%;
+    max-width: 1440px;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 2px;
+    overflow: hidden;
+}
+.connect3-screen > .connect3-title { display: none !important; }
+.connect3-status { display: contents; }
+.connect3-player {
+    grid-row: 1;
+    align-self: center;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(5px, .8vh, 9px) 3px;
+    text-align: center;
+    font-size: clamp(10px, .95vw, 14px);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+.connect3-player.player-one { grid-column: 1; }
+.connect3-player.player-two { grid-column: 3; }
+.connect3-player small { display: block; margin-top: 3px; font-size: .78em; }
+.connect3-player.active {
+    outline: 2px solid var(--arena-orange, #ff9b42);
+    outline-offset: -2px;
+    border-radius: 9px;
+    background: rgba(255, 155, 66, .09);
+}
+.connect3-board {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    box-sizing: border-box;
+    width: min(100%, 760px, calc((100dvh - 190px) * .70));
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+}
+.connect3-hoops,
+.connect3-grid {
+    display: grid;
+    box-sizing: border-box;
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: clamp(4px, .65vw, 9px);
+}
+.connect3-hoops {
+    /* Match the grid's inner padding exactly so every rim sits over its column. */
+    padding: 0 clamp(5px, .8vw, 10px);
+    margin: 0 0 clamp(3px, .5vh, 6px);
+}
+.connect3-hoop {
+    position: relative;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: clamp(30px, 4.5vh, 46px);
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent !important;
+    box-shadow: none;
+    overflow: visible;
+}
+.connect3-hoop.selected {
+    background: transparent !important;
+    border-color: transparent;
+    animation: connect3-hoop-flash .7s ease-in-out infinite alternate;
+}
+.connect3-hoop-rim {
+    top: 18%;
+    left: 17%;
+    right: 17%;
+    height: 35%;
+    border-width: clamp(2px, .35vw, 4px);
+}
+.connect3-hoop-net { top: 51%; left: 29%; width: 42%; height: 28%; }
+.connect3-grid {
+    padding: clamp(5px, .8vw, 10px);
+    gap: clamp(4px, .65vw, 9px);
+}
+.connect3-cell {
+    display: grid;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+}
+.connect3-cell.selected-column {
+    animation: connect3-column-flash .7s ease-in-out infinite alternate;
+}
+.connect3-cell.selected-column::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    border: 2px solid rgba(255, 173, 75, .8);
+    border-radius: 50%;
+    background: rgba(255, 158, 62, .08);
+    pointer-events: none;
+}
+@keyframes connect3-hoop-flash {
+    from { filter: drop-shadow(0 0 1px rgba(255, 158, 62, .3)); }
+    to { filter: drop-shadow(0 0 9px rgba(255, 158, 62, .95)); }
+}
+@keyframes connect3-column-flash {
+    from { box-shadow: inset 0 0 0 2px rgba(255, 158, 62, .18); }
+    to { box-shadow: inset 0 0 0 3px rgba(255, 158, 62, .85), inset 0 0 18px rgba(255, 158, 62, .38); }
+}
+.connect3-instruction {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 2px 4px;
+    text-align: center;
+    font-size: clamp(11px, 1vw, 14px);
+    line-height: 1.15;
+}
+.connect3-turn-clock {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: center;
+    width: auto;
+    margin: 0;
+    padding: 1px 4px;
+    text-align: center;
+    font-size: clamp(11px, .95vw, 13px);
+    line-height: 1.1;
+}
+.connect3-controls {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    margin: 0;
+    padding: 0 0 2px;
+}
+.connect3-controls .connect3-button { min-height: 28px; padding: 4px 12px; font-size: clamp(10px, .9vw, 13px); }
+.connect3-screen .arduino-controls {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3px 8px;
+    width: 100%;
+    margin: 0;
+    padding: 2px 0 0;
+    font-size: 10px;
+    line-height: 1.1;
+}
+.connect3-screen .arduino-controls .connect3-button { width: auto; min-height: 23px; padding: 3px 7px; font-size: 10px; }
+.connect3-result { grid-column: 1 / -1; grid-row: 5; justify-self: center; margin: 0; padding: 0; font-size: 12px; line-height: 1.1; pointer-events: none; }
+.connect3-result:empty { display: none; }
+@media (max-height: 700px) and (min-width: 761px) {
+    .connect3-screen {
+        grid-template-columns: minmax(66px, .65fr) minmax(0, min(700px, 70vw, calc((100dvh - 160px) * .68))) minmax(66px, .65fr);
+        gap: 2px clamp(5px, .7vw, 10px);
+    }
+    .connect3-board { width: min(100%, 700px, calc((100dvh - 160px) * .68)); }
+    .connect3-hoop { height: clamp(26px, 4vh, 36px); }
+    .connect3-player { padding: 3px 2px; font-size: 10px; }
+}
+@media (max-width: 760px) {
+    #game-area:has(.connect3-screen) { padding: 2px; }
+    .connect3-screen {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+        gap: 3px;
+        padding: 1px;
+    }
+    .connect3-player { grid-row: 1; padding: 3px 2px; font-size: 11px; }
+    .connect3-player.player-one { grid-column: 1; }
+    .connect3-player.player-two { grid-column: 2; }
+    .connect3-board {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: min(100%, calc((100dvh - 190px) * .68));
+        max-width: 100%;
+    }
+    .connect3-hoops { padding: 0 clamp(5px, .8vw, 10px); }
+    .connect3-hoops, .connect3-grid { column-gap: 4px; }
+    .connect3-grid { padding: 5px; gap: 4px; }
+    .connect3-hoop { height: clamp(26px, 4vh, 36px); }
+    .connect3-instruction { grid-column: 1 / -1; grid-row: 3; }
+    .connect3-turn-clock { grid-column: 1 / -1; grid-row: 4; }
+    .connect3-controls { grid-column: 1 / -1; grid-row: 5; }
+    .connect3-screen .arduino-controls { grid-row: 6; font-size: 9px; }
+    .connect3-screen .arduino-controls .connect3-button { min-height: 21px; font-size: 9px; }
+    .connect3-result { grid-row: 6; font-size: 10px; }
+}
+
+/* Final screenshot-driven corrections: centre the game controls and keep the full board visible. */
+#game-area:has(.connect3-screen) {
+  height: calc(100dvh - var(--app-header-height, 92px) - 56px);
+  min-height: 0;
+  padding: 4px 12px;
+  overflow: hidden;
+}
+#game-container:has(.connect3-screen) {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.connect3-screen {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, min(720px, 54vw, calc((100dvh - 285px) * .82))) minmax(110px, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  justify-items: stretch;
+  gap: clamp(4px, .7vh, 8px) clamp(10px, 1.4vw, 22px);
+  width: 100%;
+  height: 100%;
+  max-width: 1600px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 4px 0;
+  overflow: hidden;
+}
+.connect3-screen > .connect3-title { display: none !important; }
+.connect3-status { display: contents; }
+.connect3-player {
+  grid-row: 1;
+  align-self: center;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 5px;
+  text-align: center;
+  font-size: clamp(11px, .95vw, 14px);
+  line-height: 1.15;
+}
+.connect3-player.player-one { grid-column: 1; }
+.connect3-player.player-two { grid-column: 3; }
+.connect3-board {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 720px, calc((100dvh - 285px) * .82));
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 auto;
+}
+.connect3-hoops,
+.connect3-grid {
+  display: grid;
+  box-sizing: border-box;
+  width: 100%;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  column-gap: clamp(4px, .65vw, 9px);
+}
+.connect3-hoops {
+  flex: 0 0 auto;
+  padding: 0 clamp(5px, .8vw, 10px);
+  margin: 0 0 clamp(4px, .7vh, 8px);
+}
+.connect3-hoop {
+  height: clamp(32px, 5vh, 48px);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.connect3-hoop.selected {
+  background: transparent !important;
+  animation: connect3-hoop-flash .7s ease-in-out infinite alternate;
+}
+.connect3-grid {
+  flex: 0 1 auto;
+  padding: clamp(5px, .8vw, 10px);
+  gap: clamp(4px, .65vw, 9px);
+}
+.connect3-cell {
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+/* Same pulse cadence as the selected hoop; no permanently highlighted orange outline. */
+.connect3-cell.selected-column {
+  animation: connect3-column-flash .7s ease-in-out infinite alternate;
+}
+.connect3-cell.selected-column::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255, 173, 75, 0);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: connect3-column-rim-flash .7s ease-in-out infinite alternate;
+}
+@keyframes connect3-hoop-flash {
+  from { filter: drop-shadow(0 0 1px rgba(255, 158, 62, .18)); }
+  to { filter: drop-shadow(0 0 10px rgba(255, 158, 62, 1)); }
+}
+@keyframes connect3-column-flash {
+  from { background-color: rgba(255, 158, 62, .015); box-shadow: inset 0 0 0 0 rgba(255, 158, 62, 0); }
+  to { background-color: rgba(255, 158, 62, .18); box-shadow: inset 0 0 0 3px rgba(255, 158, 62, .45), inset 0 0 18px rgba(255, 158, 62, .28); }
+}
+@keyframes connect3-column-rim-flash {
+  from { border-color: rgba(255, 173, 75, .08); }
+  to { border-color: rgba(255, 173, 75, .9); }
+}
+.connect3-instruction {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  margin: 0;
+  padding: 2px 4px;
+  text-align: center;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.2;
+}
+.connect3-turn-clock {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: center;
+  margin: 0;
+  padding: 1px 4px;
+  text-align: center;
+  font-size: clamp(11px, .95vw, 13px);
+  line-height: 1.15;
+}
+.connect3-controls {
+  grid-column: 2;
+  grid-row: 4;
+  justify-self: center;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+.connect3-controls .connect3-button { min-height: 30px; padding: 5px 14px; }
+.connect3-screen .arduino-controls {
+  grid-column: 1 / -1;
+  grid-row: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 10px;
+  width: 100%;
+  margin: 0;
+  padding: 2px 0 0;
+  font-size: 10px;
+  line-height: 1.1;
+}
+.connect3-result { grid-column: 1 / -1; grid-row: 5; }
+@media (max-height: 760px) {
+  .connect3-screen { grid-template-columns: minmax(90px, 1fr) minmax(0, min(620px, 50vw, calc((100dvh - 245px) * .82))) minmax(90px, 1fr); }
+  .connect3-board { width: min(100%, 620px, calc((100dvh - 245px) * .82)); }
+  .connect3-hoop { height: clamp(26px, 4vh, 38px); }
+  .connect3-player { padding: 5px 3px; }
+}
+@media (max-width: 760px) {
+  #game-area:has(.connect3-screen) { padding: 3px 5px; }
+  .connect3-screen { grid-template-columns: minmax(0, 1fr) minmax(0, min(74vw, calc((100dvh - 255px) * .82))) minmax(0, 1fr); gap: 4px; }
+  .connect3-player { font-size: 10px; padding: 5px 2px; }
+  .connect3-board { width: min(100%, calc((100dvh - 255px) * .82)); }
+  .connect3-hoop { height: clamp(24px, 3.8vh, 32px); }
+  .connect3-controls .connect3-button { min-height: 27px; padding: 4px 9px; }
 }
