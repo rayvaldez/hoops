@@ -183,7 +183,7 @@ body.sports-arena-app::before {
 
 #game-area {
     width: 100%;
-    padding: 22px clamp(12px, 3vw, 36px) 36px;
+    padding: 22px clamp(12px, 3vw, 8px) 36px;
     color: var(--arena-text);
 }
 
@@ -922,7 +922,7 @@ input {
 /* Game-specific layout corrections: keep Shootout full-width without stretching Connect 3/4 */
 #game-area {
     width: 100%;
-    padding: 22px clamp(12px, 3vw, 36px) 36px;
+    padding: 22px clamp(12px, 3vw, 10px) 36px;
     overflow: visible;
     text-align: initial;
     background: none;
@@ -933,8 +933,11 @@ input {
     width: min(1120px, 100%);
     max-width: 1120px;
     min-width: 0;
+    min-height: 0;
+    height: 100%;
     margin: 0 auto;
-    overflow: visible;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* Apply the edge-to-edge arena only while 30 Second Shootout is active. */
