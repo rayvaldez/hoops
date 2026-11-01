@@ -1176,6 +1176,7 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
   box-shadow: 0 5px 0 #09111e, 0 8px 14px #0005;
   font-weight: 900;
   transition: border-color .2s, transform .2s, box-shadow .2s;
+  transform: translateY(200px);
 }
 
 .connect3-player small {
@@ -1186,9 +1187,9 @@ CONNECT 4 HOOPS - PLAYER NAME SCREEN
   letter-spacing: 1px;
 }
 
-.connect3-player.active {
-  transform: translateY(-2px);
-}
+/* .connect3-player.active {
+  transform: translateY(200px);
+} */
 
 .connect3-player.player-one.active {
   border-color: #ff5147;
@@ -1840,11 +1841,11 @@ box-shadow: none;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
     width: 100%;
     box-sizing: border-box;
-    padding: 16px 20px;
-    margin-top: 20px;
+    padding: 6px 12px;
+    margin-top: 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -1853,7 +1854,7 @@ box-shadow: none;
 }
 
 .app-arduino-footer [data-arduino-status] {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .game-over-buttons .shootout-screen .shootout-button,
@@ -1865,4 +1866,31 @@ box-shadow: none;
 
 .shootout-screen #back-to-menu {
     clear: both;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    min-height: 0;
+}
+
+#app {
+    height: 100dvh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#game-container {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.app-arduino-footer {
+    flex: 0 0 auto;
 }
