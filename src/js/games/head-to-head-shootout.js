@@ -15,6 +15,9 @@ export class HeadToHeadShootout {
     this.cacheElements();
     this.bindControls();
     this.updateDisplay();
+
+    this.handleKeyboardShot = this.handleKeyboardShot.bind(this);
+    document.addEventListener('keydown', this.handleKeyboardShot);
   }
 
   render() {
@@ -184,6 +187,32 @@ export class HeadToHeadShootout {
       this.resetGame();
     });
   }
+
+  handleKeyboardShot(event) {
+    if (!this.gameStarted) return;
+    if (event.repeat) return;
+
+    // Don't trigger shots while typing in form fields
+    const target = event.target;
+    if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target.isContentEditable
+    ) {
+        return;
+    }
+
+    const key = event.key.toLowerCase();
+
+    if (key === 'a') {
+        event.preventDefault();
+        this.registerShot(1);
+    } else if (key === 'l') {
+        event.preventDefault();
+        this.registerShot(2);
+    }
+}
 
   start() {
     this.resetGame();
@@ -391,6 +420,8 @@ export class HeadToHeadShootout {
 
   destroy() {
     this.clearTimer();
+
+    document.removeEventListener('keydown', this.handleKeyboardShot);
 
     this.hoopTimeouts.forEach((timeout) => {
       window.clearTimeout(timeout);
