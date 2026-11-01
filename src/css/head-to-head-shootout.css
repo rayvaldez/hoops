@@ -1,0 +1,137 @@
+
+/* =========================================
+   HEAD TO HEAD SHOOTOUT
+========================================= */
+
+.head-to-head-game {
+  --clock-urgency: 1;
+}
+
+/* Three arena rows: players, clock, hoops */
+.head-to-head-game .head-to-head-arena {
+  grid-template-rows: auto auto minmax(220px, auto);
+  min-height: 480px;
+  padding: 0;
+  /* height: 55vh; */
+}
+
+/* Central clock area */
+.head-to-head-clock-area {
+  position: relative;
+  z-index: 2;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  min-height: 115px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin: 12px 0 8px;
+}
+
+.head-to-head-clock-label {
+  color: #aebbd0;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.head-to-head-clock {
+  color: #ffffff;
+  font-size: clamp(3.5rem, 8vw, 5.5rem);
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 0 0 24px #ffffff35;
+  transform: scale(1);
+  transition:
+    color 200ms ease,
+    text-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.head-to-head-clock-caption {
+  color: #aebbd0;
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+/* 10 seconds and below: orange warning */
+.head-to-head-clock.is-warning {
+  color: #ff9638;
+  text-shadow:
+    0 0 12px #ff9638aa,
+    0 0 30px #ff963866;
+  animation: head-to-head-warning 700ms ease-in-out infinite;
+}
+
+/* 5 seconds and below: red, flashing and growing */
+.head-to-head-clock.is-danger {
+  color: #ff3434;
+  text-shadow:
+    0 0 15px #ff3434,
+    0 0 35px #ff3434aa;
+  animation: head-to-head-danger 500ms ease-in-out infinite;
+}
+
+.head-to-head-clock.is-last-second {
+  color: #ff3434;
+  text-shadow: 0 0 35px #ff3434;
+  transform: scale(1.5);
+}
+
+@keyframes head-to-head-warning {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes head-to-head-danger {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(calc(1 + var(--clock-urgency) * 0.035));
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(calc(1.08 + var(--clock-urgency) * 0.035));
+  }
+}
+
+/* Hoops remain on the third row */
+.head-to-head-game .tug-hoops {
+  grid-row: 3;
+  padding-top: 0;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  .head-to-head-game .head-to-head-arena {
+    grid-template-rows: auto auto minmax(190px, auto);
+    min-height: 430px;
+  }
+
+  .head-to-head-clock-area {
+    min-height: 95px;
+    margin: 8px 0 4px;
+  }
+
+  .head-to-head-clock {
+    font-size: clamp(3rem, 13vw, 4.5rem);
+  }
+
+  .head-to-head-game .tug-hoop-zone {
+    min-height: 190px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .head-to-head-clock.is-warning,
+  .head-to-head-clock.is-danger {
+    animation: none;
+  }
+}
