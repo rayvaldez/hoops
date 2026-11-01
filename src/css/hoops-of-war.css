@@ -777,3 +777,25 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+.tug-footer {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.tug-arena {
+  min-width: 0;
+}
+
+.tug-rope {
+  width: 100%;
+}
+
+/* Prevent parent layout constraints from narrowing the game */
+.game-container,
+#game-container {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
