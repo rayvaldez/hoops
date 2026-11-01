@@ -922,7 +922,7 @@ input {
 /* Game-specific layout corrections: keep Shootout full-width without stretching Connect 3/4 */
 #game-area {
     width: 100%;
-    padding: 22px clamp(12px, 3vw, 10px) 36px;
+    padding: 5px clamp(12px, 3vw, 10px) 36px;
     overflow: visible;
     text-align: initial;
     background: none;
