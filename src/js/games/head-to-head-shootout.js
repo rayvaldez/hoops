@@ -330,10 +330,8 @@ export class HeadToHeadShootout {
 
     if (this.scores[1] > this.scores[2]) {
       title = "Blue Team Wins!";
-      message = `Blue Team wins ${this.scores[1]} – ${this.scores[2]}!`;
     } else if (this.scores[2] > this.scores[1]) {
       title = "Orange Team Wins!";
-      message = `Orange Team wins ${this.scores[2]} – ${this.scores[1]}!`;
     } else {
       title = "It's a Tie!";
       message = `Both teams scored ${this.scores[1]} baskets!`;
@@ -354,7 +352,7 @@ export class HeadToHeadShootout {
     this.container.querySelector(
       "[data-overlay-message]"
     ).textContent =
-      `${message} Final score: ${this.scores[1]} – ${this.scores[2]}`;
+      `Final score: ${this.scores[1]} – ${this.scores[2]}`;
 
     this.startButton.textContent = "PLAY AGAIN";
     this.overlay.classList.remove("is-hidden");
