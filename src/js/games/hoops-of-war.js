@@ -19,8 +19,7 @@ export class HoopsOfWar {
       <section class="tug-game" aria-label="Hoops of War">
         <header class="tug-header">
           <div>
-            <p class="tug-eyebrow">HOOPS ARENA · ARCADE MODE</p>
-            <h1>Hoops of War</h1>
+            <h3>Hoops of War</h3>
             <p class="tug-subtitle">
               Score baskets to pull the rope to your side!
             </p>
