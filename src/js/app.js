@@ -4,6 +4,7 @@ import { Connect3Hoops } from "./games/connect3hoops.js";
 import { Connect4Hoops } from "./games/connect4hoops.js";
 import { ThirtySecondShootout } from "./games/thirty-second-shootout.js";
 import { HoopsOfWar } from "./games/hoops-of-war.js";
+import { HeadToHeadShootout } from "./games/head-to-head-shootout.js";
 
 const gameMenu = document.querySelector(".game-menu");
 const gameArea = document.querySelector("#game-area");
@@ -14,7 +15,8 @@ const games = {
     "thirty-second-shootout": ThirtySecondShootout,
     "hoops-of-war": HoopsOfWar,
     "connect3hoops": Connect3Hoops,
-    "connect4hoops": Connect4Hoops
+    "connect4hoops": Connect4Hoops,
+    "head-to-head-shootout": HeadToHeadShootout
 };
 
 let currentGame = null;
