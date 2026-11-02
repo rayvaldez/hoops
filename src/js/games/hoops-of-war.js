@@ -12,6 +12,9 @@ export class HoopsOfWar {
     this.cacheElements();
     this.bindControls();
     this.updateDisplay();
+
+    this.handleKeyboardShot = this.handleKeyboardShot.bind(this);
+    document.addEventListener('keydown', this.handleKeyboardShot);
   }
 
   render() {
@@ -182,6 +185,33 @@ export class HoopsOfWar {
     // arduino-sensor.js event API has been checked.
   }
 
+  handleKeyboardShot(event) {
+    if (!this.gameStarted) return;
+    if (event.repeat) return;
+
+    // Ignore keyboard input while typing
+    const target = event.target;
+
+    if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target.isContentEditable
+    ) {
+        return;
+    }
+
+    const key = event.key.toLowerCase();
+
+    if (key === 'a') {
+        event.preventDefault();
+        this.scorePoint(1);
+    } else if (key === 'l') {
+        event.preventDefault();
+        this.scorePoint(2);
+    }
+}
+
   scorePoint(player) {
     if (!this.gameStarted || this.gameOver) return;
     if (player !== 1 && player !== 2) return;
@@ -308,5 +338,7 @@ export class HoopsOfWar {
 
   destroy() {
     this.container.innerHTML = "";
+
+    document.removeEventListener('keydown', this.handleKeyboardShot);
   }
 }
