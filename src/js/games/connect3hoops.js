@@ -78,6 +78,10 @@ export class Connect3Hoops {
 
       <section class="connect3-screen">
 
+        <h2 class="connect3-title">CONNECT 3 HOOPS</h2>
+
+
+
         <div class="connect3-status">
 
           <div class="connect3-player player-one ${
@@ -139,7 +143,7 @@ export class Connect3Hoops {
                 data-column="${c}"
 
                 aria-label="Select column ${c + 1}"
-
+                aria-pressed="${c === this.selectedColumn ? "true" : "false"}"
                 ${this.busy || this.gameOver ? "disabled" : ""}
 
               >
@@ -162,9 +166,9 @@ export class Connect3Hoops {
 
               row.map((player, c) => `
 
-                <div class="connect3-cell"
-
-                  data-row="${r}" data-col="${c}">
+                <div class="connect3-cell ${c === this.selectedColumn ? "selected-column" : ""}"
+                  data-row="${r}" data-col="${c}"
+                  aria-selected="${c === this.selectedColumn ? "true" : "false"}">
 
                   ${player ? `
 
@@ -214,10 +218,6 @@ export class Connect3Hoops {
 
         <div class="connect3-turn-clock" aria-live="polite">
           Time left: <strong data-turn-time>8</strong>s
-        </div>
-        <div class="arduino-controls">
-          <button class="connect3-button" data-action="connect-arduino" type="button">CONNECT ARDUINO</button>
-          <span data-arduino-status role="status">Arduino not connected</span>
         </div>
 
         <div class="connect3-result" data-result></div>
