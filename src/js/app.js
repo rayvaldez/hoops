@@ -98,18 +98,55 @@ function updateArduinoUI(message) {
     arduinoButton.disabled = connecting;
 }
 
+
 // One sensor instance for the entire app.
-// Only 30s Shootout uses incoming shots for scoring.
 arduinoSensor = new ArduinoSensor({
+    onStart: () => {
+        if (!currentGame) {
+            console.log("No game is open to start.");
+            return;
+        }
+
+        // Start the currently open game.
+        if (typeof currentGame.startGame === "function") {
+            currentGame.startGame();
+        } else if (typeof currentGame.beginShootout === "function") {
+            currentGame.beginShootout();
+        } else {
+            console.warn(
+                "This game does not yet expose a physical start method."
+            );
+        }
+    },
+
     onShot: () => {
+        if (!currentGame) return;
+
+        // Thirty Second Shootout
         if (currentGame instanceof ThirtySecondShootout) {
             currentGame.registerShot();
         }
+
+        // Hoops of War — temporary single-sensor testing
+        else if (currentGame instanceof HoopsOfWar) {
+            currentGame.scorePoint(1);
+        }
+
+        // Head to Head Shootout — temporary single-sensor testing
+        else if (currentGame instanceof HeadToHeadShootout) {
+            currentGame.registerShot(1);
+        }
     },
+
+    onGameEnded: () => {
+        console.log("Arduino confirmed game ended.");
+    },
+
     onStatusChange: updateArduinoUI
 });
 
 updateArduinoUI("Hoop not connected");
+
 
 // The button remains available on the menu and in every game.
 arduinoButton.addEventListener("click", async () => {
