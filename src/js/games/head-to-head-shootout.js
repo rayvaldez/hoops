@@ -210,42 +210,55 @@ export class HeadToHeadShootout {
 
     this.clearTimer();
 
-    this.player1Score = 0;
-    this.player2Score = 0;
+    this.scores = { 1: 0, 2: 0 };
     this.timeRemaining = 30;
+    this.gameOver = false;
 
     this.updateDisplay();
 
-    const overlay = this.container.querySelector('.tug-overlay');
-    const overlayCard = this.container.querySelector('.tug-overlay-card');
+    const overlay = this.overlay;
+    const overlayTitle = overlay.querySelector("[data-overlay-title]");
+    const overlayMessage = overlay.querySelector("[data-overlay-message]");
+    const overlayIcon = overlay.querySelector("[data-overlay-icon]");
 
-    if (!overlay || !overlayCard) return;
+    overlay.classList.remove("is-hidden");
 
-    overlay.classList.remove('hidden');
+    overlayTitle.textContent = "Get Ready!";
+    overlayMessage.textContent = "The shootout begins in...";
+    overlayIcon.textContent = "🏀";
 
+    this.startButton.style.display = "none";
+
+    // Create the countdown without replacing the overlay's HTML.
     let countdown = 3;
 
-    overlayCard.innerHTML = `
-        <h2>Get Ready!</h2>
-        <div class="head-to-head-countdown">${countdown}</div>
-    `;
+    let countdownDisplay = overlay.querySelector(
+        ".head-to-head-countdown"
+    );
+
+    if (!countdownDisplay) {
+        countdownDisplay = document.createElement("div");
+        countdownDisplay.className = "head-to-head-countdown";
+        overlay.querySelector(".tug-overlay-card").appendChild(
+            countdownDisplay
+        );
+    }
+
+    countdownDisplay.textContent = countdown;
 
     this.countdownInterval = setInterval(() => {
         countdown--;
 
         if (countdown > 0) {
-            const countdownDisplay = overlayCard.querySelector(
-                '.head-to-head-countdown'
-            );
-
-            if (countdownDisplay) {
-                countdownDisplay.textContent = countdown;
-            }
+            countdownDisplay.textContent = countdown;
         } else {
             clearInterval(this.countdownInterval);
             this.countdownInterval = null;
 
-            overlay.classList.add('is-hidden');
+            countdownDisplay.remove();
+
+            overlay.classList.add("is-hidden");
+
             this.beginShootout();
         }
     }, 1000);
@@ -253,7 +266,29 @@ export class HeadToHeadShootout {
 
 beginShootout() {
     this.gameStarted = true;
-    // this.startTimer();
+    this.gameOver = false;
+
+    this.status.textContent = "GAME IN PROGRESS";
+
+    this.startTimer();
+}
+
+startTimer() {
+    // Make sure an existing timer is not running.
+    if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+    }
+
+    this.timerInterval = setInterval(() => {
+        if (this.timeRemaining > 0) {
+            this.timeRemaining--;
+            this.updateDisplay();
+        }
+
+        if (this.timeRemaining <= 0) {
+            this.endGame();
+        }
+    }, 1000);
 }
 
   /**
@@ -339,36 +374,38 @@ beginShootout() {
 
     let title;
     let message;
+    let icon;
 
     if (this.scores[1] > this.scores[2]) {
-      title = "Blue Team Wins!";
+        title = "Blue Team Wins!";
+        message = "Congratulations, Blue Team!";
+        icon = "🏆";
     } else if (this.scores[2] > this.scores[1]) {
-      title = "Orange Team Wins!";
+        title = "Orange Team Wins!";
+        message = "Congratulations, Orange Team!";
+        icon = "🏆";
     } else {
-      title = "It's a Tie!";
-      message = `Both teams scored ${this.scores[1]} baskets!`;
+        title = "It's a Tie!";
+        message = "Both teams scored the same number of baskets!";
+        icon = "🤝";
     }
 
-    this.container.querySelector(
-      "[data-overlay-icon]"
-    ).textContent = this.scores[1] === this.scores[2] ? "🤝" : "🏆";
+    this.container.querySelector("[data-overlay-icon]").textContent = icon;
 
-    this.container.querySelector(
-      "[data-overlay-eyebrow]"
-    ).textContent = "TIME'S UP!";
+    this.container.querySelector("[data-overlay-eyebrow]").textContent =
+        "TIME'S UP!";
 
-    this.container.querySelector(
-      "[data-overlay-title]"
-    ).textContent = title;
+    this.container.querySelector("[data-overlay-title]").textContent =
+        title;
 
-    this.container.querySelector(
-      "[data-overlay-message]"
-    ).textContent =
-      `Final score: ${this.scores[1]} – ${this.scores[2]}`;
+    this.container.querySelector("[data-overlay-message]").textContent =
+        `${message} Final score: ${this.scores[1]} – ${this.scores[2]}`;
 
     this.startButton.textContent = "PLAY AGAIN";
+    this.startButton.style.display = "block";
+
     this.overlay.classList.remove("is-hidden");
-  }
+}
 
   clearTimer() {
     if (this.timerInterval) {
@@ -392,6 +429,7 @@ beginShootout() {
 
     this.status.textContent = "READY TO PLAY";
     this.startButton.textContent = "START GAME";
+    this.startButton.style.display = "block";
 
     this.container.querySelector(
       "[data-overlay-icon]"
