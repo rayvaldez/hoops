@@ -10,6 +10,7 @@ export class HeadToHeadShootout {
     this.gameStarted = false;
     this.gameOver = false;
     this.hoopTimeouts = [];
+    this.countdownInterval = null;
 
     this.render();
     this.cacheElements();
@@ -223,27 +224,51 @@ export class HeadToHeadShootout {
 
     this.clearTimer();
 
-    this.scores = { 1: 0, 2: 0 };
+    this.player1Score = 0;
+    this.player2Score = 0;
     this.timeRemaining = 30;
-    this.gameStarted = true;
-    this.gameOver = false;
-
-    this.overlay.classList.add("is-hidden");
-    this.status.textContent = "GAME IN PROGRESS";
 
     this.updateDisplay();
 
-    // Start the 30-second countdown.
-    this.timerInterval = window.setInterval(() => {
-      this.timeRemaining--;
+    const overlay = this.container.querySelector('.tug-overlay');
+    const overlayCard = this.container.querySelector('.tug-overlay-card');
 
-      this.updateDisplay();
+    if (!overlay || !overlayCard) return;
 
-      if (this.timeRemaining <= 0) {
-        this.endGame();
-      }
+    overlay.classList.remove('hidden');
+
+    let countdown = 3;
+
+    overlayCard.innerHTML = `
+        <h2>Get Ready!</h2>
+        <div class="head-to-head-countdown">${countdown}</div>
+    `;
+
+    this.countdownInterval = setInterval(() => {
+        countdown--;
+
+        if (countdown > 0) {
+            const countdownDisplay = overlayCard.querySelector(
+                '.head-to-head-countdown'
+            );
+
+            if (countdownDisplay) {
+                countdownDisplay.textContent = countdown;
+            }
+        } else {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+
+            overlay.classList.add('is-hidden');
+            this.beginShootout();
+        }
     }, 1000);
-  }
+}
+
+beginShootout() {
+    this.gameStarted = true;
+    // this.startTimer();
+}
 
   /**
    * Call this when a player-specific Arduino shot event arrives.
@@ -313,6 +338,7 @@ export class HeadToHeadShootout {
   }
 
   endGame() {
+    this.sensor?.endGame();
     if (this.gameOver) return;
 
     this.clearTimer();
@@ -359,11 +385,16 @@ export class HeadToHeadShootout {
   }
 
   clearTimer() {
-    if (this.timerInterval !== null) {
-      window.clearInterval(this.timerInterval);
-      this.timerInterval = null;
+    if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
     }
-  }
+
+    if (this.countdownInterval) {
+        clearInterval(this.countdownInterval);
+        this.countdownInterval = null;
+    }
+}
 
   resetGame() {
     this.clearTimer();
