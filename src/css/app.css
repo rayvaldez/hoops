@@ -1910,3 +1910,40 @@ body {
     outline-offset: 6px;
     border-radius: 6px;
 }
+
+/* Visible selection for arcade menu navigation */
+.game-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        filter 0.2s ease;
+}
+
+.game-card:focus,
+.game-card:focus-visible {
+    outline: none;
+    transform: translateY(-6px) scale(1.03);
+    border-color: #ffd447;
+    box-shadow:
+        0 0 0 3px rgba(255, 212, 71, 0.8),
+        0 0 25px rgba(255, 212, 71, 0.45);
+    filter: brightness(1.15);
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes menuSelectionPulse {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(255, 212, 71, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 28px rgba(255, 212, 71, 0.8);
+    }
+}
+
+.game-card:focus,
+.game-card:focus-visible {
+    animation: menuSelectionPulse 1.5s ease-in-out infinite;
+}
