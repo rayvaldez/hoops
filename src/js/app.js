@@ -28,7 +28,11 @@ document.body.classList.add("sports-arena-app");
 const arenaHeader = document.createElement("header");
 arenaHeader.className = "arena-header";
 arenaHeader.innerHTML = `
-    <div class="arena-brand">
+    <div class="arena-brand"
+     role="button"
+     tabindex="0"
+     aria-label="Return to game menu"
+     title="Return to game menu">
         <div class="arena-brand-mark" aria-hidden="true">🏀</div>
         <div class="arena-brand-copy">
             <p>COURTSIDE ARCADE</p>
@@ -39,6 +43,21 @@ arenaHeader.innerHTML = `
 `;
 
 document.body.prepend(arenaHeader);
+
+// Allow the logo and title to return to the game menu.
+const arenaBrand = arenaHeader.querySelector(".arena-brand");
+
+arenaBrand.addEventListener("click", () => {
+    showMenu();
+});
+
+// Also support keyboard activation.
+arenaBrand.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        showMenu();
+    }
+});
 
 // Persistent Arduino status bar
 const arduinoFooter = document.createElement("footer");
