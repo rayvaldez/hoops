@@ -2,26 +2,28 @@
 /** Shared Web Serial reader for Hoops Arena. */
 export class ArduinoSensor {
     constructor({
-        onShot = () => {},
-        onStart = () => {},
-        onGameEnded = () => {},
-        onStatusChange = () => {},
-        cooldownMs = 700
+    onShot = () => {},
+    onStart = () => {},
+    onLeft = () => {},
+    onRight = () => {},
+    onStatusChange = () => {},
+    cooldownMs = 700
     } = {}) {
-        this.onShot = onShot;
-        this.onStart = onStart;
-        this.onGameEnded = onGameEnded;
-        this.onStatusChange = onStatusChange;
-        this.cooldownMs = cooldownMs;
+    this.onShot = onShot;
+    this.onStart = onStart;
+    this.onLeft = onLeft;
+    this.onRight = onRight;
+    this.onStatusChange = onStatusChange;
+    this.cooldownMs = cooldownMs;
 
-        this.port = null;
-        this.reader = null;
-        this.readTask = null;
-        this.writer = null;
-        this.connected = false;
-        this.buffer = "";
-        this.lastShotTime = 0;
-        this.ignoreUntil = 0;
+    this.port = null;
+    this.reader = null;
+    this.readTask = null;
+    this.writer = null;
+    this.connected = false;
+    this.buffer = "";
+    this.lastShotTime = 0;
+    this.ignoreUntil = 0;
     }
 
     setStatus(message) {
@@ -103,25 +105,56 @@ export class ArduinoSensor {
     handleMessage(message) {
         if (!this.connected) return;
 
-        if (message === "START") {
+        switch (message) {
+            case "SHOT": {
+            const now = Date.now();
+
+            if (now < this.ignoreUntil) return;
+            if (now - this.lastShotTime < this.cooldownMs) return;
+
+            this.lastShotTime = now;
+            this.onShot();
+            break;
+            }
+
+            case "START":
             this.onStart();
-            return;
+            break;
+
+            case "LEFT":
+            this.onLeft();
+            break;
+
+            case "RIGHT":
+            this.onRight();
+            break;
+
+            case "GAME_ENDED":
+            console.log("Arduino game state reset");
+            break;
         }
+    }
 
-        if (message === "GAME_ENDED") {
-            this.onGameEnded();
-            return;
+    async sendCommand(command) {
+        if (!this.connected || !this.port?.writable) return;
+
+        try {
+            const writer = this.port.writable.getWriter();
+
+            try {
+            await writer.write(
+                new TextEncoder().encode(`${command}\n`)
+            );
+            } finally {
+            writer.releaseLock();
+            }
+        } catch (error) {
+            console.error("Arduino command error:", error);
         }
+    }
 
-        if (message !== "SHOT") return;
-
-        const now = Date.now();
-
-        if (now < this.ignoreUntil) return;
-        if (now - this.lastShotTime < this.cooldownMs) return;
-
-        this.lastShotTime = now;
-        this.onShot();
+    endGame() {
+        return this.sendCommand("END");
     }
 
     ignoreShotsFor(ms = 700) {

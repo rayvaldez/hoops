@@ -359,8 +359,9 @@ startTimer() {
   }
 
   endGame() {
-    this.sensor?.endGame();
+    // this.sensor?.endGame();
     if (this.gameOver) return;
+    this.arduinoSensor?.endGame();
 
     this.clearTimer();
 

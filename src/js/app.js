@@ -120,45 +120,22 @@ function updateArduinoUI(message) {
 
 // One sensor instance for the entire app.
 arduinoSensor = new ArduinoSensor({
-    onStart: () => {
-        if (!currentGame) {
-            console.log("No game is open to start.");
-            return;
-        }
-
-        // Start the currently open game.
-        if (typeof currentGame.startGame === "function") {
-            currentGame.startGame();
-        } else if (typeof currentGame.beginShootout === "function") {
-            currentGame.beginShootout();
-        } else {
-            console.warn(
-                "This game does not yet expose a physical start method."
-            );
-        }
-    },
-
     onShot: () => {
-        if (!currentGame) return;
-
-        // Thirty Second Shootout
         if (currentGame instanceof ThirtySecondShootout) {
             currentGame.registerShot();
         }
-
-        // Hoops of War — temporary single-sensor testing
-        else if (currentGame instanceof HoopsOfWar) {
-            currentGame.scorePoint(1);
-        }
-
-        // Head to Head Shootout — temporary single-sensor testing
-        else if (currentGame instanceof HeadToHeadShootout) {
-            currentGame.registerShot(1);
-        }
     },
 
-    onGameEnded: () => {
-        console.log("Arduino confirmed game ended.");
+    onStart: () => {
+        startSelectedGame();
+    },
+
+    onLeft: () => {
+        moveMenuSelection("LEFT");
+    },
+
+    onRight: () => {
+        moveMenuSelection("RIGHT");
     },
 
     onStatusChange: updateArduinoUI
@@ -194,6 +171,7 @@ function launchGame(gameId) {
 
     // Pass the shared sensor into the game.
     currentGame = new Game(gameContainer, arduinoSensor, showMenu);
+    arduinoSensor.sendCommand("BEGIN");
     currentGame.start();
 }
 
@@ -206,8 +184,55 @@ function showMenu() {
     gameArea.hidden = true;
     gameMenu.hidden = false;
     gameContainer.innerHTML = "";
+    arduinoSensor.endGame();
 
     // Deliberately keep the shared Arduino connection open.
+}
+
+function getGameCards() {
+    return [...document.querySelectorAll(".game-card")];
+}
+
+function moveMenuSelection(direction) {
+    // Only navigate when the game menu is visible.
+    if (gameMenu.hidden) return;
+
+    const cards = getGameCards();
+    if (!cards.length) return;
+
+    const currentIndex = cards.indexOf(document.activeElement);
+
+    let nextIndex;
+
+    if (currentIndex === -1) {
+        nextIndex = direction === "RIGHT" ? 0 : cards.length - 1;
+    } else {
+        nextIndex =
+            (currentIndex + (direction === "RIGHT" ? 1 : -1) + cards.length)
+            % cards.length;
+    }
+
+    cards[nextIndex].focus();
+}
+
+function startSelectedGame() {
+    if (!gameMenu.hidden) {
+        const cards = getGameCards();
+
+        const selectedCard = cards.includes(document.activeElement)
+            ? document.activeElement
+            : cards[0];
+
+        selectedCard?.click();
+        return;
+    }
+
+    // If a game is already open, activate its start/play-again button.
+    const gameStartButton = gameContainer.querySelector(
+        "[data-start-game]"
+    );
+
+    gameStartButton?.click();
 }
 
 document.querySelectorAll(".game-card").forEach((button) => {
