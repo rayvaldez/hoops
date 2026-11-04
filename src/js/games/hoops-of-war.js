@@ -287,6 +287,7 @@ export class HoopsOfWar {
   }
 
   finishGame(player) {
+    this.sensor?.endGame();
     this.gameStarted = false;
     this.gameOver = true;
     this.status.textContent = "GAME OVER";
