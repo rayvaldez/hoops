@@ -135,3 +135,28 @@
     animation: none;
   }
 }
+
+.head-to-head-countdown {
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin: 20px 0;
+    animation: countdown-pop 0.8s ease-in-out;
+}
+
+@keyframes countdown-pop {
+    0% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
