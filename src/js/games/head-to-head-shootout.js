@@ -138,12 +138,6 @@ export class HeadToHeadShootout {
               Both players shoot simultaneously. Every basket counts!
             </span>
           </div>
-
-          <button class="tug-button tug-button--secondary"
-                  type="button"
-                  data-reset-game>
-            RESET
-          </button>
         </footer>
       </section>
     `;
@@ -166,10 +160,6 @@ export class HeadToHeadShootout {
       "[data-start-game]"
     );
 
-    this.resetButton = this.container.querySelector(
-      "[data-reset-game]"
-    );
-
     this.clock = this.container.querySelector(
       "[data-shot-clock]"
     );
@@ -182,10 +172,6 @@ export class HeadToHeadShootout {
   bindControls() {
     this.startButton.addEventListener("click", () => {
       this.startGame();
-    });
-
-    this.resetButton.addEventListener("click", () => {
-      this.resetGame();
     });
   }
 
