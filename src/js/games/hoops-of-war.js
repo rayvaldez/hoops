@@ -24,7 +24,7 @@ export class HoopsOfWar {
           <div>
             <h3>Hoops of War</h3>
             <p class="tug-subtitle">
-              Score baskets to pull the rope to your side!
+              🏀 Score baskets to pull the rope to your side!
             </p>
           </div>
 
@@ -132,17 +132,7 @@ export class HoopsOfWar {
 
         <footer class="tug-footer">
           <div class="tug-footer-tip">
-            <span class="tug-tip-icon">🏀</span>
-            <span>
-              Every basket pulls the rope one step toward your team.
-            </span>
           </div>
-
-          <button class="tug-button tug-button--secondary"
-                  type="button"
-                  data-reset-game>
-            RESET
-          </button>
         </footer>
       </section>
     `;
