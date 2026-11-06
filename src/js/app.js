@@ -124,17 +124,40 @@ arduinoSensor = new ArduinoSensor({
         if (currentGame instanceof ThirtySecondShootout) {
             currentGame.registerShot();
         }
+
+        if (currentGame instanceof HeadToHeadShootout) {
+            currentGame.registerShot(1);
+        }
+        
+        if (currentGame instanceof Connect3Hoops) {
+            currentGame.handleShot();
+        }
     },
 
     onStart: () => {
+        if (currentGame instanceof Connect3Hoops) {
+            currentGame.stopFirstTurnWheel();
+            return;
+        }
+
         startSelectedGame();
     },
 
     onLeft: () => {
+        if (currentGame instanceof Connect3Hoops) {
+            currentGame.moveSelection(-1);
+            return;
+        }
+
         moveMenuSelection("LEFT");
     },
 
     onRight: () => {
+        if (currentGame instanceof Connect3Hoops) {
+            currentGame.moveSelection(1);
+            return;
+        }
+        
         moveMenuSelection("RIGHT");
     },
 
