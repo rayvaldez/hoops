@@ -54,7 +54,6 @@ export class Connect3Hoops {
             <section class="connect3-arena">
 
                 <header class="connect3-arena-header">
-                    <h2>CONNECT 3 HOOPS</h2>
                     <p>GET THREE IN A ROW TO WIN</p>
                 </header>
 
