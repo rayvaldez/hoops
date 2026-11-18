@@ -1,0 +1,2767 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+    color: white;
+    overflow-y: hidden;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+#app {
+    /* max-width: 1100px; */
+    margin: 0 auto;
+    /* padding: 20px 30px; */
+    text-align: center;
+}
+
+h1 {
+    font-size: 72px;
+    margin: 0;
+    letter-spacing: 8px;
+}
+
+header p {
+    font-size: 24px;
+    color: #aaa;
+    margin-bottom: 50px;
+}
+
+.game-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.game-card {
+    min-height: 220px;
+    border: 2px solid #444;
+    border-radius: 20px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+    padding: 30px;
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.game-card:hover {
+    transform: translateY(-4px);
+    border-color: white;
+}
+
+.game-card strong {
+    display: block;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.game-card span {
+    font-size: 18px;
+    color: #aaa;
+}
+
+@media (max-width: 700px) {
+    .game-menu {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 52px;
+    }
+}
+
+#game-area {
+    text-align: center;
+}
+
+#back-to-menu {
+    padding: 12px 20px;
+    margin-bottom: 30px;
+    border: 1px solid #555;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
+
+.connect4-screen {
+    text-align: center;
+}
+
+.connect4-screen h2 {
+    font-size: 42px;
+    margin-bottom: 30px;
+}
+
+.connect4-board {
+    display: grid;
+    grid-template-columns: repeat(7, 70px);
+    gap: 8px;
+
+    width: max-content;
+    margin: 0 auto 30px;
+
+    padding: 14px;
+    border-radius: 16px;
+    background: #174a8b;
+
+    position: relative;
+    z-index: 2;
+}
+
+.connect4-animation-layer {
+    position: absolute;
+
+    top: 14px;
+    left: 14px;
+
+    width: 538px;
+    height: 460px;
+
+    pointer-events: none;
+
+    z-index: 3;
+
+    /*
+     * Only show the animation through
+     * the circular Connect 4 holes.
+     */
+    -webkit-mask-image:
+        radial-gradient(
+            circle 35px at 35px 35px,
+            #000 0 32px,
+            transparent 33px
+        );
+
+    mask-image:
+        radial-gradient(
+            circle 35px at 35px 35px,
+            #000 0 32px,
+            transparent 33px
+        );
+
+    -webkit-mask-size: 78px 78px;
+    mask-size: 78px 78px;
+
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+}
+
+.connect4-cell {
+    width: 70px;
+    height: 70px;
+
+    border-radius: 50%;
+
+    background: #111;
+    border: 3px solid #333;
+
+    box-shadow:
+        inset 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hoop-row {
+    display: grid;
+    grid-template-columns: repeat(7, 70px);
+    gap: 8px;
+
+    width: max-content;
+    margin: 0 auto 12px;
+}
+
+.virtual-hoop {
+    width: 70px;
+    height: 90px;
+
+    border: none;
+    padding: 0;
+
+    background: transparent;
+    color: white;
+
+    cursor: pointer;
+
+    position: relative;
+}
+
+.virtual-hoop > span {
+    display: block;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+.hoop-rim {
+    width: 48px;
+    height: 18px;
+
+    margin: 0 auto;
+
+    border: 5px solid #e87523;
+    border-radius: 50%;
+
+    position: relative;
+
+    background: transparent;
+}
+
+.hoop-net {
+    position: absolute;
+
+    left: 4px;
+    right: 4px;
+    top: 8px;
+
+    height: 35px;
+
+    border-left: 2px solid rgba(255, 255, 255, 0.5);
+    border-right: 2px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+
+    border-radius: 0 0 12px 12px;
+}
+
+.virtual-hoop:hover .hoop-rim {
+    transform: scale(1.08);
+}
+
+.virtual-hoop:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+
+.turn-display {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.connect4-cell.player-one {
+    background: #e53935;
+    border-color: #ff6b6b;
+}
+
+.connect4-cell.player-two {
+    background: #ffd740;
+    border-color: #fff176;
+}
+
+.winner-message {
+    margin-top: 30px;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* =========================================
+CONNECT 4 HOOPS - PLAYER NAME SCREEN
+========================================= */
+
+.name-screen {
+    max-width: 600px;
+    margin: 0 auto;
+}
+    
+.player-name-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    
+    
+    max-width: 420px;
+    margin: 0 auto;
+    
+    padding: 35px;
+    
+    border: 2px solid #444;
+    border-radius: 20px;
+    
+    background: #222;
+    
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.4);
+    
+    
+}
+    
+.player-name-form label {
+    text-align: left;
+    
+    
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    
+    margin-bottom: 8px;
+    
+}
+    
+.player-name-form label:not(:first-child) {
+    margin-top: 22px;
+}
+    
+.player-name-input {
+    width: 100%;
+    
+    padding: 15px 16px;
+    
+    border: 2px solid #555;
+    border-radius: 10px;
+    
+    background: #111;
+    color: white;
+    
+    font-size: 20px;
+    
+    outline: none;
+    
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
+    
+}
+    
+.player-name-input::placeholder {
+    color: #777;
+}
+    
+.player-name-input:focus {
+    border-color: #e87523;
+    
+    box-shadow:
+        0 0 0 3px rgba(232, 117, 35, 0.2);
+    
+}
+    
+.start-game-button {
+    margin-top: 30px;
+    
+    padding: 16px 24px;
+    
+    border: 2px solid #e87523;
+    border-radius: 12px;
+    
+    background: #e87523;
+    color: white;
+    
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    
+    cursor: pointer;
+    
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+    
+}
+    
+.start-game-button:hover {
+    transform: translateY(-2px);
+    
+    background: #f58a36;
+    border-color: #f58a36;
+    
+}
+    
+.start-game-button:active {
+    transform: translateY(0);
+}
+    
+.start-game-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+    
+.name-error {
+    margin-top: 15px;
+    
+    color: #ff6b6b;
+    
+    font-size: 16px;
+    font-weight: bold;
+    
+}
+    
+    /* =========================================
+    CONNECT 4 HOOPS - GAME OVER
+    ========================================= */
+    
+.winner-message {
+    margin: 30px auto 0;
+    
+    max-width: 650px;
+    
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    
+}
+    
+.game-over-title {
+    margin-bottom: 25px;
+    
+    font-size: 48px;
+    font-weight: bold;
+    
+    letter-spacing: 2px;
+    
+}
+    
+.game-over-buttons {
+    display: block;
+    width: fit-content;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+    gap: 15px;
+    
+    flex-wrap: wrap;
+    
+}
+    
+.play-again-button,
+    .change-players-button {
+    padding: 14px 22px;
+    
+    border-radius: 10px;
+    
+    color: white;
+    
+    font-size: 17px;
+    font-weight: bold;
+    
+    cursor: pointer;
+    
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+    
+}
+    
+.play-again-button {
+    border: 2px solid #e87523;
+    
+    background: #e87523;
+    
+}
+    
+.play-again-button:hover {
+    transform: translateY(-2px);
+    
+    background: #f58a36;
+    border-color: #f58a36;
+    
+}
+    
+    .change-players-button {
+    border: 2px solid #555;
+    
+    background: #222;
+    
+    }
+    
+    .change-players-button:hover {
+    transform: translateY(-2px);
+    
+    background: #333;
+    border-color: #777;
+    
+    }
+    
+    .play-again-button:active,
+    .change-players-button:active {
+    transform: translateY(0);
+    }
+    
+    .play-again-button:focus-visible,
+    .change-players-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+    }
+    
+    /* =========================================
+    DRAW SCREEN
+    ========================================= */
+    
+    .game-over-title {
+    animation: winnerPop 0.35s ease-out;
+    }
+    
+    @keyframes winnerPop {
+    
+    0% {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+    
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    
+    }
+    
+    /* =========================================
+    MOBILE
+    ========================================= */
+    
+@media (max-width: 700px) {
+    
+    .connect4-screen h2 {
+        font-size: 32px;
+    }
+    
+    .player-name-form {
+        padding: 25px 20px;
+    }
+    
+    .winner-message,
+    .game-over-title {
+        font-size: 34px;
+    }
+    
+    .game-over-buttons {
+        flex-direction: column;
+    }
+    
+    .play-again-button,
+    .change-players-button {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+}
+
+.connect4-cell.winning-cell {
+    animation: winningHoop 0.7s ease-in-out infinite alternate;
+    
+    box-shadow:
+        0 0 10px white,
+        0 0 20px white,
+        inset 0 4px 8px rgba(0, 0, 0, 0.5);
+    
+}
+    
+@keyframes winningHoop {
+    
+    from {
+        transform: scale(1);
+    }
+    
+    to {
+        transform: scale(1.12);
+    }
+
+    
+}
+    
+.connect4-cell.ball-dropping {
+    animation: basketballLand 0.45s ease-out;
+    }
+    
+    @keyframes basketballLand {
+    
+    0% {
+        transform: scale(0.75);
+        opacity: 0.4;
+    }
+    
+    70% {
+        transform: scale(1.08);
+    }
+    
+    85% {
+        transform: scale(0.96);
+    }
+    
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    
+}
+
+.flying-ball {
+    position: fixed;
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    transform: translate(-50%, -50%);
+
+    box-shadow:
+        inset 0 4px 8px rgba(0, 0, 0, 0.35),
+        0 4px 8px rgba(0, 0, 0, 0.35);
+}
+
+.flying-ball.player-one-ball {
+    background: #e53935;
+    border: 3px solid #ff6b6b;
+}
+
+.flying-ball.player-two-ball {
+    background: #ffd740;
+    border: 3px solid #fff176;
+}
+
+/* =========================================
+   30 SECOND SHOOTOUT
+   ========================================= */
+
+/* Main screen and arena background */
+.shootout-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 700px;
+    max-width: none;
+    margin: 0;
+    padding: 35px 30px 40px;
+    text-align: center;
+    background-color: #050b18;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+        url("../assets/images/shootout-arena.png");
+    background-size: 100% 100%;
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+}
+
+.shootout-screen h2 {
+    font-size: 42px;
+    margin-bottom: 30px;
+    padding-top: 220px;
+}
+
+.shootout-game-over {
+    padding-top: 180px;
+}
+
+/* Legacy stats styles, retained for any start/end screens that use them */
+.shootout-stats {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-bottom: 40px;
+}
+
+.shootout-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.shootout-stat-label {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: rgb(241, 102, 9);
+    margin-bottom: 8px;
+}
+
+.shootout-stat-value {
+    font-size: 56px;
+    font-weight: bold;
+}
+
+/* Arena image scoreboard: live values overlay the blank panels */
+.arena-scoreboard-values {
+    position: absolute;
+    z-index: 5;
+    top: 14%;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    pointer-events: none;
+    color: #fff;
+    font-family: "Arial Narrow", Impact, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.35),
+        0 3px 5px rgba(0, 0, 0, 0.9);
+}
+
+.arena-value {
+    min-width: 0;
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.arena-score {
+    transform: translate(135px, -4px);
+}
+
+.arena-time {
+    font-size: clamp(5rem, 6vw, 6rem);
+    transform: translateY(-4px);
+}
+
+.arena-best {
+    transform: translate(-135px, -4px);
+}
+
+
+/* Timer flash when the countdown changes */
+.arena-time.timer-flash {
+    animation: timer-number-flash 0.35s ease-out;
+    transform-origin: center;
+}
+
+/* Warning: timer gradually grows */
+.arena-time.timer-warning {
+    color: #ffd54a;
+    animation: timer-warning-pulse 1s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Danger: larger, faster, more urgent */
+.arena-time.timer-danger {
+    color: #ff3b30;
+    animation: timer-danger-pulse 0.45s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes timer-number-flash {
+    0% {
+        transform: translateY(-4px) scale(1);
+        filter: brightness(1);
+    }
+    45% {
+        transform: translateY(-4px) scale(1.22);
+        filter: brightness(1.8);
+    }
+    100% {
+        transform: translateY(-4px) scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes timer-warning-pulse {
+    0%, 100% {
+        transform: translateY(-4px) scale(1.04);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.12);
+    }
+}
+
+@keyframes timer-danger-pulse {
+    0%, 100% {
+        transform: translateY(-4px) scale(1.12);
+        filter: brightness(1);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.55);
+        filter: brightness(1.5);
+    }
+}
+
+/* Score flash retains the score's normal offset throughout the animation */
+.arena-score.score-flash {
+    animation: scoreboard-score-flash 0.35s ease-out;
+}
+
+@keyframes scoreboard-score-flash {
+    0% {
+        color: #ff8c00;
+        transform: translate(135px, -4px) scale(1.3);
+        text-shadow: 0 0 24px #ff8c00;
+    }
+
+    60% {
+        color: #fff2bf;
+        transform: translate(135px, -4px) scale(1.1);
+        text-shadow: 0 0 16px #ff8c00;
+    }
+
+    100% {
+        color: #fff;
+        transform: translate(135px, -4px) scale(1);
+        text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* Temporary digital hoop area and hoop */
+.shootout-hoop-area {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    margin-bottom: 30px;
+}
+
+.shootout-hoop {
+    position: absolute;
+    left: 50%;
+    top: 185%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: block;
+    width: 220px;
+    height: 190px;
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.shootout-backboard {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 150px;
+    height: 95px;
+    transform: translateX(-50%);
+    border: 5px solid white;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.shootout-backboard::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -2px;
+    width: 70px;
+    height: 45px;
+    transform: translateX(-50%);
+    border: 4px solid white;
+    border-bottom: none;
+}
+
+.shootout-rim {
+    position: absolute;
+    left: 50%;
+    top: 88px;
+    width: 105px;
+    height: 32px;
+    transform: translateX(-50%);
+    border: 7px solid #e87523;
+    border-radius: 50%;
+    background: transparent;
+    z-index: 2;
+}
+
+.shootout-net {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 18px;
+    height: 78px;
+    z-index: 3;
+    overflow: hidden;
+    border-left: 2px solid rgba(255, 255, 255, 0.45);
+    border-right: 2px solid rgba(255, 255, 255, 0.45);
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 9px,
+        rgba(255, 255, 255, 0.55) 10px,
+        rgba(255, 255, 255, 0.55) 11px,
+        transparent 12px
+    );
+}
+
+.shootout-net::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        105deg,
+        transparent 0,
+        transparent 11px,
+        rgba(255, 255, 255, 0.42) 12px,
+        rgba(255, 255, 255, 0.42) 13px,
+        transparent 14px
+    );
+    transform: perspective(80px) rotateX(-12deg);
+    opacity: 0.9;
+}
+
+.shootout-net::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 52px;
+    height: 12px;
+    transform: translateX(-50%);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+}
+
+.shootout-hoop:hover .shootout-rim {
+    transform: translateX(-50%) scale(1.06);
+}
+
+.shootout-hoop:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 6px;
+}
+
+.shootout-hoop.score-flash .shootout-rim {
+    animation: hoopFlash 0.4s ease-out;
+}
+
+@keyframes hoopFlash {
+    0% {
+        filter: brightness(1);
+        box-shadow: none;
+    }
+
+    20% {
+        filter: brightness(1.8);
+        box-shadow:
+            0 0 10px #e87523,
+            0 0 25px #e87523,
+            0 0 45px #ff9d52,
+            0 0 65px rgba(255, 157, 82, 0.8);
+    }
+
+    45% {
+        filter: brightness(2.5);
+        box-shadow:
+            0 0 12px #fff,
+            0 0 25px #ffb06d,
+            0 0 45px #e87523,
+            0 0 70px rgba(232, 117, 35, 0.9);
+    }
+
+    100% {
+        filter: brightness(1);
+        box-shadow: none;
+    }
+}
+
+/* Ball appearance. Its flight coordinates are set by animateShot() in JS. */
+.shootout-ball {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    margin: 0;
+    border-radius: 50%;
+    background: #e87523;
+    border: 3px solid #ffb06d;
+    box-shadow:
+        inset 0 5px 10px rgba(0, 0, 0, 0.35),
+        0 5px 10px rgba(0, 0, 0, 0.35);
+    z-index: 4;
+    pointer-events: none;
+}
+
+/* Instructions and start/end screen typography */
+.shootout-instruction {
+    font-size: 22px;
+    color: #aaa;
+    margin-top: 20px;
+}
+
+.shootout-instruction strong {
+    color: white;
+    font-size: 28px;
+}
+
+.shootout-countdown {
+    font-size: 100px;
+    font-weight: bold;
+    margin: 40px 0;
+}
+
+.shootout-message {
+
+    font-size: 48px;
+    font-weight: bold;
+    margin: 80px 0;
+}
+
+.shootout-score {
+    font-size: 72px;
+    font-weight: bold;
+    margin: 20px 0 35px;
+}
+
+.shootout-button {
+    padding: 15px 26px;
+    border: 2px solid #e87523;
+    border-radius: 12px;
+    background: #e87523;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition:
+        transform 0.15s,
+        background 0.15s,
+        border-color 0.15s;
+}
+
+.shootout-button:hover {
+    transform: translateY(-2px);
+    background: #f58a36;
+    border-color: #f58a36;
+}
+
+.shootout-button:active {
+    transform: translateY(0);
+}
+
+.shootout-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+
+.shootout-best {
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.shootout-new-record {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e87523;
+    margin-bottom: 30px;
+    animation: newRecordPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes newRecordPulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: none;
+    }
+
+    50% {
+        transform: scale(1.08);
+        text-shadow:
+            0 0 10px rgba(232, 117, 35, 0.8),
+            0 0 25px rgba(232, 117, 35, 0.5);
+    }
+}
+
+/* Responsive shootout layout */
+@media (max-width: 700px) {
+    .shootout-screen {
+        min-height: 620px;
+        padding: 25px 12px 30px;
+        background-size: auto 100%;
+    }
+
+    .shootout-screen h2 {
+        font-size: 32px;
+    }
+
+    .shootout-stats {
+        gap: 25px;
+    }
+
+    .shootout-stat-value {
+        font-size: 46px;
+    }
+
+    .arena-scoreboard-values {
+        top: 10%;
+    }
+
+    .arena-value {
+        font-size: clamp(1.2rem, 4vw, 2.5rem);
+    }
+
+    .arena-score {
+        transform: translate(80px, -4px);
+    }
+
+    .arena-time {
+        font-size: clamp(1.8rem, 6vw, 3.5rem);
+    }
+
+    .arena-best {
+        transform: translate(-100px, -4px);
+    }
+
+    .arena-score.score-flash {
+        animation-name: scoreboard-score-flash-mobile;
+    }
+
+    @keyframes scoreboard-score-flash-mobile {
+        0% {
+            color: #ff8c00;
+            transform: translate(80px, -4px) scale(1.3);
+            text-shadow: 0 0 24px #ff8c00;
+        }
+
+        60% {
+            color: #fff2bf;
+            transform: translate(80px, -4px) scale(1.1);
+            text-shadow: 0 0 16px #ff8c00;
+        }
+
+        100% {
+            color: #fff;
+            transform: translate(80px, -4px) scale(1);
+            text-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
+        }
+    }
+
+    .shootout-countdown {
+        font-size: 76px;
+    }
+
+    .shootout-message {
+        font-size: 38px;
+    }
+
+    .shootout-score {
+        font-size: 58px;
+    }
+}
+
+
+/* ========================================
+   CONNECT 3 HOOPS
+======================================== */
+
+.connect3-screen {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  color: #fff;
+  text-align: center;
+}
+
+.connect3-title {
+  margin: 0 0 20px;
+  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 3px 0 #14233b, 0 6px 12px #0008;
+}
+
+.connect3-status {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 16px;
+}
+
+.connect3-player {
+  min-width: 120px;
+  padding: 10px 16px;
+  border: 2px solid #ffffff25;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #253b5a, #111d31);
+  box-shadow: 0 5px 0 #09111e, 0 8px 14px #0005;
+  font-weight: 900;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  transform: translateY(200px);
+}
+
+.connect3-player small {
+  display: block;
+  margin-top: 4px;
+  color: #c6d5e8;
+  font-size: .7rem;
+  letter-spacing: 1px;
+}
+
+/* .connect3-player.active {
+  transform: translateY(200px);
+} */
+
+.connect3-player.player-one.active {
+  border-color: #ff5147;
+  box-shadow: 0 5px 0 #09111e, 0 0 16px #ff302d55;
+}
+
+.connect3-player.player-two.active {
+  border-color: #ffce35;
+  box-shadow: 0 5px 0 #09111e, 0 0 16px #ffca3555;
+}
+
+.connect3-instruction {
+  min-height: 24px;
+  margin: 12px 0 34px;
+  color: #e1eaf8;
+  font-size: .9rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding-bottom: 65px;
+}
+
+/* =========================
+   BOARD
+========================= */
+
+.connect3-board {
+    --connect3-cell-size: clamp(76px, 6.8vw, 100px);
+    --connect3-gap: clamp(14px, 1.8vw, 22px);
+
+position: relative;
+display: grid;
+justify-items: center;
+isolation: isolate;
+overflow: visible;
+width: fit-content;
+max-width: 100%;
+margin: 0 auto 26px;
+padding: 16px 26px 24px;
+border: 3px solid #7195bb;
+border-radius: 20px;
+
+/* Keep the blue board frame */
+background: linear-gradient(
+135deg,
+#7399c2 0%,
+#315982 18%,
+#1c3b60 60%,
+#102541 100%
+);
+
+box-shadow:
+inset 0 3px 3px #ffffff55,
+inset 0 -8px 12px #07172c99,
+0 8px 0 #09182b,
+0 16px 28px #0006;
+}
+
+.connect3-grid {
+position: relative;
+display: grid;
+grid-template-columns: repeat(5, var(--connect3-cell-size));
+gap: var(--connect3-gap);
+z-index: 3;
+background: transparent;
+border: none;
+}
+
+.connect3-cell {
+position: relative;
+width: var(--connect3-cell-size);
+aspect-ratio: 1;
+overflow: visible;
+border: none;
+outline: none;
+border-radius: 50%;
+background: transparent;
+box-shadow: none;
+}
+
+.connect3-grid,
+.connect3-hoops {
+    width: fit-content;
+    margin-inline: auto;
+}
+
+
+/* =========================
+   HOOPS AND NETS
+========================= */
+
+.connect3-hoops { 
+    position: absolute; 
+    left: 18px; 
+    right: 18px; 
+    top: -112px;
+    display: grid; 
+    grid-template-columns: repeat(5, var(--connect3-cell-size)); 
+    gap: var(--connect3-gap); 
+    z-index: 4; 
+    pointer-events: none;
+    transform: translateY(-10px);   
+}
+
+.connect3-hoop {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  overflow: visible;
+  perspective: 220px;
+  isolation: isolate;
+}
+
+.connect3-hoop:disabled {
+  cursor: default;
+}
+
+.connect3-hoop-rim {
+  position: absolute;
+  inset: 14% 5% 24%;
+  z-index: 2;
+  box-sizing: border-box;
+  border: clamp(4px, 1vw, 7px) solid #f47721;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg, #ffb15b 0%, #f47721 35%,
+    #c94e0b 72%, #8f3108 100%
+  );
+  transform: rotateX(58deg) scaleY(.9);
+  transform-origin: center center;
+  box-shadow:
+    inset 0 2px 2px #fff9,
+    inset 0 -4px 5px #7c310d,
+    0 3px 0 #87370f,
+    0 5px 7px #0009;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.connect3-hoop-rim::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -3px;
+  height: 20%;
+  border-bottom: 2px solid #ffbf79;
+  border-radius: 0 0 50% 50%;
+  pointer-events: none;
+}
+
+.connect3-hoop-net {
+  position: absolute;
+  inset: 36% 23% -8%;
+  z-index: 1;
+  border-radius: 0 0 45% 45%;
+  background:
+    repeating-linear-gradient(
+      60deg, transparent 0 7px,
+      #ffffffd9 7px 9px, transparent 9px 14px
+    ),
+    repeating-linear-gradient(
+      -60deg, transparent 0 7px,
+      #ffffffc9 7px 9px, transparent 9px 14px
+    );
+  clip-path: polygon(0 0, 100% 0, 76% 100%, 24% 100%);
+  filter: drop-shadow(0 1px 1px #0009);
+  opacity: .9;
+  pointer-events: none;
+  transform-origin: top center;
+}
+
+.connect3-hoop.selected .connect3-hoop-rim {
+  border-color: #ffb13b;
+  box-shadow:
+    inset 0 2px 2px #ffffffb0,
+    inset 0 -3px 4px #7c310d,
+    0 3px 0 #87370f,
+    0 0 10px #ff9d24,
+    0 0 22px #ffb52d99;
+  animation: connect3-target-pulse 900ms ease-in-out infinite;
+}
+
+.connect3-hoop.selected .connect3-hoop-net {
+  animation: connect3-net-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes connect3-target-pulse {
+  0%, 100% {
+    filter: brightness(1);
+    transform: rotateX(58deg) scaleY(.9);
+  }
+  50% {
+    filter: brightness(1.5);
+    transform: rotateX(58deg) scaleY(.9) scale(1.06);
+  }
+}
+
+@keyframes connect3-net-pulse {
+  0%, 100% { opacity: .65; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.08); }
+}
+
+/* =========================
+   GRID AND EMPTY HOLES
+========================= */
+
+.connect3-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, var(--connect3-cell-size));
+  gap: var(--connect3-gap);
+  z-index: 2;
+  background: transparent;
+  border: none;
+}
+
+/* .connect3-grid { 
+    position: relative; 
+    display: grid; 
+    grid-template-columns: repeat(5, var(--connect3-cell-size)); 
+    gap: var(--connect3-gap); 
+    z-index: 2; 
+} */
+
+.connect3-cell {
+    position: relative;
+    width: var(--connect3-cell-size);
+    aspect-ratio: 1;
+    overflow: visible;
+    border-radius: 50%;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .connect3-cell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid #7190a8;
+    box-shadow:
+      inset 0 2px 3px #ffffff30,
+      inset 0 -3px 4px #00000055;
+    pointer-events: none;
+    z-index: 4;
+  }  
+
+.connect3-board:has(.connect3-hoop[data-column="0"].selected)
+.connect3-cell[data-col="0"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="1"].selected)
+.connect3-cell[data-col="1"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="2"].selected)
+.connect3-cell[data-col="2"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="3"].selected)
+.connect3-cell[data-col="3"]:not(:has(.connect3-token)),
+.connect3-board:has(.connect3-hoop[data-column="4"].selected)
+.connect3-cell[data-col="4"]:not(:has(.connect3-token)) {
+  animation: connect3-hole-pulse 900ms ease-in-out infinite;
+}
+
+
+@keyframes connect3-hole-pulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 4px 7px #07172b99,
+      inset 0 -2px 3px #ffffff35,
+      0 1px 0 #ffffff20;
+  }
+  50% {
+    box-shadow:
+      inset 0 4px 7px #07172b99,
+      inset 0 -2px 3px #ffffff35,
+      0 0 0 2px #ffb13b,
+      0 0 12px #ffb13b99;
+  }
+}
+
+/* =========================
+   PLAYER TOKENS
+========================= */
+
+.connect3-token {
+  position: absolute;
+  inset: 3px;
+  border: 2px solid #ffffff55;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 4px 6px #ffffff65,
+    inset 0 -6px 8px #0005,
+    0 3px 5px #0008;
+  animation: connect3-token-drop 220ms ease-out;
+}
+
+.connect3-token.player-1 {
+  border-color: #ffaaa0;
+  background: radial-gradient(
+    circle at 30% 23%,
+    #ffb1a8 0%, #ff5147 18%,
+    #e01922 52%, #850c18 100%
+  );
+  box-shadow:
+    inset 0 4px 6px #ffffff70,
+    inset 0 -6px 8px #53000a88,
+    0 3px 5px #0008;
+}
+
+.connect3-token.player-2 {
+  border-color: #fff0a0;
+  background: radial-gradient(
+    circle at 30% 23%,
+    #fff9bd 0%, #ffe45c 18%,
+    #ffbd13 52%, #bd7000 100%
+  );
+  box-shadow:
+    inset 0 4px 6px #ffffff80,
+    inset 0 -6px 8px #71400077,
+    0 3px 5px #0008;
+}
+
+@keyframes connect3-token-drop {
+  from { opacity: .4; transform: scale(.65); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
+/* =========================================
+   CONNECT 3 — REALISTIC BASKETBALL
+   ========================================= */
+
+   .connect3-shot-ball {
+    --ball-seam: #29150d;
+    --ball-seam-edge: #a94e18;
+  
+    position: absolute;
+    box-sizing: border-box;
+    aspect-ratio: 1;
+    border: 1px solid #7c330d;
+    border-radius: 50%;
+    overflow: hidden;
+    isolation: isolate;
+    pointer-events: none;
+  
+    /* Top-left light, warm orange midtones,
+       and burnt terracotta in the lower-right. */
+    background:
+      radial-gradient(
+        ellipse at 27% 20%,
+        #ffd17a 0%,
+        #ffab35 20%,
+        #f5801d 45%,
+        #d95612 72%,
+        #87300d 100%
+      );
+  
+    box-shadow:
+      inset 2px 2px 3px #fff1c25c,
+      inset -3px -4px 6px #4a180c80,
+      0 4px 8px #0009;
+  
+    /* Keep your existing animation positioning. */
+    will-change: left, top, transform, opacity;
+  }
+  
+  /* -----------------------------------------
+     Curved seam system
+     ----------------------------------------- */
+  
+     .connect3-shot-ball::before {
+        content: "";
+        position: absolute;
+        z-index: 3;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+      
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23231F20' stroke-width='3'%3E%3Cpath d='M 2 50 Q 50 42 98 50'/%3E%3Cpath d='M 50 2 Q 42 50 50 98'/%3E%3Cpath d='M 25 10 C 45 35 45 65 25 90'/%3E%3Cpath d='M 75 10 C 55 35 55 65 75 90'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+      
+      .connect3-shot-ball::after {
+        content: "";
+        position: absolute;
+        z-index: 4;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+      
+        /* Subtle basketball-grain texture */
+        background:
+          radial-gradient(circle, #ffe5b040 0 0.65px, transparent 0.95px),
+          radial-gradient(circle, #6d260d35 0 0.7px, transparent 1px);
+        background-size: 4px 4px, 5px 5px;
+        background-position: 0 0, 2px 2px;
+        opacity: 0.5;
+        mix-blend-mode: soft-light;
+      }
+  
+  /* -----------------------------------------
+     Fine pebbled leather texture
+     ----------------------------------------- */
+  
+  .connect3-shot-ball::after {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  
+    background:
+      /* Small highlight dimples */
+      radial-gradient(
+        circle,
+        #ffe5b040 0 0.65px,
+        transparent 0.95px
+      ),
+  
+      /* Tiny shadow dimples */
+      radial-gradient(
+        circle,
+        #6d260d35 0 0.7px,
+        transparent 1px
+      );
+  
+    background-size: 4px 4px, 5px 5px;
+    background-position: 0 0, 2px 2px;
+    opacity: 0.65;
+  
+    /* Slightly blend texture into the leather */
+    mix-blend-mode: soft-light;
+  }
+
+.connect3-shot-ball.connect3-shot-miss {
+  animation: connect3-miss-fall 500ms ease-in forwards;
+}
+
+@keyframes connect3-miss-fall {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(.8);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% + 45px)) scale(.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 100px)) scale(.7);
+  }
+}
+
+.connect3-animation-layer {
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, var(--connect3-cell-size));
+    grid-template-rows: repeat(5, var(--connect3-cell-size));
+    gap: var(--connect3-gap);
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+    
+    /* Align each transparent opening with its cell */
+    --connect3-hole-spacing: calc(
+    var(--connect3-cell-size) + var(--connect3-gap)
+    );
+    
+    -webkit-mask-image: radial-gradient(
+        circle at center,
+        #000 0 42%,
+        transparent 46%
+        );
+        mask-image: radial-gradient(
+        circle at center,
+        #000 0 42%,
+        transparent 46%
+        );
+
+        -webkit-mask-size: calc(var(--connect3-cell-size) + var(--connect3-gap))
+        calc(var(--connect3-cell-size) + var(--connect3-gap));
+        mask-size: calc(var(--connect3-cell-size) + var(--connect3-gap))
+        calc(var(--connect3-cell-size) + var(--connect3-gap));
+
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
+    }
+    
+    .connect3-animation-layer .connect3-shot-ball {
+    position: absolute;
+    z-index: auto;
+    }
+    
+
+/* =========================
+   BUTTONS AND CONTROLS
+========================= */
+
+.connect3-controls,
+.connect3-test-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto;
+}
+
+.connect3-button,
+.connect3-test-button {
+  padding: 12px 16px;
+  border: 1px solid #ffffff35;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  background: linear-gradient(180deg, #365577, #1b304a);
+  box-shadow:
+    inset 0 1px 0 #ffffff30,
+    0 4px 0 #0a1727,
+    0 6px 10px #0004;
+  transition: transform .12s, filter .12s;
+}
+
+.connect3-button:hover:not(:disabled),
+.connect3-test-button:hover:not(:disabled) {
+  filter: brightness(1.2);
+}
+
+.connect3-button:active:not(:disabled),
+.connect3-test-button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: inset 0 1px 0 #ffffff30, 0 1px 0 #0a1727;
+}
+
+.connect3-button:disabled,
+.connect3-test-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.connect3-shoot {
+  color: #18202a;
+  border-color: #ffe09a;
+  background: linear-gradient(180deg, #ffe18a, #f5a623);
+  box-shadow:
+    inset 0 1px 0 #ffffffa8,
+    0 4px 0 #98520a,
+    0 6px 10px #0004;
+}
+
+.connect3-test-controls {
+  gap: 8px;
+  margin-top: 18px;
+  color: #c8d6e8;
+  font-size: .8rem;
+}
+
+.connect3-test-button {
+  padding: 8px 12px;
+  font-size: .75rem;
+}
+
+.connect3-result {
+  margin: 20px auto 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.connect3-result h2 {
+  color: #ffce63;
+  text-shadow: 0 2px 8px #0008;
+}
+
+/* =========================
+   SMALL SCREENS
+========================= */
+
+@media (max-width: 480px) {
+  .connect3-screen {
+    padding: 18px 8px;
+  }
+
+  .connect3-board { 
+    --connect3-cell-size: clamp(48px, 11vw, 76px); 
+    --connect3-gap: clamp(7px, 1.8vw, 13px); 
+    position: relative; 
+    isolation: isolate; 
+    overflow: visible; 
+    width: fit-content; 
+    padding: 28px; 
+}
+
+  .connect3-player {
+    min-width: 0;
+    padding: 9px 12px;
+    font-size: .85rem;
+  }
+
+  .connect3-button {
+    padding: 10px 12px;
+    font-size: .8rem;
+  }
+}
+
+/* =========================
+   REDUCED MOTION
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .connect3-hoop.selected .connect3-hoop-rim,
+  .connect3-hoop.selected .connect3-hoop-net,
+  .connect3-cell,
+  .connect3-token {
+    animation: none !important;
+  }
+}
+
+.connect3-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 700px;
+    max-width: none;
+    margin: 0;
+    padding: 35px 30px 40px;
+    text-align: center;
+    background-color: #050b18;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+        url("../assets/images/shootout-arena-blank.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+}
+
+
+.app-arduino-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 12px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.app-arduino-footer[hidden] {
+    display: none;
+}
+
+.app-arduino-footer [data-arduino-status] {
+    font-size: 0.8rem;
+}
+
+.game-over-buttons .shootout-screen .shootout-button,
+.shootout-screen #back-to-menu {
+    display: block;
+    width: fit-content;
+    margin: 10px auto;
+}
+
+.shootout-screen #back-to-menu {
+    clear: both;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    min-height: 0;
+}
+
+#app {
+    height: 100dvh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#game-container {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.app-arduino-footer {
+    flex: 0 0 auto;
+}
+
+.arena-brand[role="button"] {
+    cursor: pointer;
+    user-select: none;
+}
+
+.arena-brand[role="button"]:hover {
+    opacity: 0.85;
+}
+
+.arena-brand[role="button"]:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 6px;
+    border-radius: 6px;
+}
+
+/* Visible selection for arcade menu navigation */
+.game-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        filter 0.2s ease;
+}
+
+.game-card:focus,
+.game-card:focus-visible {
+    outline: none;
+    transform: translateY(-6px) scale(1.03);
+    border-color: #ffd447;
+    box-shadow:
+        0 0 0 3px rgba(255, 212, 71, 0.8),
+        0 0 25px rgba(255, 212, 71, 0.45);
+    filter: brightness(1.15);
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes menuSelectionPulse {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(255, 212, 71, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 28px rgba(255, 212, 71, 0.8);
+    }
+}
+
+.game-card:focus,
+.game-card:focus-visible {
+    animation: menuSelectionPulse 1.5s ease-in-out infinite;
+}
+
+
+/* =========================================
+   CONNECT 3 HOOPS - NEW 5 x 5 GAME
+========================================= */
+
+.connect3-arena {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px 18px;
+    overflow: hidden;
+    color: #fff;
+    background:
+        radial-gradient(ellipse at center, #203956 0%, #101c30 65%, #080e19 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.connect3-arena-header {
+    flex: 0 0 auto;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.connect3-arena-header h2 {
+    margin: 0;
+    font-size: clamp(22px, 2.5vw, 34px);
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.connect3-arena-header p {
+    margin: 4px 0 0;
+    color: #b7c9df;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.connect3-match-layout {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(155px, 0.85fr) minmax(0, 3fr) minmax(155px, 0.85fr);
+    align-items: center;
+    gap: clamp(10px, 2vw, 26px);
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.connect3-player-panel {
+    min-width: 0;
+    min-height: 360px;
+    height: min(62vh, 520px);
+    padding: 22px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 2px solid #ffffff24;
+    border-radius: 20px;
+    background: linear-gradient(155deg, #1c2d46, #0c1728);
+    box-shadow: 0 12px 28px #0007;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+
+.connect3-blue-panel {
+    --player-colour: #258cff;
+    --player-glow: #258cff;
+}
+
+.connect3-orange-panel {
+    --player-colour: #ff8a24;
+    --player-glow: #ff8a24;
+}
+
+.connect3-player-panel.active {
+    transform: scale(1.035);
+    border-color: var(--player-colour);
+    box-shadow:
+        0 0 0 2px var(--player-colour),
+        0 0 22px var(--player-glow),
+        0 12px 28px #0008;
+}
+
+.connect3-player-number {
+    color: #fff;
+    font-size: clamp(17px, 1.7vw, 25px);
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.connect3-team-name {
+    margin-top: 8px;
+    color: var(--player-colour);
+    font-size: clamp(15px, 1.4vw, 20px);
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.connect3-player-hoop {
+    margin: 24px 0;
+    padding: 9px 20px;
+    border: 2px solid var(--player-colour);
+    border-radius: 30px;
+    color: var(--player-colour);
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.connect3-player-turn {
+    min-height: 24px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.connect3-player-instruction {
+    max-width: 190px;
+    margin-top: 18px;
+    color: #c3d1e2;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.connect3-player-score {
+    margin-top: 20px;
+    color: var(--player-colour);
+    font-size: clamp(38px, 4vw, 58px);
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* Board area */
+
+.connect3-board-area {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.connect3-turn-prompt {
+    min-height: 34px;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: clamp(15px, 1.6vw, 22px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.connect3-column-labels,
+.connect3-hoop-row,
+.connect3-board {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(5px, .8vw, 12px);
+    width: 100%;
+    max-width: 850px;
+}
+
+.connect3-column-labels {
+    margin-bottom: 5px;
+    color: #cbd9eb;
+    font-weight: 900;
+    font-size: 14px;
+}
+
+.connect3-column-labels span {
+    text-align: center;
+}
+
+.connect3-hoop-row {
+    margin-bottom: 8px;
+}
+
+.connect3-hoop {
+    position: relative;
+    height: clamp(38px, 5vh, 58px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.connect3-hoop-rim {
+    width: 58%;
+    height: 16px;
+    border: 5px solid #e87523;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #e8752355;
+}
+
+.connect3-hoop-net {
+    position: absolute;
+    top: 14px;
+    width: 42%;
+    height: 25px;
+    border-left: 2px solid #ffffff70;
+    border-right: 2px solid #ffffff70;
+    border-bottom: 2px solid #ffffff70;
+    border-radius: 0 0 10px 10px;
+}
+
+.connect3-hoop-selected .connect3-hoop-rim {
+    border-color: #fff;
+    box-shadow:
+        0 0 8px #fff,
+        0 0 20px #ffb13b;
+    animation: connect3-hoop-flash .65s ease-in-out infinite alternate;
+}
+
+@keyframes connect3-hoop-flash {
+    from { filter: brightness(1); transform: scale(1); }
+    to { filter: brightness(1.8); transform: scale(1.12); }
+}
+
+.connect3-board {
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    position: relative;
+    isolation: isolate;
+    padding: clamp(8px, 1.2vw, 16px);
+    border: 3px solid #7195bb;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #7399c2, #315982 35%, #102541);
+    box-shadow:
+        0 12px 25px #0008,
+        inset 0 2px 5px #ffffff30;
+    aspect-ratio: 1 / 1;
+}
+
+.connect3-cell {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    aspect-ratio: 1;
+    border: 3px solid #26384c;
+    border-radius: 50%;
+    background: #0a1422;
+    box-shadow:
+        inset 0 5px 9px #000b,
+        inset 0 -2px 3px #ffffff20;
+    transition: box-shadow .15s, background .15s;
+}
+
+.connect3-cell.connect3-column-selected {
+    box-shadow:
+        inset 0 5px 9px #000b,
+        0 0 0 2px #fff,
+        0 0 12px #ffca55;
+    animation: connect3-column-flash .65s ease-in-out infinite alternate;
+}
+
+@keyframes connect3-column-flash {
+    from {
+        filter: brightness(1);
+        border-color: #7189a4;
+    }
+    to {
+        filter: brightness(1.65);
+        border-color: #fff;
+    }
+}
+
+.connect3-cell.player-1 {
+    border-color: #a9d8ff;
+    background: radial-gradient(circle at 30% 25%, #83c9ff, #258cff 55%, #0750a2);
+    box-shadow:
+        inset 0 4px 7px #ffffff70,
+        inset 0 -5px 8px #002b6688,
+        0 3px 7px #0009;
+}
+
+.connect3-cell.player-2 {
+    border-color: #ffd0a1;
+    background: radial-gradient(circle at 30% 25%, #ffd09a, #ff8a24 55%, #a94300);
+    box-shadow:
+        inset 0 4px 7px #ffffff70,
+        inset 0 -5px 8px #64240088,
+        0 3px 7px #0009;
+}
+
+.connect3-cell.connect3-winning-cell {
+    animation: connect3-winner-pulse .55s ease-in-out infinite alternate;
+}
+
+@keyframes connect3-winner-pulse {
+    from {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    to {
+        transform: scale(1.12);
+        filter: brightness(1.8);
+        box-shadow: 0 0 18px #fff;
+    }
+}
+
+.connect3-dropping-ball {
+    position: fixed;
+    z-index: 999;
+    width: clamp(28px, 3vw, 46px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow:
+        inset 0 4px 7px #ffffff65,
+        inset 0 -5px 8px #0006,
+        0 5px 9px #0008;
+}
+
+.connect3-dropping-ball.player-1 {
+    border: 3px solid #b5e0ff;
+    background: radial-gradient(circle at 30% 25%, #83c9ff, #258cff 55%, #0750a2);
+}
+
+.connect3-dropping-ball.player-2 {
+    border: 3px solid #ffd0a1;
+    background: radial-gradient(circle at 30% 25%, #ffd09a, #ff8a24 55%, #a94300);
+}
+
+.connect3-board-instruction {
+    margin-top: 12px;
+    color: #c5d4e8;
+    font-size: clamp(11px, 1vw, 14px);
+    font-weight: 800;
+    text-align: center;
+}
+
+/* First-player wheel */
+
+.connect3-wheel-overlay,
+.connect3-result-overlay {
+    position: absolute;
+    z-index: 20;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #050b18eF;
+    backdrop-filter: blur(8px);
+}
+
+.connect3-wheel-overlay[hidden],
+.connect3-result-overlay[hidden] {
+    display: none;
+}
+
+.connect3-wheel-card,
+.connect3-result-card {
+    width: min(440px, 95%);
+    padding: 30px 24px;
+    border: 2px solid #ffffff30;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #243a58, #101c30);
+    box-shadow: 0 20px 60px #000b;
+    text-align: center;
+}
+
+.connect3-wheel-eyebrow {
+    color: #ffbd4a;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.connect3-wheel-card h2 {
+    margin: 8px 0 20px;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.connect3-wheel {
+    position: relative;
+    width: 210px;
+    aspect-ratio: 1;
+    margin: 0 auto 20px;
+    border: 7px solid #dce8f6;
+    border-radius: 50%;
+    background: conic-gradient(
+        from -90deg,
+        #1685ed 0deg 180deg,
+        #f47b20 180deg 360deg
+    );
+    box-shadow: 0 0 0 5px #253b58, 0 10px 25px #0009;
+    overflow: hidden;
+}
+
+.connect3-wheel-label {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    color: white;
+    font-size: 17px;
+    font-weight: 900;
+    text-shadow: 0 2px 4px #0009;
+}
+
+.connect3-wheel-label.blue {
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.connect3-wheel-label.orange {
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.connect3-wheel-pointer {
+    position: relative;
+    z-index: 2;
+    width: 0;
+    height: 0;
+    margin: 0 auto -12px;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-top: 25px solid white;
+    filter: drop-shadow(0 2px 3px #000);
+}
+
+.connect3-wheel-card p:not(.connect3-wheel-eyebrow) {
+    min-height: 24px;
+    color: #dce8f6;
+    font-weight: 800;
+}
+
+.connect3-wheel-stop,
+.connect3-play-again {
+    margin-top: 12px;
+    padding: 14px 25px;
+    border: 2px solid #ff9c36;
+    border-radius: 12px;
+    background: #e87523;
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.connect3-wheel-stop:disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+.connect3-wheel-finished {
+    opacity: 0;
+    transition: opacity .8s ease;
+    pointer-events: none;
+}
+
+/* Results */
+
+.connect3-result-icon {
+    font-size: 54px;
+}
+
+.connect3-result-card h2 {
+    margin: 12px 0;
+    font-size: clamp(25px, 4vw, 38px);
+    font-weight: 900;
+}
+
+.connect3-result-card p {
+    color: #c9d8e9;
+    font-size: 16px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 850px) {
+    .connect3-match-layout {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "board board"
+            "player1 player2";
+        overflow-y: auto;
+    }
+
+    .connect3-board-area {
+        grid-area: board;
+    }
+
+    .connect3-blue-panel {
+        grid-area: player1;
+    }
+
+    .connect3-orange-panel {
+        grid-area: player2;
+    }
+
+    .connect3-player-panel {
+        min-height: 180px;
+        height: auto;
+        padding: 14px;
+    }
+
+    .connect3-player-hoop {
+        margin: 10px 0;
+    }
+
+    .connect3-player-instruction {
+        margin-top: 8px;
+    }
+
+    .connect3-player-score {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .connect3-arena {
+        padding: 8px;
+        overflow-y: auto;
+    }
+
+    .connect3-match-layout {
+        gap: 8px;
+    }
+
+    .connect3-player-panel {
+        padding: 10px 6px;
+    }
+
+    .connect3-player-number {
+        font-size: 15px;
+    }
+
+    .connect3-player-instruction {
+        font-size: 11px;
+    }
+}
+
+/* =========================================
+   CONNECT 3 - CLEAN 5 x 5 BOARD
+   ========================================= */
+
+.connect3-board {
+    display: grid !important;
+
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+
+    gap: clamp(8px, 1vw, 14px) !important;
+
+    position: relative;
+    isolation: isolate;
+
+    width: min(100%, 660px) !important;
+    aspect-ratio: 1 / 1;
+
+    padding: clamp(12px, 1.5vw, 20px) !important;
+    margin: 0 auto 20px;
+
+    box-sizing: border-box;
+
+    border: 3px solid #7195bb;
+    border-radius: 18px;
+
+    background: linear-gradient(
+        135deg,
+        #7399c2,
+        #315982 35%,
+        #102541
+    );
+
+    box-shadow:
+        0 12px 25px #0008,
+        inset 0 2px 5px #ffffff30;
+}
+
+/* Each of the 25 positions must remain circular */
+.connect3-board > .connect3-cell {
+    display: block;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0;
+
+    aspect-ratio: 1 / 1;
+
+    position: relative;
+    border-radius: 50%;
+
+    background: #0a1422 !important;
+    border: 3px solid #26384c !important;
+
+    box-shadow:
+        inset 0 5px 9px #000b,
+        inset 0 -2px 3px #ffffff20 !important;
+
+    box-sizing: border-box;
+}
+
+/* Keep the animation layer out of the grid layout */
+.connect3-board-animation-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Blue basketballs */
+.connect3-board > .connect3-cell.player-1 {
+    background: radial-gradient(
+        circle at 30% 25%,
+        #83c9ff,
+        #258cff 55%,
+        #0750a2
+    ) !important;
+
+    border-color: #b5e0ff !important;
+
+    box-shadow:
+        inset 0 4px 7px #ffffff70,
+        inset 0 -5px 8px #002b6688,
+        0 3px 7px #0009 !important;
+}
+
+/* Orange basketballs */
+.connect3-board > .connect3-cell.player-2 {
+    background: radial-gradient(
+        circle at 30% 25%,
+        #ffd09a,
+        #ff8a24 55%,
+        #a94300
+    ) !important;
+
+    border-color: #ffd0a1 !important;
+
+    box-shadow:
+        inset 0 4px 7px #ffffff70,
+        inset 0 -5px 8px #64240088,
+        0 3px 7px #0009 !important;
+}
+
+/* Flash every position in the selected column */
+.connect3-board > .connect3-cell.connect3-column-selected {
+    border-color: #ffffff !important;
+
+    box-shadow:
+        0 0 0 2px #ffb13b,
+        0 0 12px #ffb13b99,
+        inset 0 0 8px #ffffff55 !important;
+
+    animation: connect3-column-flash 0.65s ease-in-out infinite alternate;
+}
+
+@keyframes connect3-column-flash {
+    from {
+        filter: brightness(1);
+    }
+
+    to {
+        filter: brightness(1.6);
+    }
+}
+
+/* Keep the numbered headings aligned with the five columns */
+.connect3-column-labels {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(8px, 1vw, 14px);
+
+    width: min(100%, 660px);
+    margin: 0 auto 10px;
+}
+
+.connect3-column-labels span {
+    text-align: center;
+}
+
+/* No hoop or net graphics */
+.connect3-hoop-row,
+.connect3-hoops {
+    display: none !important;
+}
+
+/* Basketball emoji tokens */
+.connect3-board > .connect3-cell {
+    display: grid;
+    place-items: center;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+    font-size: clamp(27px, 3.2vw, 48px);
+    line-height: 1;
+    color: white;
+}
+
+/* Blue team basketball */
+.connect3-board > .connect3-cell.player-1 {
+    background: #0a1422 !important;
+    /* border-color: #258cff !important; */
+    filter: hue-rotate(0deg);
+    text-shadow: 0 0 12px #258cff;
+}
+
+/* Orange team basketball */
+.connect3-board > .connect3-cell.player-2 {
+    background: #0a1422 !important;
+    /* border-color: #ff8a24 !important; */
+    text-shadow: 0 0 12px #ff8a24;
+}
+
+/* Give the blue emoji a blue tint */
+.connect3-board > .connect3-cell.player-1 {
+    filter: hue-rotate(155deg) saturate(1.3);
+}
+
+/* Selected empty holes */
+.connect3-board > .connect3-cell.connect3-column-selected {
+    animation: connect3-hole-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes connect3-hole-pulse {
+    from {
+        box-shadow:
+            inset 0 5px 9px #000b,
+            0 0 0 1px #ffb13b;
+    }
+
+    to {
+        box-shadow:
+            inset 0 5px 9px #000b,
+            0 0 0 3px #ffb13b,
+            0 0 16px #ffb13b;
+    }
+}
+
+/* Winning basketballs pulse */
+.connect3-board > .connect3-cell.connect3-winning-cell {
+    animation: connect3-winning-ball 0.65s ease-in-out infinite alternate;
+    z-index: 3;
+}
+
+@keyframes connect3-winning-ball {
+    from {
+        transform: scale(1);
+        text-shadow: 0 0 8px #fff;
+    }
+
+    to {
+        transform: scale(1.2);
+        text-shadow:
+            0 0 12px #fff,
+            0 0 25px #ffcf55;
+    }
+}
+
+/* Basketball tokens fill the board holes */
+.connect3-board > .connect3-cell {
+    display: grid !important;
+    place-items: center !important;
+    overflow: hidden;
+    padding: 0;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+    font-size: clamp(42px, 5.2vw, 76px) !important;
+    line-height: 1;
+    text-align: center;
+}
+
+/* Slightly enlarge the emoji so it fills the circular slot */
+.connect3-board > .connect3-cell.player-1,
+.connect3-board > .connect3-cell.player-2 {
+    transform: scale(1.04);
+}
+
+/* Keep winning animation from shrinking the basketball */
+.connect3-board > .connect3-cell.connect3-winning-cell {
+    z-index: 5;
+}
+
+/* Remove glow and shadow from basketball tokens */
+.connect3-board .connect3-cell.player-1,
+.connect3-board .connect3-cell.player-2 {
+    text-shadow: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+.connect3-board .connect3-cell .connect3-token {
+    text-shadow: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+/* Enlarge Connect 3 basketballs */
+.connect3-board > .connect3-cell.player-1,
+.connect3-board > .connect3-cell.player-2 {
+    font-size: clamp(58px, 7vw, 96px) !important;
+    line-height: 1 !important;
+    transform: scale(1.08);
+    text-shadow: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+/* Colour Player 1 basketballs blue */
+.connect3-board > .connect3-cell.player-1 {
+    filter: hue-rotate(180deg) saturate(3) !important;
+    text-shadow: none !important;
+}
+
+/* Remove the light border around Connect3 basketballs */
+.connect3-board > .connect3-cell.player-1,
+.connect3-board > .connect3-cell.player-2 {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
